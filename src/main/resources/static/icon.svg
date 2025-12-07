@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Background Circle -->
+  <circle cx="100" cy="100" r="95" fill="#1a1a1a"/>
+  
+  <!-- Letter B - Stylized -->
+  <path d="M 40 50 L 40 150 L 75 150 Q 95 150 95 130 Q 95 110 75 110 L 60 110 L 60 100 L 75 100 Q 95 100 95 80 Q 95 60 75 60 L 40 60 Z" 
+        fill="none" 
+        stroke="#ffffff" 
+        stroke-width="7" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"/>
+  
+  <!-- Letter I - Stylized -->
+  <line x1="110" y1="50" x2="110" y2="150" 
+        stroke="#ffffff" 
+        stroke-width="7" 
+        stroke-linecap="round"/>
+  
+  <!-- Letter S - Stylized -->
+  <path d="M 130 60 Q 150 60 150 75 Q 150 90 130 90 Q 110 90 110 110 Q 110 130 130 130 Q 150 130 150 145" 
+        fill="none" 
+        stroke="#ffffff" 
+        stroke-width="7" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"/>
+  
+  <!-- Letter E - Stylized -->
+  <path d="M 160 50 L 160 150 M 160 50 L 195 50 M 160 100 L 195 100 M 160 150 L 195 150" 
+        stroke="#ffffff" 
+        stroke-width="7" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"/>
+  
+  <!-- Letter N - Stylized -->
+  <path d="M 40 50 L 40 150 M 40 50 L 80 150 M 80 50 L 80 150" 
+        stroke="#ffffff" 
+        stroke-width="7" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"/>
+</svg>

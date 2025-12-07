@@ -1,0 +1,52 @@
+/* Syntax Highlighting for JSON/XML in BISEN */
+.json-highlight {
+    font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.json-key {
+    color: #881391;
+    font-weight: 500;
+}
+
+.json-string {
+    color: #0b6125;
+}
+
+.json-number {
+    color: #1c00cf;
+}
+
+.json-boolean {
+    color: #0d22aa;
+    font-weight: 500;
+}
+
+.json-null {
+    color: #808080;
+    font-style: italic;
+}
+
+.json-punctuation {
+    color: #1a1a1a;
+}
+
+.xml-tag {
+    color: #881391;
+    font-weight: 500;
+}
+
+.xml-attribute {
+    color: #0b6125;
+}
+
+.xml-text {
+    color: #1a1a1a;
+}
+
+.xml-comment {
+    color: #808080;
+    font-style: italic;
+}
+

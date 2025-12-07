@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100" width="400" height="100">
+  <!-- BISEN Text Logo -->
+  <defs>
+    <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1a1a1a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4a4a4a;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Letter B -->
+  <path d="M 20 20 L 20 80 L 50 80 Q 65 80 65 65 Q 65 50 50 50 L 35 50 L 35 50 L 50 50 Q 65 50 65 35 Q 65 20 50 20 L 20 20 Z" 
+        fill="#1a1a1a" 
+        stroke="#1a1a1a" 
+        stroke-width="2"/>
+  
+  <!-- Letter I -->
+  <line x1="80" y1="20" x2="80" y2="80" 
+        stroke="#1a1a1a" 
+        stroke-width="6" 
+        stroke-linecap="round"/>
+  
+  <!-- Letter S -->
+  <path d="M 100 20 Q 120 20 120 35 Q 120 50 100 50 Q 80 50 80 65 Q 80 80 100 80 Q 120 80 120 95" 
+        fill="none" 
+        stroke="#1a1a1a" 
+        stroke-width="6" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"/>
+  
+  <!-- Letter E -->
+  <path d="M 140 20 L 140 80 M 140 20 L 180 20 M 140 50 L 180 50 M 140 80 L 180 80" 
+        stroke="#1a1a1a" 
+        stroke-width="6" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"/>
+  
+  <!-- Letter N -->
+  <path d="M 200 20 L 200 80 M 200 20 L 240 80 M 240 20 L 240 80" 
+        stroke="#1a1a1a" 
+        stroke-width="6" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"/>
+</svg>
+

@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${collection.name} + ' - Collections'">Collection Detail</title>
+    <link rel="stylesheet" href="/dialog.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .nav-link {
+            display: inline-block;
+            margin-top: 10px;
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 6px;
+            transition: background 0.3s;
+            margin: 5px;
+        }
+        
+        .nav-link:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .collection-info {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .collection-info h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .collection-info p {
+            color: #666;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        
+        .request-item {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .request-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+        
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .method-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 12px;
+            margin-right: 10px;
+        }
+        
+        .method-GET { background: #d4edda; color: #155724; }
+        .method-POST { background: #cce5ff; color: #004085; }
+        .method-PUT { background: #fff3cd; color: #856404; }
+        .method-DELETE { background: #f8d7da; color: #721c24; }
+        .method-PATCH { background: #d1ecf1; color: #0c5460; }
+        .method-HEAD { background: #e2e3e5; color: #383d41; }
+        .method-OPTIONS { background: #f8d7da; color: #721c24; }
+        
+        .request-url {
+            font-weight: 600;
+            color: #333;
+            word-break: break-all;
+        }
+        
+        .request-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 13px;
+            color: #666;
+            margin-top: 10px;
+        }
+        
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        
+        .status-2xx {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-4xx {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status-5xx {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status-0 {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .request-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-view {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-view:hover {
+            background: #5568d3;
+        }
+        
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-delete:hover {
+            background: #c82333;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .modal-content {
+            background: white;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 900px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .detail-section {
+            margin-bottom: 20px;
+        }
+        
+        .detail-section h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .detail-content {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 th:text="${collection.name}">Collection</h1>
+            <div>
+                <a href="/collections" class="nav-link">← Back to Collections</a>
+                <a href="/" class="nav-link">Home</a>
+                <a href="/history" class="nav-link">History</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="collection-info">
+                <h2 th:text="${collection.name}">Collection Name</h2>
+                <p th:text="${collection.description ?: 'No description'}">Description</p>
+                <p style="margin-top: 10px; font-size: 14px; color: #999;">
+                    <span th:text="'Total Requests: ' + ${requests.size()}"></span>
+                </p>
+            </div>
+            
+            <div th:if="${requests.isEmpty()}" class="empty-state">
+                <h2>No requests in this collection</h2>
+                <p>Start making API requests and save them to this collection</p>
+            </div>
+            
+            <div th:if="${!requests.isEmpty()}">
+                <div th:each="request : ${requests}" class="request-item" th:onclick="'viewRequest(' + ${request.id} + ')'">
+                    <div class="request-header">
+                        <div>
+                            <span class="method-badge" th:class="'method-badge method-' + ${request.method}" th:text="${request.method}"></span>
+                            <span class="request-url" th:text="${request.url}"></span>
+                        </div>
+                        <div class="request-actions" onclick="event.stopPropagation()">
+                            <button class="btn btn-view" th:onclick="'viewRequest(' + ${request.id} + ')'">View</button>
+                            <button class="btn btn-delete" th:onclick="'deleteRequest(' + ${request.id} + ')'">Delete</button>
+                        </div>
+                    </div>
+                    <div class="request-meta">
+                        <span th:if="${request.name}" th:text="'Name: ' + ${request.name}"></span>
+                        <span th:if="${request.statusCode != null}">
+                            <span class="status-badge" 
+                                  th:class="'status-badge status-' + (${request.statusCode} >= 200 && ${request.statusCode} < 300 ? '2xx' : (${request.statusCode} >= 400 && ${request.statusCode} < 500 ? '4xx' : (${request.statusCode} >= 500 ? '5xx' : '0')))"
+                                  th:text="'Status: ' + ${request.statusCode}"></span>
+                        </span>
+                        <span th:if="${request.responseTime != null}" th:text="'Time: ' + ${request.responseTime} + 'ms'"></span>
+                        <span th:text="'Date: ' + ${#temporals.format(request.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Request Details</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+    
+    <script>
+        async function viewRequest(id) {
+            try {
+                const response = await fetch('/history/' + id);
+                if (response.ok) {
+                    const request = await response.json();
+                    displayRequestDetails(request);
+                } else {
+                    await CustomDialog.showAlert('Request not found', 'Error');
+                }
+            } catch (error) {
+                await CustomDialog.showAlert('Error loading request: ' + error.message, 'Error');
+            }
+        }
+        
+        function displayRequestDetails(request) {
+            const modal = document.getElementById('modal');
+            const modalBody = document.getElementById('modalBody');
+            
+            const statusClass = request.statusCode >= 200 && request.statusCode < 300 ? 'status-2xx' :
+                               request.statusCode >= 400 && request.statusCode < 500 ? 'status-4xx' :
+                               request.statusCode >= 500 ? 'status-5xx' : 'status-0';
+            
+            modalBody.innerHTML = `
+                <div class="detail-section">
+                    <h3>Method & URL</h3>
+                    <div class="detail-content">${request.method} ${request.url}</div>
+                </div>
+                ${request.name ? `
+                <div class="detail-section">
+                    <h3>Name</h3>
+                    <div class="detail-content">${request.name}</div>
+                </div>
+                ` : ''}
+                ${request.headers ? `
+                <div class="detail-section">
+                    <h3>Headers</h3>
+                    <div class="detail-content">${request.headers}</div>
+                </div>
+                ` : ''}
+                ${request.body ? `
+                <div class="detail-section">
+                    <h3>Request Body</h3>
+                    <div class="detail-content">${request.body}</div>
+                </div>
+                ` : ''}
+                <div class="detail-section">
+                    <h3>Response</h3>
+                    <div class="detail-content">${request.response || 'No response'}</div>
+                </div>
+                <div class="detail-section">
+                    <h3>Status Code</h3>
+                    <div class="detail-content"><span class="status-badge ${statusClass}">${request.statusCode || 'N/A'}</span></div>
+                </div>
+                <div class="detail-section">
+                    <h3>Response Time</h3>
+                    <div class="detail-content">${request.responseTime || 'N/A'}ms</div>
+                </div>
+                <div class="detail-section">
+                    <h3>Created At</h3>
+                    <div class="detail-content">${request.createdAt}</div>
+                </div>
+            `;
+            
+            modal.style.display = 'block';
+        }
+        
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+        
+        async function deleteRequest(id) {
+            const confirmed = await CustomDialog.showConfirm('Are you sure you want to delete this request?', 'Delete Request');
+            if (!confirmed) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/history/' + id, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    await CustomDialog.showAlert('Error deleting request', 'Error');
+                }
+            } catch (error) {
+                await CustomDialog.showAlert('Error deleting request: ' + error.message, 'Error');
+            }
+        }
+        
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
+    <script src="/dialog.js"></script>
+</body>
+</html>
+

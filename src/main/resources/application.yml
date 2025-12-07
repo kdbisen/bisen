@@ -1,0 +1,70 @@
+spring:
+  banner:
+    location: classpath:banner.txt
+    charset: UTF-8
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+  application:
+    name: rest-api-tester
+  
+  datasource:
+    # SQLite database - single file stored in user's home directory
+    # Database file location: ~/.bisen-api-tester/bisen-api-tester.db
+    # Cross-platform: Works on Windows, macOS, and Linux
+    url: jdbc:sqlite:${user.home}/.bisen-api-tester/bisen-api-tester.db
+    driver-class-name: org.sqlite.JDBC
+    # SQLite doesn't require username/password for file-based databases
+  
+  jpa:
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        # SQLite-specific configuration to handle ID generation
+        # Disable getGeneratedKeys() as SQLite JDBC driver doesn't support it
+        # Hibernate will use last_insert_rowid() instead
+        jdbc.use_get_generated_keys: false
+  
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+
+server:
+  port: 2000
+  # Security: Limit request sizes
+  max-http-header-size: 8KB
+  max-http-post-size: 10MB
+
+
+
+
+
+
+logging:
+  level:
+    root: INFO
+    com.resttester: INFO
+    com.resttester.controller: INFO
+    com.resttester.service: INFO
+    com.resttester.security: INFO
+    org.springframework: INFO
+    org.springframework.web: INFO
+    org.hibernate: INFO
+    org.hibernate.SQL: INFO
+    org.hibernate.type.descriptor.sql.BasicBinder: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: ${user.home}/.bisen-api-tester/bisen.log
+    max-size: 10MB
+    max-history: 30
+    total-size-cap: 300MB
+

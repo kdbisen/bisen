@@ -1,0 +1,2375 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <link rel="icon" type="image/svg+xml" href="/icon.svg">
+    <link rel="apple-touch-icon" href="/icon.svg">
+    <link rel="stylesheet" href="/dialog.css">
+    <link rel="stylesheet" href="/syntax-highlight.css">
+    <title>BISEN</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+        }
+        
+        .sidebar {
+            width: 260px;
+            background: #ffffff;
+            border-right: 1px solid #e5e5e5;
+            padding: 20px;
+            overflow-y: auto;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+        }
+        
+        .sidebar-header {
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        
+        .sidebar-header h2 {
+            color: #1a1a1a;
+            font-size: 14px;
+            margin-bottom: 4px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+        
+        .sidebar-header p {
+            color: #8a8a8a;
+            font-size: 12px;
+            font-weight: 400;
+        }
+        
+        .saved-request-item {
+            padding: 12px;
+            margin-bottom: 6px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.15s;
+            background: transparent;
+        }
+        
+        .saved-request-item:hover {
+            background: #f5f5f5;
+        }
+        
+        .saved-request-name {
+            font-weight: 500;
+            color: #1a1a1a;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+        
+        .saved-request-method {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 8px;
+            letter-spacing: 0.2px;
+        }
+        
+        .method-GET { background: #e8f5e9; color: #388e3c; }
+        .method-POST { background: #e3f2fd; color: #1976d2; }
+        .method-PUT { background: #fff3e0; color: #f57c00; }
+        .method-DELETE { background: #ffebee; color: #d32f2f; }
+        .method-PATCH { background: #e0f2f1; color: #00796b; }
+        .method-HEAD { background: #f5f5f5; color: #757575; }
+        .method-OPTIONS { background: #f3e5f5; color: #7b1fa2; }
+        
+        .saved-request-url {
+            color: #8a8a8a;
+            font-size: 12px;
+            word-break: break-all;
+            line-height: 1.4;
+        }
+        
+        .collection-item {
+            margin-bottom: 10px;
+        }
+        
+        .collection-header {
+            padding: 10px 12px;
+            background: transparent;
+            color: #1a1a1a;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.15s;
+            font-weight: 500;
+            font-size: 13px;
+        }
+        
+        .collection-header:hover {
+            background: #f5f5f5;
+        }
+        
+        .collection-name {
+            flex: 1;
+        }
+        
+        .collection-toggle {
+            font-size: 0.8em;
+            transition: transform 0.2s;
+        }
+        
+        .collection-toggle.collapsed {
+            transform: rotate(-90deg);
+        }
+        
+        .collection-requests {
+            margin-top: 4px;
+            margin-left: 20px;
+            padding-left: 0;
+            border-left: 1px solid #e5e5e5;
+        }
+        
+        .saved-request-item.nested {
+            margin-left: 0;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .saved-request-item.nested:hover {
+            background: #f5f5f5;
+        }
+        
+        .saved-request-item.nested:hover .btn-add-to-collection {
+            opacity: 1;
+        }
+        
+        .btn-add-to-collection {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+        
+        .btn-add-to-collection:hover {
+            background: #333;
+        }
+        
+        .empty-collection {
+            padding: 8px;
+            text-align: center;
+        }
+        
+        .collection-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 8px 0;
+            z-index: 1000;
+            min-width: 200px;
+            display: none;
+        }
+        
+        .collection-menu-item {
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 0.9em;
+        }
+        
+        .collection-menu-item:hover {
+            background: #f7fafc;
+        }
+        
+        .collection-menu-item:first-child {
+            font-weight: 600;
+            color: #667eea;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 4px;
+        }
+        
+        .btn-add-new-request {
+            width: 100%;
+            padding: 10px 16px;
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        
+        .btn-add-new-request:hover {
+            background: #333;
+        }
+        
+        .btn-add-new-request:active {
+            background: #000;
+        }
+        
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 24px;
+            background: #f5f5f5;
+        }
+        
+        .top-nav {
+            background: white;
+            border-radius: 0;
+            border-bottom: 1px solid #e5e5e5;
+            padding: 16px 24px;
+            margin: -24px -24px 24px -24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-brand .brand-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a1a;
+            letter-spacing: -0.5px;
+        }
+        
+        .nav-menu {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .nav-menu-item {
+            color: #8a8a8a;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.15s;
+        }
+        
+        .nav-menu-item:hover {
+            background: #f5f5f5;
+            color: #1a1a1a;
+        }
+        
+        .nav-menu-item.active {
+            background: #1a1a1a;
+            color: white;
+        }
+        
+        .banner {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: white;
+            padding: 32px 24px;
+            margin: -24px -24px 24px -24px;
+            border-radius: 0;
+        }
+        
+        .banner-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .banner-brand {
+            display: flex;
+            align-items: center;
+        }
+        
+        .banner-brand h1 {
+            margin: 0;
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            letter-spacing: -0.5px;
+        }
+        
+        .banner-brand p {
+            margin: 6px 0 0 0;
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 400;
+        }
+        
+        .banner-version {
+            display: flex;
+            align-items: center;
+        }
+        
+        .version-badge {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .header {
+            display: none;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 0;
+            border: 1px solid #e5e5e5;
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #1a1a1a;
+            font-size: 13px;
+        }
+        
+        .method-url-row {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 12px;
+        }
+        
+        select, input[type="text"], textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e5e5e5;
+            border-radius: 4px;
+            font-size: 13px;
+            transition: border-color 0.15s;
+            font-family: inherit;
+            background: white;
+        }
+        
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: #1a1a1a;
+        }
+        
+        select {
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231a1a1a' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 36px;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+            line-height: 1.6;
+        }
+        
+        .body-textarea {
+            min-height: 150px;
+        }
+        
+        .headers-container {
+            border: 1px solid #e5e5e5;
+            border-radius: 4px;
+            padding: 12px;
+            background: #fafafa;
+        }
+        
+        .header-row {
+            display: grid;
+            grid-template-columns: 1fr 2fr auto;
+            gap: 8px;
+            margin-bottom: 8px;
+            align-items: center;
+        }
+        
+        .header-row input {
+            margin: 0;
+            padding: 8px 10px;
+        }
+        
+        .header-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .btn-remove-header {
+            padding: 6px 10px;
+            background: transparent;
+            color: #8a8a8a;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: color 0.15s;
+        }
+        
+        .btn-remove-header:hover {
+            color: #1a1a1a;
+            background: #f5f5f5;
+        }
+        
+        .btn-add-header {
+            padding: 8px 12px;
+            background: transparent;
+            color: #1a1a1a;
+            border: 1px solid #e5e5e5;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 8px;
+            transition: all 0.15s;
+        }
+        
+        .btn-add-header:hover {
+            background: #f5f5f5;
+            border-color: #1a1a1a;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            letter-spacing: 0.3px;
+        }
+        
+        .btn-primary {
+            background: #1a1a1a;
+            color: white;
+            flex: 1;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        
+        .btn-primary:hover {
+            background: #333;
+        }
+        
+        .btn-primary:active {
+            background: #000;
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: #1a1a1a;
+            border: 1px solid #e5e5e5;
+            border-radius: 4px;
+            padding: 10px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        
+        .btn-secondary:hover {
+            background: #f5f5f5;
+            border-color: #1a1a1a;
+        }
+        
+        .response-section {
+            margin-top: 24px;
+            animation: fadeIn 0.2s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .response-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        
+        .btn-copy-response {
+            padding: 6px 12px;
+            background: transparent;
+            color: #1a1a1a;
+            border: 1px solid #e5e5e5;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.15s;
+        }
+        
+        .btn-copy-response:hover {
+            background: #f5f5f5;
+            border-color: #1a1a1a;
+        }
+        
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 12px;
+        }
+        
+        .status-2xx {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+        
+        .status-4xx {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+        
+        .status-5xx {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+        
+        .status-0 {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+        
+        .response-time {
+            color: #8a8a8a;
+            font-size: 12px;
+            font-weight: 400;
+            margin-left: 12px;
+        }
+        
+        .response-body {
+            background: #fafafa;
+            border: 1px solid #e5e5e5;
+            border-radius: 4px;
+            padding: 16px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            line-height: 1.6;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+        
+        
+        .response-headers {
+            margin-top: 12px;
+            padding: 12px;
+            background: #fafafa;
+            border-radius: 4px;
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+            font-size: 11px;
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid #e5e5e5;
+        }
+        
+        .empty-sidebar {
+            text-align: center;
+            padding: 40px 20px;
+            color: #8a8a8a;
+        }
+        
+        .empty-sidebar p {
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        
+        .empty-sidebar p:first-child {
+            font-weight: 500;
+            color: #1a1a1a;
+            margin-bottom: 6px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>Collections & Requests</h2>
+            <p>Click to load</p>
+        </div>
+        
+        <div style="margin-bottom: 16px;">
+            <button class="btn-add-new-request" onclick="clearForm()" title="Create New Request">
+                <span>+</span>
+                <span>New Request</span>
+            </button>
+        </div>
+        
+        <div style="margin-bottom: 12px;">
+            <input type="text" id="sidebarSearch" placeholder="Search requests..." 
+                   style="width: 100%; padding: 8px 12px; border: 1px solid #e5e5e5; border-radius: 4px; font-size: 12px;"
+                   onkeyup="filterSidebarRequests()">
+        </div>
+        
+        <!-- Collections with nested requests -->
+        <div th:if="${!collections.isEmpty()}" id="collections-container">
+            <div th:each="collection : ${collections}" class="collection-item">
+                <div class="collection-header" 
+                     th:data-collection-id="${collection.id}"
+                     th:onclick="'toggleCollection(' + ${collection.id} + '); return false;'">
+                    <span class="collection-name" th:text="${collection.name}">Collection Name</span>
+                    <span class="collection-toggle" th:id="'toggle-' + ${collection.id}">▼</span>
+                </div>
+                <div class="collection-requests" th:id="'collection-' + ${collection.id}" style="display: block;">
+                    <div th:each="saved : ${savedRequests}" 
+                         th:if="${saved.collection != null && saved.collection.id == collection.id}"
+                         class="saved-request-item nested" 
+                         th:data-request-id="${saved.id}"
+                         th:attr="onclick='if(!event.target.closest(&quot;button&quot;)){loadSavedRequestFromSidebar(' + ${saved.id} + ');}'"
+                         th:oncontextmenu="'event.preventDefault(); showAddToCollectionMenu(event, ' + ${saved.id} + ')'">
+                        <div class="saved-request-name" th:text="${saved.name}">Request Name</div>
+                        <div>
+                            <span class="saved-request-method" 
+                                  th:class="'saved-request-method method-' + ${saved.method}" 
+                                  th:text="${saved.method}"></span>
+                            <span class="saved-request-url" th:text="${saved.url}"></span>
+                        </div>
+                        <div style="position: absolute; top: 8px; right: 8px; display: flex; gap: 4px;">
+                            <button class="btn-add-to-collection btn-duplicate" 
+                                    th:data-request-id="${saved.id}"
+                                    title="Duplicate Request"
+                                    style="width: 20px; height: 20px; font-size: 11px;">⧉</button>
+                            <button class="btn-add-to-collection btn-add-collection" 
+                                    th:data-request-id="${saved.id}"
+                                    title="Add to Collection">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Requests without collection -->
+        <div th:if="${!requestsWithoutCollection.isEmpty()}">
+            <div class="collection-item">
+                <div class="collection-header" data-collection-id="unassigned" style="cursor: pointer;">
+                    <span class="collection-name">Unassigned Requests</span>
+                    <span class="collection-toggle" id="toggle-unassigned">▼</span>
+                </div>
+                <div class="collection-requests" id="collection-unassigned" style="display: block;">
+                    <div th:each="saved : ${requestsWithoutCollection}" 
+                         class="saved-request-item nested" 
+                         th:data-request-id="${saved.id}"
+                         th:attr="onclick='if(!event.target.closest(&quot;button&quot;)){loadSavedRequestFromSidebar(' + ${saved.id} + ');}'"
+                         th:oncontextmenu="'event.preventDefault(); showAddToCollectionMenu(event, ' + ${saved.id} + ')'">
+                        <div class="saved-request-name" th:text="${saved.name}">Request Name</div>
+                        <div>
+                            <span class="saved-request-method" 
+                                  th:class="'saved-request-method method-' + ${saved.method}" 
+                                  th:text="${saved.method}"></span>
+                            <span class="saved-request-url" th:text="${saved.url}"></span>
+                        </div>
+                        <div style="position: absolute; top: 8px; right: 8px; display: flex; gap: 4px;">
+                            <button class="btn-add-to-collection btn-duplicate" 
+                                    th:data-request-id="${saved.id}"
+                                    title="Duplicate Request"
+                                    style="width: 20px; height: 20px; font-size: 11px;">⧉</button>
+                            <button class="btn-add-to-collection btn-add-collection" 
+                                    th:data-request-id="${saved.id}"
+                                    title="Add to Collection">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Empty state -->
+        <div th:if="${collections.isEmpty() && requestsWithoutCollection.isEmpty()}" class="empty-sidebar">
+            <p>No saved requests yet</p>
+            <p style="font-size: 0.8em; margin-top: 5px;">Save requests to see them here</p>
+        </div>
+    </div>
+    
+    <div class="main-content">
+        <div class="top-nav">
+            <div class="nav-brand">
+                <img src="/icon.svg" alt="BISEN" style="width: 32px; height: 32px; margin-right: 12px; vertical-align: middle;">
+                <span class="brand-name">BISEN</span>
+            </div>
+            <div class="nav-menu">
+                <a href="/" class="nav-menu-item">Home</a>
+                <a href="/history" class="nav-menu-item">History</a>
+                <a href="/saved" class="nav-menu-item">Saved</a>
+                <a href="/collections" class="nav-menu-item">Collections</a>
+                <a href="/import" class="nav-menu-item">Import Swagger</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <form id="requestForm">
+                <input type="hidden" id="savedRequestId">
+                <div class="form-group">
+                    <label>Request Name (Optional)</label>
+                    <input type="text" id="name" placeholder="e.g., Get User Profile">
+                </div>
+                
+                <div class="form-group">
+                    <label>Save to Collection (Optional)</label>
+                    <select id="collectionId">
+                        <option value="">-- No Collection --</option>
+                        <option th:each="collection : ${collections}" 
+                                th:value="${collection.id}" 
+                                th:text="${collection.name}"></option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <label style="margin-bottom: 0;">Environment & Variables</label>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <select id="environmentSelect" onchange="loadEnvironmentVariables()" style="padding: 4px 8px; border: 1px solid #e5e5e5; border-radius: 4px; font-size: 12px; background: white;">
+                                <option value="">No Environment</option>
+                            </select>
+                            <button type="button" class="btn-add-header" onclick="toggleVariables()" style="margin: 0; padding: 4px 8px; font-size: 11px;">Edit</button>
+                            <button type="button" class="btn-add-header" onclick="previewVariableSubstitution()" style="margin: 0; padding: 4px 8px; font-size: 11px;">Preview</button>
+                        </div>
+                    </div>
+                    <div id="variablesContainer" style="display: none;">
+                        <textarea id="variables" placeholder='{"baseUrl": "https://api.example.com", "apiKey": "your-key"}' style="font-family: monospace; font-size: 12px; min-height: 80px; border: 1px solid #e5e5e5; border-radius: 4px; padding: 8px; width: 100%;"></textarea>
+                        <div style="display: flex; gap: 8px; margin-top: 6px;">
+                            <button type="button" onclick="validateVariables()" style="padding: 4px 12px; font-size: 11px; background: #f5f5f5; border: 1px solid #e5e5e5; border-radius: 4px; cursor: pointer;">Validate JSON</button>
+                            <button type="button" onclick="formatVariables()" style="padding: 4px 12px; font-size: 11px; background: #f5f5f5; border: 1px solid #e5e5e5; border-radius: 4px; cursor: pointer;">Format</button>
+                        </div>
+                        <p style="font-size: 11px; color: #8a8a8a; margin-top: 6px;">Use {{variableName}} in URL, headers, or body</p>
+                        <div id="variableValidation" style="font-size: 11px; margin-top: 4px;"></div>
+                    </div>
+                    <div id="variablePreview" style="display: none; margin-top: 8px; padding: 12px; background: #fafafa; border: 1px solid #e5e5e5; border-radius: 4px; font-size: 12px;">
+                        <div style="font-weight: 600; margin-bottom: 8px; color: #1a1a1a;">Variable Substitution Preview:</div>
+                        <div id="variablePreviewContent" style="font-family: monospace; color: #8a8a8a;"></div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Request Timeout (ms)</label>
+                    <input type="number" id="timeout" placeholder="30000" value="30000" min="1000" max="300000" style="width: 150px;">
+                    <span style="font-size: 11px; color: #8a8a8a; margin-left: 8px;">Default: 30000ms (30s)</span>
+                </div>
+                
+                <div class="form-group">
+                    <div class="method-url-row">
+                        <div>
+                            <label>Method</label>
+                            <select id="method" required>
+                                <option th:each="method : ${methods}" th:value="${method}" th:text="${method}"></option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>URL</label>
+                            <input type="text" id="url" placeholder="https://api.example.com/users" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Headers</label>
+                    <div class="headers-container" id="headersContainer">
+                        <div class="header-row">
+                            <input type="text" class="header-key" placeholder="Key" value="Content-Type">
+                            <input type="text" class="header-value" placeholder="Value" value="application/json">
+                            <button type="button" class="btn-remove-header" onclick="removeHeader(this)">Remove</button>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-add-header" onclick="addHeaderRow()">+ Add Header</button>
+                </div>
+                
+                <div class="form-group">
+                    <label>Authorization</label>
+                    <select id="authType" onchange="updateAuthType()" style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 13px; margin-bottom: 12px;">
+                        <option value="none">No Auth</option>
+                        <option value="basic">Basic Auth</option>
+                        <option value="bearer">Bearer Token</option>
+                        <option value="apikey">API Key</option>
+                        <option value="digest">Digest Auth</option>
+                    </select>
+                    
+                    <div id="authBasic" style="display: none;">
+                        <input type="text" id="authUsername" placeholder="Username" style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 13px; margin-bottom: 8px;">
+                        <input type="password" id="authPassword" placeholder="Password" style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 13px;">
+                    </div>
+                    
+                    <div id="authBearer" style="display: none;">
+                        <input type="text" id="authToken" placeholder="Bearer Token" style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 13px;">
+                    </div>
+                    
+                    <div id="authApiKey" style="display: none;">
+                        <input type="text" id="authApiKey" placeholder="API Key" style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 13px; margin-bottom: 8px;">
+                        <input type="text" id="authApiKeyHeader" placeholder="Header Name (e.g., X-API-Key)" value="X-API-Key" style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 13px;">
+                    </div>
+                    
+                    <div id="authDigest" style="display: none;">
+                        <input type="text" id="authDigestUsername" placeholder="Username" style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 13px; margin-bottom: 8px;">
+                        <input type="password" id="authDigestPassword" placeholder="Password" style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 13px;">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Certificate (Optional)</label>
+                    <div style="margin-bottom: 8px;">
+                        <label style="font-size: 12px; font-weight: 500; margin-bottom: 6px; display: block;">Certificate File (P12/PEM/JKS)</label>
+                        <input type="file" id="certificateFile" accept=".p12,.pem,.jks,.pfx" style="width: 100%; padding: 8px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 13px;">
+                    </div>
+                    <div style="margin-bottom: 8px;">
+                        <input type="password" id="certificatePassword" placeholder="Certificate Password (if required)" style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 13px;">
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <input type="checkbox" id="ignoreSslErrors" style="width: auto;">
+                        <label for="ignoreSslErrors" style="font-size: 12px; margin: 0; font-weight: 500;">Ignore SSL Certificate Errors (for self-signed certs)</label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <label style="margin-bottom: 0;">Body</label>
+                        <select id="bodyType" onchange="updateBodyType()" style="width: 180px; padding: 6px 10px; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 12px; font-weight: 600;">
+                            <option value="json">JSON</option>
+                            <option value="xml">XML</option>
+                            <option value="form-data">Form Data</option>
+                            <option value="x-www-form-urlencoded">Form URL Encoded</option>
+                            <option value="text">Text/Plain</option>
+                            <option value="html">HTML</option>
+                            <option value="none">None</option>
+                        </select>
+                    </div>
+                    <div style="position: relative;">
+                        <textarea id="body" class="body-textarea" placeholder='{"key": "value"}' onkeyup="validateBody()" onblur="formatBodyIfNeeded()"></textarea>
+                        <div style="position: absolute; top: 8px; right: 8px; display: flex; gap: 4px;">
+                            <button type="button" onclick="formatBody()" title="Format JSON/XML" style="padding: 4px 8px; font-size: 11px; background: #f5f5f5; border: 1px solid #e5e5e5; border-radius: 4px; cursor: pointer;">Format</button>
+                            <button type="button" onclick="validateBody()" title="Validate JSON" style="padding: 4px 8px; font-size: 11px; background: #f5f5f5; border: 1px solid #e5e5e5; border-radius: 4px; cursor: pointer;">Validate</button>
+                        </div>
+                    </div>
+                    <div id="bodyTypeHint" style="margin-top: 6px; font-size: 11px; color: #718096;"></div>
+                    <div id="bodyValidation" style="font-size: 11px; margin-top: 4px;"></div>
+                </div>
+                
+                <div class="button-group">
+                    <button type="submit" class="btn-primary">Send Request</button>
+                    <button type="button" class="btn-secondary" onclick="saveRequest()">Save Request</button>
+                    <button type="button" class="btn-secondary" onclick="clearForm()">Clear</button>
+                </div>
+            </form>
+            
+            <div id="responseSection" class="response-section" style="display: none;">
+                <div class="response-header">
+                    <div>
+                        <span id="statusBadge" class="status-badge"></span>
+                        <span id="responseTime" class="response-time"></span>
+                    </div>
+                    <button class="btn-copy-response" onclick="copyResponse()" title="Copy Response">
+                        <span>Copy</span>
+                    </button>
+                </div>
+                
+                <div id="responseHeaders" class="response-headers" style="display: none;"></div>
+                
+                <div class="response-body" id="responseBody"></div>
+            </div>
+            
+            <div id="loading" class="loading" style="display: none;">
+                Sending request
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Define toggleCollection early to make it available for onclick handlers
+        function toggleCollection(collectionId) {
+            const collectionDiv = document.getElementById('collection-' + collectionId);
+            const toggleIcon = document.getElementById('toggle-' + collectionId);
+            
+            if (!collectionDiv) {
+                return;
+            }
+            
+            // Check current state
+            const currentDisplay = collectionDiv.style.display || window.getComputedStyle(collectionDiv).display;
+            const isHidden = currentDisplay === 'none';
+            
+            if (isHidden) {
+                collectionDiv.style.display = 'block';
+                if (toggleIcon) {
+                    toggleIcon.textContent = '▼';
+                }
+            } else {
+                collectionDiv.style.display = 'none';
+                if (toggleIcon) {
+                    toggleIcon.textContent = '▶';
+                }
+            }
+        }
+        
+        // Make function globally available immediately
+        window.toggleCollection = toggleCollection;
+        
+        // Define loadSavedRequestFromSidebar early to make it available for onclick handlers
+        async function loadSavedRequestFromSidebar(id) {
+            try {
+                const response = await fetch('/api/saved/' + id);
+                if (response.ok) {
+                    const savedRequest = await response.json();
+                    
+                    document.getElementById('savedRequestId').value = savedRequest.id;
+                    document.getElementById('name').value = savedRequest.name || '';
+                    document.getElementById('method').value = savedRequest.method;
+                    document.getElementById('url').value = savedRequest.url;
+                    setHeaders(savedRequest.headers || '');
+                    document.getElementById('body').value = savedRequest.body || '';
+                    document.getElementById('collectionId').value = savedRequest.collection ? savedRequest.collection.id : '';
+                    document.getElementById('timeout').value = '30000';
+                    
+                    // Detect body type from Content-Type header
+                    if (typeof detectBodyTypeFromHeaders === 'function') {
+                        detectBodyTypeFromHeaders();
+                    }
+                } else {
+                    if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
+                        await CustomDialog.showAlert('Error loading saved request', 'Error');
+                    } else {
+                        alert('Error loading saved request');
+                    }
+                }
+            } catch (error) {
+                if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
+                    await CustomDialog.showAlert('Error: ' + error.message, 'Error');
+                } else {
+                    alert('Error: ' + error.message);
+                }
+            }
+        }
+        
+        // Make it globally available immediately
+        window.loadSavedRequestFromSidebar = loadSavedRequestFromSidebar;
+        
+        function addHeaderRow() {
+            const container = document.getElementById('headersContainer');
+            const newRow = document.createElement('div');
+            newRow.className = 'header-row';
+            newRow.innerHTML = `
+                <input type="text" class="header-key" placeholder="Key">
+                <input type="text" class="header-value" placeholder="Value">
+                <button type="button" class="btn-remove-header" onclick="removeHeader(this)">Remove</button>
+            `;
+            container.appendChild(newRow);
+        }
+        
+        function removeHeader(button) {
+            const container = document.getElementById('headersContainer');
+            if (container.children.length > 1) {
+                button.parentElement.remove();
+            } else {
+                const row = button.parentElement;
+                row.querySelector('.header-key').value = '';
+                row.querySelector('.header-value').value = '';
+            }
+        }
+        
+        function updateBodyType() {
+            const bodyType = document.getElementById('bodyType').value;
+            const bodyTextarea = document.getElementById('body');
+            const hintDiv = document.getElementById('bodyTypeHint');
+            
+            // Update Content-Type header automatically
+            updateContentTypeHeader(bodyType);
+            
+            // Update placeholder and hint based on type
+            switch(bodyType) {
+                case 'json':
+                    bodyTextarea.placeholder = '{"key": "value", "name": "BISEN"}';
+                    hintDiv.textContent = '💡 Enter valid JSON format';
+                    break;
+                case 'xml':
+                    bodyTextarea.placeholder = '<?xml version="1.0"?>\n<root>\n  <key>value</key>\n</root>';
+                    hintDiv.textContent = '💡 Enter valid XML format';
+                    break;
+                case 'form-data':
+                    bodyTextarea.placeholder = 'key1=value1\nkey2=value2\nkey3=value3';
+                    hintDiv.textContent = '💡 Enter key=value pairs (one per line)';
+                    break;
+                case 'x-www-form-urlencoded':
+                    bodyTextarea.placeholder = 'key1=value1&key2=value2&key3=value3';
+                    hintDiv.textContent = '💡 Enter URL-encoded form data (key=value&key=value)';
+                    break;
+                case 'text':
+                    bodyTextarea.placeholder = 'Enter plain text here...';
+                    hintDiv.textContent = '💡 Enter plain text content';
+                    break;
+                case 'html':
+                    bodyTextarea.placeholder = '<html><body><h1>Hello</h1></body></html>';
+                    hintDiv.textContent = '💡 Enter HTML content';
+                    break;
+                case 'none':
+                    bodyTextarea.placeholder = '';
+                    hintDiv.textContent = '💡 No body will be sent';
+                    bodyTextarea.value = '';
+                    break;
+                default:
+                    bodyTextarea.placeholder = '{"key": "value"}';
+                    hintDiv.textContent = '';
+            }
+        }
+        
+        function updateContentTypeHeader(bodyType) {
+            const contentTypeMap = {
+                'json': 'application/json',
+                'xml': 'application/xml',
+                'form-data': 'multipart/form-data',
+                'x-www-form-urlencoded': 'application/x-www-form-urlencoded',
+                'text': 'text/plain',
+                'html': 'text/html',
+                'none': ''
+            };
+            
+            const contentType = contentTypeMap[bodyType] || 'application/json';
+            
+            // Find or create Content-Type header
+            const headerRows = document.querySelectorAll('.header-row');
+            let found = false;
+            
+            headerRows.forEach(row => {
+                const keyInput = row.querySelector('.header-key');
+                if (keyInput.value.trim().toLowerCase() === 'content-type') {
+                    if (bodyType === 'none') {
+                        // Remove Content-Type for none
+                        if (headerRows.length > 1) {
+                            row.remove();
+                        } else {
+                            keyInput.value = '';
+                            row.querySelector('.header-value').value = '';
+                        }
+                    } else {
+                        row.querySelector('.header-value').value = contentType;
+                    }
+                    found = true;
+                }
+            });
+            
+            // If Content-Type not found and not 'none', add it
+            if (!found && bodyType !== 'none') {
+                const container = document.getElementById('headersContainer');
+                const newRow = document.createElement('div');
+                newRow.className = 'header-row';
+                newRow.innerHTML = `
+                    <input type="text" class="header-key" placeholder="Key" value="Content-Type">
+                    <input type="text" class="header-value" placeholder="Value" value="${contentType}">
+                    <button type="button" class="btn-remove-header" onclick="removeHeader(this)">Remove</button>
+                `;
+                container.insertBefore(newRow, container.firstChild);
+            }
+        }
+        
+        function updateAuthType() {
+            const authType = document.getElementById('authType').value;
+            
+            // Hide all auth sections
+            document.getElementById('authBasic').style.display = 'none';
+            document.getElementById('authBearer').style.display = 'none';
+            document.getElementById('authApiKey').style.display = 'none';
+            document.getElementById('authDigest').style.display = 'none';
+            
+            // Show relevant section
+            switch(authType) {
+                case 'basic':
+                    document.getElementById('authBasic').style.display = 'block';
+                    break;
+                case 'bearer':
+                    document.getElementById('authBearer').style.display = 'block';
+                    break;
+                case 'apikey':
+                    document.getElementById('authApiKey').style.display = 'block';
+                    break;
+                case 'digest':
+                    document.getElementById('authDigest').style.display = 'block';
+                    break;
+            }
+        }
+        
+        async function getCertificateBase64(fileInput) {
+            return new Promise((resolve, reject) => {
+                if (!fileInput.files || fileInput.files.length === 0) {
+                    resolve(null);
+                    return;
+                }
+                
+                const file = fileInput.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    const base64 = e.target.result.split(',')[1]; // Remove data:application/...;base64, prefix
+                    resolve(base64);
+                };
+                
+                reader.onerror = function(e) {
+                    reject(e);
+                };
+                
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        function getHeaders() {
+            const headers = [];
+            const rows = document.querySelectorAll('.header-row');
+            rows.forEach(row => {
+                const key = row.querySelector('.header-key').value.trim();
+                const value = row.querySelector('.header-value').value.trim();
+                if (key && value) {
+                    headers.push(key + ': ' + value);
+                }
+            });
+            return headers.join('\n');
+        }
+        
+        function setHeaders(headersString) {
+            const container = document.getElementById('headersContainer');
+            container.innerHTML = '';
+            
+            if (!headersString || headersString.trim() === '') {
+                addHeaderRow();
+                return;
+            }
+            
+            const lines = headersString.split('\n');
+            lines.forEach(line => {
+                if (line.includes(':')) {
+                    const parts = line.split(':', 2);
+                    const key = parts[0].trim();
+                    const value = parts[1].trim();
+                    if (key) {
+                        const newRow = document.createElement('div');
+                        newRow.className = 'header-row';
+                        newRow.innerHTML = `
+                            <input type="text" class="header-key" placeholder="Key" value="${key.replace(/"/g, '&quot;')}">
+                            <input type="text" class="header-value" placeholder="Value" value="${value.replace(/"/g, '&quot;')}">
+                            <button type="button" class="btn-remove-header" onclick="removeHeader(this)">Remove</button>
+                        `;
+                        container.appendChild(newRow);
+                    }
+                }
+            });
+            
+            if (container.children.length === 0) {
+                addHeaderRow();
+            }
+        }
+        
+        document.getElementById('requestForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const method = document.getElementById('method').value;
+            const url = document.getElementById('url').value;
+            const headers = getHeaders();
+            const bodyType = document.getElementById('bodyType').value;
+            const body = bodyType === 'none' ? '' : document.getElementById('body').value;
+            const name = document.getElementById('name').value;
+            const collectionId = document.getElementById('collectionId').value;
+            
+            // Get authorization data
+            const authType = document.getElementById('authType').value;
+            const authUsername = document.getElementById('authUsername')?.value || '';
+            const authPassword = document.getElementById('authPassword')?.value || '';
+            const authToken = document.getElementById('authToken')?.value || '';
+            const authApiKey = document.getElementById('authApiKey')?.value || '';
+            const authApiKeyHeader = document.getElementById('authApiKeyHeader')?.value || 'X-API-Key';
+            const authDigestUsername = document.getElementById('authDigestUsername')?.value || '';
+            const authDigestPassword = document.getElementById('authDigestPassword')?.value || '';
+            
+            // Get certificate data
+            let certificateBase64 = null;
+            try {
+                certificateBase64 = await getCertificateBase64(document.getElementById('certificateFile'));
+            } catch (error) {
+                await CustomDialog.showAlert('Error reading certificate file: ' + error.message, 'Error');
+                return;
+            }
+            
+            const certificatePassword = document.getElementById('certificatePassword')?.value || '';
+            const ignoreSslErrors = document.getElementById('ignoreSslErrors')?.checked || false;
+            
+            // Determine certificate type from filename
+            let certificateType = null;
+            if (certificateBase64) {
+                try {
+                    const certFileEl = document.getElementById('certificateFile');
+                    if (certFileEl && certFileEl.files && certFileEl.files.length > 0) {
+                        const fileName = certFileEl.files[0].name ? certFileEl.files[0].name.toLowerCase() : '';
+                        if (fileName.endsWith('.p12') || fileName.endsWith('.pfx')) {
+                            certificateType = 'p12';
+                        } else if (fileName.endsWith('.pem')) {
+                            certificateType = 'pem';
+                        } else if (fileName.endsWith('.jks')) {
+                            certificateType = 'jks';
+                        }
+                    }
+                } catch (e) {
+                    // If certificate type detection fails, continue without it
+                }
+            }
+            
+            const environmentId = document.getElementById('environmentSelect')?.value || null;
+            const variables = document.getElementById('variables')?.value || '';
+            
+            const requestDto = {
+                method: method,
+                url: url,
+                headers: headers,
+                environmentId: environmentId ? parseInt(environmentId) : null,
+                variables: variables,
+                body: body,
+                name: name,
+                collectionId: collectionId ? parseInt(collectionId) : null,
+                authType: authType,
+                username: authType === 'basic' ? authUsername : (authType === 'digest' ? authDigestUsername : null),
+                password: authType === 'basic' ? authPassword : (authType === 'digest' ? authDigestPassword : null),
+                token: authType === 'bearer' ? authToken : null,
+                apiKey: authType === 'apikey' ? authApiKey : null,
+                apiKeyHeader: authType === 'apikey' ? authApiKeyHeader : null,
+                certificateFile: certificateBase64,
+                certificatePassword: certificatePassword || null,
+                certificateType: certificateType,
+                ignoreSslErrors: ignoreSslErrors
+            };
+            
+            const loadingEl = document.getElementById('loading');
+            const responseSectionEl = document.getElementById('responseSection');
+            
+            if (loadingEl) loadingEl.style.display = 'block';
+            if (responseSectionEl) responseSectionEl.style.display = 'none';
+            
+            try {
+                const response = await fetch('/api/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestDto)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                if (data) {
+                    displayResponse(data);
+                } else {
+                    displayError({ message: 'Empty response received' });
+                }
+            } catch (error) {
+                displayError(error);
+            } finally {
+                if (loadingEl) loadingEl.style.display = 'none';
+            }
+        });
+        
+        function displayResponse(data) {
+            if (!data) {
+                displayError({ message: 'No response data received' });
+                return;
+            }
+            
+            const statusCode = data.statusCode != null ? data.statusCode : 0;
+            const statusBadge = document.getElementById('statusBadge');
+            const responseTime = document.getElementById('responseTime');
+            const responseBody = document.getElementById('responseBody');
+            const responseHeaders = document.getElementById('responseHeaders');
+            const responseSection = document.getElementById('responseSection');
+            
+            if (!statusBadge || !responseTime || !responseBody || !responseSection) {
+                console.error('Response elements not found');
+                return;
+            }
+            
+            statusBadge.textContent = `Status: ${statusCode}`;
+            statusBadge.className = 'status-badge ';
+            
+            if (statusCode >= 200 && statusCode < 300) {
+                statusBadge.className += 'status-2xx';
+            } else if (statusCode >= 400 && statusCode < 500) {
+                statusBadge.className += 'status-4xx';
+            } else if (statusCode >= 500) {
+                statusBadge.className += 'status-5xx';
+            } else {
+                statusBadge.className += 'status-0';
+            }
+            
+            const responseTimeMs = data.responseTime != null ? data.responseTime : 0;
+            responseTime.textContent = `Response Time: ${responseTimeMs}ms`;
+            
+            try {
+                const responseText = data.response != null ? data.response : '';
+                if (responseText.trim().startsWith('{') || responseText.trim().startsWith('[')) {
+                    const json = JSON.parse(responseText);
+                    responseBody.textContent = JSON.stringify(json, null, 2);
+                } else {
+                    responseBody.textContent = responseText || 'No response body';
+                }
+            } catch (e) {
+                responseBody.textContent = (data.response != null ? data.response : 'No response body');
+            }
+            
+            if (data.headers && data.headers.trim && data.headers.trim() !== '') {
+                responseHeaders.textContent = data.headers;
+                responseHeaders.style.display = 'block';
+            } else {
+                responseHeaders.style.display = 'none';
+            }
+            
+            responseSection.style.display = 'block';
+        }
+        
+        function displayError(error) {
+            const statusBadge = document.getElementById('statusBadge');
+            const responseTime = document.getElementById('responseTime');
+            const responseBody = document.getElementById('responseBody');
+            const responseSection = document.getElementById('responseSection');
+            
+            if (!statusBadge || !responseTime || !responseBody || !responseSection) {
+                console.error('Error display elements not found');
+                return;
+            }
+            
+            statusBadge.textContent = 'Status: Error';
+            statusBadge.className = 'status-badge status-0';
+            responseTime.textContent = '';
+            
+            const errorMessage = error && error.message ? error.message : (error ? String(error) : 'Unknown error');
+            responseBody.textContent = 'Error: ' + errorMessage;
+            responseSection.style.display = 'block';
+        }
+        
+        let environments = [];
+        let currentEnvironmentId = null;
+        
+        async function loadEnvironments() {
+            try {
+                const response = await fetch('/api/environments');
+                if (response.ok) {
+                    environments = await response.json();
+                    const select = document.getElementById('environmentSelect');
+                    if (select) {
+                        select.innerHTML = '<option value="">No Environment</option>';
+                        environments.forEach(env => {
+                            const option = document.createElement('option');
+                            option.value = env.id;
+                            option.textContent = env.name + (env.isDefault ? ' (Default)' : '');
+                            if (env.isDefault) {
+                                option.selected = true;
+                                currentEnvironmentId = env.id;
+                                loadEnvironmentVariables();
+                            }
+                            select.appendChild(option);
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading environments:', error);
+            }
+        }
+        
+        async function loadEnvironmentVariables() {
+            const select = document.getElementById('environmentSelect');
+            if (!select) return;
+            const envId = select.value;
+            currentEnvironmentId = envId;
+            
+            if (!envId) {
+                const variablesEl = document.getElementById('variables');
+                if (variablesEl) variablesEl.value = '';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/environments/' + envId);
+                if (response.ok) {
+                    const env = await response.json();
+                    const variablesEl = document.getElementById('variables');
+                    if (variablesEl && env.variables) {
+                        variablesEl.value = env.variables;
+                        validateVariables();
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading environment:', error);
+            }
+        }
+        
+        function toggleVariables() {
+            const container = document.getElementById('variablesContainer');
+            if (container) {
+                container.style.display = container.style.display === 'none' ? 'block' : 'none';
+            }
+        }
+        
+        function validateVariables() {
+            const variablesEl = document.getElementById('variables');
+            const validationDiv = document.getElementById('variableValidation');
+            if (!variablesEl || !validationDiv) return;
+            
+            const variablesText = variablesEl.value;
+            if (!variablesText || variablesText.trim() === '') {
+                validationDiv.innerHTML = '';
+                return;
+            }
+            
+            const result = JSONFormatter.validate(variablesText);
+            if (result.valid) {
+                validationDiv.innerHTML = '<span style="color: #388e3c;">✓ Valid JSON</span>';
+            } else {
+                validationDiv.innerHTML = '<span style="color: #d32f2f;">✗ Invalid JSON: ' + escapeHtml(result.error) + '</span>';
+            }
+        }
+        
+        function formatVariables() {
+            const variablesEl = document.getElementById('variables');
+            if (!variablesEl) return;
+            
+            const variablesText = variablesEl.value;
+            if (!variablesText || variablesText.trim() === '') return;
+            
+            const formatted = JSONFormatter.format(variablesText);
+            variablesEl.value = formatted;
+            validateVariables();
+        }
+        
+        function previewVariableSubstitution() {
+            const variablesEl = document.getElementById('variables');
+            const urlEl = document.getElementById('url');
+            const bodyEl = document.getElementById('body');
+            const previewDiv = document.getElementById('variablePreview');
+            const previewContent = document.getElementById('variablePreviewContent');
+            
+            if (!variablesEl || !previewDiv || !previewContent) return;
+            
+            const variablesText = variablesEl.value;
+            const url = urlEl ? urlEl.value : '';
+            const headers = getHeaders();
+            const body = bodyEl ? bodyEl.value : '';
+            
+            if (!variablesText || variablesText.trim() === '') {
+                previewDiv.style.display = 'none';
+                return;
+            }
+            
+            try {
+                const variables = JSON.parse(variablesText);
+                let preview = '';
+                
+                if (url) {
+                    let previewUrl = url;
+                    Object.keys(variables).forEach(key => {
+                        previewUrl = previewUrl.replace(new RegExp('\\{\\{' + key + '\\}\\}', 'g'), variables[key]);
+                    });
+                    preview += '<div><strong>URL:</strong> ' + escapeHtml(previewUrl) + '</div>';
+                }
+                
+                if (headers) {
+                    let previewHeaders = headers;
+                    Object.keys(variables).forEach(key => {
+                        previewHeaders = previewHeaders.replace(new RegExp('\\{\\{' + key + '\\}\\}', 'g'), variables[key]);
+                    });
+                    preview += '<div style="margin-top: 8px;"><strong>Headers:</strong><br><pre style="margin-top: 4px; white-space: pre-wrap;">' + escapeHtml(previewHeaders) + '</pre></div>';
+                }
+                
+                if (body) {
+                    let previewBody = body;
+                    Object.keys(variables).forEach(key => {
+                        previewBody = previewBody.replace(new RegExp('\\{\\{' + key + '\\}\\}', 'g'), variables[key]);
+                    });
+                    preview += '<div style="margin-top: 8px;"><strong>Body:</strong><br><pre style="margin-top: 4px; white-space: pre-wrap;">' + escapeHtml(previewBody) + '</pre></div>';
+                }
+                
+                if (preview) {
+                    previewContent.innerHTML = preview;
+                    previewDiv.style.display = 'block';
+                } else {
+                    previewDiv.style.display = 'none';
+                }
+            } catch (error) {
+                previewContent.innerHTML = '<span style="color: #d32f2f;">Error: Invalid variables JSON</span>';
+                previewDiv.style.display = 'block';
+            }
+        }
+        
+        function validateBody() {
+            const bodyEl = document.getElementById('body');
+            const bodyTypeEl = document.getElementById('bodyType');
+            const validationDiv = document.getElementById('bodyValidation');
+            
+            if (!bodyEl || !bodyTypeEl || !validationDiv) return;
+            
+            const bodyText = bodyEl.value;
+            const bodyType = bodyTypeEl.value;
+            
+            if (!bodyText || bodyText.trim() === '' || bodyType === 'none') {
+                validationDiv.innerHTML = '';
+                return;
+            }
+            
+            if (bodyType === 'json') {
+                const result = JSONFormatter.validate(bodyText);
+                if (result.valid) {
+                    validationDiv.innerHTML = '<span style="color: #388e3c;">✓ Valid JSON</span>';
+                } else {
+                    validationDiv.innerHTML = '<span style="color: #d32f2f;">✗ Invalid JSON: ' + escapeHtml(result.error) + '</span>';
+                }
+            } else if (bodyType === 'xml') {
+                try {
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(bodyText, 'text/xml');
+                    if (xmlDoc.getElementsByTagName('parsererror').length > 0) {
+                        validationDiv.innerHTML = '<span style="color: #d32f2f;">✗ Invalid XML</span>';
+                    } else {
+                        validationDiv.innerHTML = '<span style="color: #388e3c;">✓ Valid XML</span>';
+                    }
+                } catch (error) {
+                    validationDiv.innerHTML = '<span style="color: #d32f2f;">✗ Invalid XML</span>';
+                }
+            } else {
+                validationDiv.innerHTML = '';
+            }
+        }
+        
+        function formatBody() {
+            const bodyEl = document.getElementById('body');
+            const bodyTypeEl = document.getElementById('bodyType');
+            
+            if (!bodyEl || !bodyTypeEl) return;
+            
+            const bodyText = bodyEl.value;
+            const bodyType = bodyTypeEl.value;
+            
+            if (!bodyText || bodyText.trim() === '') return;
+            
+            if (bodyType === 'json') {
+                const formatted = JSONFormatter.format(bodyText);
+                bodyEl.value = formatted;
+                validateBody();
+            } else if (bodyType === 'xml') {
+                const formatted = JSONFormatter.formatXML(bodyText);
+                bodyEl.value = formatted;
+                validateBody();
+            }
+        }
+        
+        function formatBodyIfNeeded() {
+            const bodyEl = document.getElementById('body');
+            const bodyTypeEl = document.getElementById('bodyType');
+            
+            if (!bodyEl || !bodyTypeEl) return;
+            
+            const bodyText = bodyEl.value;
+            const bodyType = bodyTypeEl.value;
+            
+            if (bodyType === 'json' && bodyText && bodyText.trim()) {
+                const result = JSONFormatter.validate(bodyText);
+                if (result.valid) {
+                    const formatted = JSONFormatter.format(bodyText);
+                    if (formatted !== bodyText) {
+                        // Auto-format on blur if valid
+                        bodyEl.value = formatted;
+                    }
+                }
+            }
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        async function openEnvironmentManager() {
+            const modal = document.createElement('div');
+            modal.className = 'custom-dialog-overlay';
+            modal.innerHTML = `
+                <div class="custom-dialog" style="max-width: 700px; max-height: 90vh; overflow-y: auto;">
+                    <div class="custom-dialog-header">
+                        <h3>Environment Management</h3>
+                        <button class="custom-dialog-close" onclick="this.closest('.custom-dialog-overlay').remove()">&times;</button>
+                    </div>
+                    <div class="custom-dialog-body">
+                        <div style="margin-bottom: 20px;">
+                            <button onclick="createNewEnvironment()" style="padding: 8px 16px; background: #1a1a1a; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px;">+ New Environment</button>
+                        </div>
+                        <div id="environmentsList"></div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            await loadEnvironmentsForManager();
+        }
+        
+        async function loadEnvironmentsForManager() {
+            try {
+                const response = await fetch('/api/environments');
+                if (response.ok) {
+                    const envs = await response.json();
+                    const listDiv = document.getElementById('environmentsList');
+                    if (!listDiv) return;
+                    listDiv.innerHTML = '';
+                    
+                    envs.forEach(env => {
+                        const envDiv = document.createElement('div');
+                        envDiv.style.cssText = 'padding: 12px; border: 1px solid #e5e5e5; border-radius: 4px; margin-bottom: 12px;';
+                        envDiv.innerHTML = `
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <div>
+                                    <strong>${escapeHtml(env.name)}</strong>
+                                    ${env.isDefault ? '<span style="color: #388e3c; font-size: 11px; margin-left: 8px;">(Default)</span>' : ''}
+                                </div>
+                                <div style="display: flex; gap: 8px;">
+                                    ${!env.isDefault ? `<button onclick="setDefaultEnvironment(${env.id})" style="padding: 4px 8px; font-size: 11px; background: #f5f5f5; border: 1px solid #e5e5e5; border-radius: 4px; cursor: pointer;">Set Default</button>` : ''}
+                                    <button onclick="editEnvironment(${env.id})" style="padding: 4px 8px; font-size: 11px; background: #f5f5f5; border: 1px solid #e5e5e5; border-radius: 4px; cursor: pointer;">Edit</button>
+                                    <button onclick="deleteEnvironment(${env.id})" style="padding: 4px 8px; font-size: 11px; background: #ffebee; border: 1px solid #d32f2f; color: #d32f2f; border-radius: 4px; cursor: pointer;">Delete</button>
+                                </div>
+                            </div>
+                            ${env.description ? `<div style="font-size: 12px; color: #8a8a8a; margin-bottom: 8px;">${escapeHtml(env.description)}</div>` : ''}
+                            <div style="font-size: 11px; color: #8a8a8a; font-family: monospace; background: #fafafa; padding: 8px; border-radius: 4px; max-height: 100px; overflow-y: auto;">${escapeHtml(env.variables || '{}')}</div>
+                        `;
+                        listDiv.appendChild(envDiv);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading environments:', error);
+            }
+        }
+        
+        async function createNewEnvironment() {
+            const name = await CustomDialog.showPrompt('Environment Name:', '', 'New Environment');
+            if (!name) return;
+            
+            const description = await CustomDialog.showPrompt('Description (optional):', '', 'Environment Description');
+            
+            const variables = await CustomDialog.showPrompt('Variables (JSON):', '{}', 'Environment Variables');
+            if (variables === null) return;
+            
+            try {
+                const response = await fetch('/api/environments', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: name,
+                        description: description || '',
+                        variables: variables || '{}',
+                        isDefault: false
+                    })
+                });
+                
+                if (response.ok) {
+                    await loadEnvironmentsForManager();
+                    await loadEnvironments();
+                } else {
+                    await CustomDialog.showAlert('Error creating environment', 'Error');
+                }
+            } catch (error) {
+                await CustomDialog.showAlert('Error: ' + error.message, 'Error');
+            }
+        }
+        
+        async function editEnvironment(id) {
+            try {
+                const response = await fetch('/api/environments/' + id);
+                if (response.ok) {
+                    const env = await response.json();
+                    const name = await CustomDialog.showPrompt('Environment Name:', env.name, 'Edit Environment');
+                    if (name === null) return;
+                    
+                    const description = await CustomDialog.showPrompt('Description:', env.description || '', 'Environment Description');
+                    
+                    const variables = await CustomDialog.showPrompt('Variables (JSON):', env.variables || '{}', 'Environment Variables');
+                    if (variables === null) return;
+                    
+                    const updateResponse = await fetch('/api/environments/' + id, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            name: name,
+                            description: description || '',
+                            variables: variables || '{}',
+                            isDefault: env.isDefault
+                        })
+                    });
+                    
+                    if (updateResponse.ok) {
+                        await loadEnvironmentsForManager();
+                        await loadEnvironments();
+                    } else {
+                        await CustomDialog.showAlert('Error updating environment', 'Error');
+                    }
+                }
+            } catch (error) {
+                await CustomDialog.showAlert('Error: ' + error.message, 'Error');
+            }
+        }
+        
+        async function deleteEnvironment(id) {
+            const confirmed = await CustomDialog.showConfirm('Are you sure you want to delete this environment?', 'Delete Environment');
+            if (!confirmed) return;
+            
+            try {
+                const response = await fetch('/api/environments/' + id, { method: 'DELETE' });
+                if (response.ok) {
+                    await loadEnvironmentsForManager();
+                    await loadEnvironments();
+                } else {
+                    await CustomDialog.showAlert('Error deleting environment', 'Error');
+                }
+            } catch (error) {
+                await CustomDialog.showAlert('Error: ' + error.message, 'Error');
+            }
+        }
+        
+        async function setDefaultEnvironment(id) {
+            try {
+                const response = await fetch('/api/environments/' + id + '/set-default', { method: 'POST' });
+                if (response.ok) {
+                    await loadEnvironmentsForManager();
+                    await loadEnvironments();
+                } else {
+                    await CustomDialog.showAlert('Error setting default environment', 'Error');
+                }
+            } catch (error) {
+                await CustomDialog.showAlert('Error: ' + error.message, 'Error');
+            }
+        }
+        
+        async function exportAll() {
+            try {
+                const response = await fetch('/api/export');
+                if (response.ok) {
+                    const data = await response.json();
+                    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'bisen-export-' + new Date().toISOString().split('T')[0] + '.json';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    await CustomDialog.showAlert('Export successful!', 'Success');
+                } else {
+                    await CustomDialog.showAlert('Error exporting data', 'Error');
+                }
+            } catch (error) {
+                await CustomDialog.showAlert('Error: ' + error.message, 'Error');
+            }
+        }
+        
+        async function handleImportFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            try {
+                const text = await file.text();
+                const data = JSON.parse(text);
+                
+                const confirmed = await CustomDialog.showConfirm(
+                    'This will import all collections, requests, and environments. Continue?',
+                    'Import BISEN Format'
+                );
+                
+                if (!confirmed) {
+                    event.target.value = '';
+                    return;
+                }
+                
+                const response = await fetch('/api/import/bisen', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    await CustomDialog.showAlert(
+                        `Import successful! Created ${result.collectionsCreated || 0} collections, ${result.requestsCreated || 0} requests, and ${result.environmentsCreated || 0} environments.`,
+                        'Import Success'
+                    );
+                    location.reload();
+                } else {
+                    await CustomDialog.showAlert('Error importing data', 'Error');
+                }
+            } catch (error) {
+                await CustomDialog.showAlert('Error: ' + error.message, 'Error');
+            } finally {
+                event.target.value = '';
+            }
+        }
+        
+        function filterSidebarRequests() {
+            const searchTerm = document.getElementById('sidebarSearch').value.toLowerCase();
+            const requestItems = document.querySelectorAll('.saved-request-item');
+            
+            requestItems.forEach(item => {
+                const name = item.querySelector('.saved-request-name')?.textContent.toLowerCase() || '';
+                const url = item.querySelector('.saved-request-url')?.textContent.toLowerCase() || '';
+                const method = item.querySelector('.saved-request-method')?.textContent.toLowerCase() || '';
+                
+                if (name.includes(searchTerm) || url.includes(searchTerm) || method.includes(searchTerm)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            // Also filter collections
+            const collections = document.querySelectorAll('.collection-item');
+            collections.forEach(collection => {
+                const collectionName = collection.querySelector('.collection-name')?.textContent.toLowerCase() || '';
+                const hasVisibleRequests = Array.from(collection.querySelectorAll('.saved-request-item'))
+                    .some(item => item.style.display !== 'none');
+                
+                if (collectionName.includes(searchTerm) || hasVisibleRequests) {
+                    collection.style.display = '';
+                } else {
+                    collection.style.display = 'none';
+                }
+            });
+        }
+        
+        async function copyResponse() {
+            const responseBody = document.getElementById('responseBody');
+            const text = responseBody.textContent || responseBody.innerText;
+            
+            try {
+                await navigator.clipboard.writeText(text);
+                const btn = document.querySelector('.btn-copy-response');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<span>Copied!</span>';
+                btn.style.background = '#1a1a1a';
+                btn.style.color = 'white';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = 'transparent';
+                    btn.style.color = '#1a1a1a';
+                }, 2000);
+            } catch (err) {
+                if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
+                    await CustomDialog.showAlert('Failed to copy: ' + err, 'Error');
+                } else {
+                    alert('Failed to copy: ' + err);
+                }
+            }
+        }
+        
+        function duplicateRequest(requestId) {
+            // Load the saved request and populate the form
+            loadSavedRequestFromSidebar(requestId);
+            // Clear the saved request ID so it creates a new one
+            document.getElementById('savedRequestId').value = '';
+            // Change the name to indicate it's a duplicate
+            const nameInput = document.getElementById('name');
+            if (nameInput.value) {
+                nameInput.value = nameInput.value + ' (Copy)';
+            }
+        }
+        
+        function clearForm() {
+            document.getElementById('requestForm').reset();
+            document.getElementById('savedRequestId').value = '';
+            document.getElementById('responseSection').style.display = 'none';
+            document.getElementById('bodyType').value = 'json';
+            document.getElementById('authType').value = 'none';
+            document.getElementById('timeout').value = '30000';
+            document.getElementById('variablesContainer').style.display = 'none';
+            document.getElementById('variables').value = '';
+            document.getElementById('environmentSelect').value = '';
+            updateBodyType();
+            updateAuthType();
+            setHeaders('');
+        }
+        
+        // Make function globally available
+        window.clearForm = clearForm;
+        
+        function updateBodyType() {
+            const bodyType = document.getElementById('bodyType').value;
+            const bodyTextarea = document.getElementById('body');
+            const hintDiv = document.getElementById('bodyTypeHint');
+            
+            // Update Content-Type header automatically
+            updateContentTypeHeader(bodyType);
+            
+            // Update placeholder and hint based on type
+            switch(bodyType) {
+                case 'json':
+                    bodyTextarea.placeholder = '{"key": "value", "name": "BISEN"}';
+                    hintDiv.textContent = '💡 Enter valid JSON format';
+                    break;
+                case 'xml':
+                    bodyTextarea.placeholder = '<?xml version="1.0"?>\n<root>\n  <key>value</key>\n</root>';
+                    hintDiv.textContent = '💡 Enter valid XML format';
+                    break;
+                case 'form-data':
+                    bodyTextarea.placeholder = 'key1=value1\nkey2=value2\nkey3=value3';
+                    hintDiv.textContent = '💡 Enter key=value pairs (one per line)';
+                    break;
+                case 'x-www-form-urlencoded':
+                    bodyTextarea.placeholder = 'key1=value1&key2=value2&key3=value3';
+                    hintDiv.textContent = '💡 Enter URL-encoded form data (key=value&key=value)';
+                    break;
+                case 'text':
+                    bodyTextarea.placeholder = 'Enter plain text here...';
+                    hintDiv.textContent = '💡 Enter plain text content';
+                    break;
+                case 'html':
+                    bodyTextarea.placeholder = '<html><body><h1>Hello</h1></body></html>';
+                    hintDiv.textContent = '💡 Enter HTML content';
+                    break;
+                case 'none':
+                    bodyTextarea.placeholder = '';
+                    hintDiv.textContent = '💡 No body will be sent';
+                    bodyTextarea.value = '';
+                    break;
+                default:
+                    bodyTextarea.placeholder = '{"key": "value"}';
+                    hintDiv.textContent = '';
+            }
+        }
+        
+        function updateContentTypeHeader(bodyType) {
+            try {
+                if (!bodyType || typeof bodyType !== 'string') {
+                    return;
+                }
+                
+                const contentTypeMap = {
+                    'json': 'application/json',
+                    'xml': 'application/xml',
+                    'form-data': 'multipart/form-data',
+                    'x-www-form-urlencoded': 'application/x-www-form-urlencoded',
+                    'text': 'text/plain',
+                    'html': 'text/html',
+                    'none': ''
+                };
+                
+                const contentType = contentTypeMap[bodyType] || 'application/json';
+                
+                // Find or create Content-Type header
+                const headerRows = document.querySelectorAll('.header-row');
+                let found = false;
+                
+                headerRows.forEach(row => {
+                    const keyInput = row.querySelector('.header-key');
+                    const valueInput = row.querySelector('.header-value');
+                    if (keyInput && valueInput && keyInput.value.trim().toLowerCase() === 'content-type') {
+                        if (bodyType === 'none') {
+                            // Remove Content-Type for none
+                            if (headerRows.length > 1) {
+                                row.remove();
+                            } else {
+                                keyInput.value = '';
+                                valueInput.value = '';
+                            }
+                        } else {
+                            valueInput.value = contentType;
+                        }
+                        found = true;
+                    }
+                });
+                
+                // If Content-Type not found and not 'none', add it
+                if (!found && bodyType !== 'none') {
+                    const container = document.getElementById('headersContainer');
+                    if (container) {
+                        const newRow = document.createElement('div');
+                        newRow.className = 'header-row';
+                        newRow.innerHTML = `
+                            <input type="text" class="header-key" placeholder="Key" value="Content-Type">
+                            <input type="text" class="header-value" placeholder="Value" value="${contentType}">
+                            <button type="button" class="btn-remove-header" onclick="removeHeader(this)">Remove</button>
+                        `;
+                        container.insertBefore(newRow, container.firstChild);
+                    }
+                }
+            } catch (e) {
+                console.error('Error updating Content-Type header:', e);
+            }
+        }
+        
+        function detectBodyTypeFromHeaders() {
+            try {
+                const headers = getHeaders();
+                if (!headers || typeof headers !== 'string') {
+                    return;
+                }
+                
+                const contentTypeMatch = headers.match(/content-type:\s*([^\n]+)/i);
+                
+                if (contentTypeMatch && contentTypeMatch[1]) {
+                    const contentType = contentTypeMatch[1].trim().toLowerCase();
+                    let bodyType = 'json'; // default
+                    
+                    if (contentType.includes('application/json')) {
+                        bodyType = 'json';
+                    } else if (contentType.includes('application/xml') || contentType.includes('text/xml')) {
+                        bodyType = 'xml';
+                    } else if (contentType.includes('multipart/form-data')) {
+                        bodyType = 'form-data';
+                    } else if (contentType.includes('application/x-www-form-urlencoded')) {
+                        bodyType = 'x-www-form-urlencoded';
+                    } else if (contentType.includes('text/html')) {
+                        bodyType = 'html';
+                    } else if (contentType.includes('text/plain')) {
+                        bodyType = 'text';
+                    }
+                    
+                    const bodyTypeEl = document.getElementById('bodyType');
+                    if (bodyTypeEl) {
+                        bodyTypeEl.value = bodyType;
+                        updateBodyType();
+                    }
+                }
+            } catch (e) {
+                console.error('Error detecting body type:', e);
+            }
+        }
+        
+        async function saveRequest() {
+            const nameEl = document.getElementById('name');
+            const methodEl = document.getElementById('method');
+            const urlEl = document.getElementById('url');
+            const bodyEl = document.getElementById('body');
+            const collectionIdEl = document.getElementById('collectionId');
+            const savedRequestIdEl = document.getElementById('savedRequestId');
+            
+            if (!methodEl || !urlEl) {
+                await CustomDialog.showAlert('Form elements not found', 'Error');
+                return;
+            }
+            
+            const method = methodEl.value ? methodEl.value.trim() : '';
+            const url = urlEl.value ? urlEl.value.trim() : '';
+            
+            if (!method || !url) {
+                await CustomDialog.showAlert('Please fill in Method and URL before saving', 'Validation Error');
+                return;
+            }
+            
+            const name = nameEl ? (nameEl.value || '') : '';
+            const headers = getHeaders();
+            const body = bodyEl ? (bodyEl.value || '') : '';
+            const collectionId = collectionIdEl ? collectionIdEl.value : '';
+            const savedRequestId = savedRequestIdEl ? savedRequestIdEl.value : '';
+            
+            let requestName = name;
+            if (!requestName) {
+                requestName = await CustomDialog.showPrompt('Enter a name for this request:', '', 'Request Name');
+                if (!requestName) {
+                    return;
+                }
+                document.getElementById('name').value = requestName;
+            }
+            
+            const savedRequestDto = {
+                id: savedRequestId || null,
+                name: requestName,
+                method: method,
+                url: url,
+                headers: headers,
+                body: body,
+                collectionId: collectionId ? parseInt(collectionId) : null
+            };
+            
+            try {
+                const response = await fetch('/api/saved', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(savedRequestDto)
+                });
+                
+                if (response.ok) {
+                    const savedRequest = await response.json();
+                    document.getElementById('savedRequestId').value = savedRequest.id;
+                    await CustomDialog.showAlert('Request saved successfully!', 'Success');
+                    location.reload();
+                } else {
+                    await CustomDialog.showAlert('Error saving request', 'Error');
+                }
+            } catch (error) {
+                await CustomDialog.showAlert('Error: ' + error.message, 'Error');
+            }
+        }
+        
+        let currentRequestId = null;
+        let collectionMenu = null;
+        
+        function showAddToCollectionMenu(event, requestId) {
+            event.stopPropagation();
+            currentRequestId = requestId;
+            
+            // Remove existing menu if any
+            if (collectionMenu) {
+                collectionMenu.remove();
+            }
+            
+            // Create menu
+            collectionMenu = document.createElement('div');
+            collectionMenu.className = 'collection-menu';
+            collectionMenu.style.left = event.pageX + 'px';
+            collectionMenu.style.top = event.pageY + 'px';
+            
+            // Add header
+            const header = document.createElement('div');
+            header.className = 'collection-menu-item';
+            header.textContent = 'Add to Collection';
+            collectionMenu.appendChild(header);
+            
+            // Add "Remove from Collection" option
+            const removeOption = document.createElement('div');
+            removeOption.className = 'collection-menu-item';
+            removeOption.textContent = 'Remove from Collection';
+            removeOption.onclick = function() {
+                addToCollection(null);
+            };
+            collectionMenu.appendChild(removeOption);
+            
+            // Add collections from server data or DOM
+            if (window.collections && window.collections.length > 0) {
+                window.collections.forEach(collection => {
+                    const option = document.createElement('div');
+                    option.className = 'collection-menu-item';
+                    option.textContent = collection.name;
+                    option.onclick = function() {
+                        addToCollection(collection.id);
+                    };
+                    collectionMenu.appendChild(option);
+                });
+            } else {
+                // Fallback: extract from DOM
+                const collectionItems = document.querySelectorAll('.collection-item');
+                collectionItems.forEach(item => {
+                    const collectionName = item.querySelector('.collection-name').textContent;
+                    const collectionHeader = item.querySelector('.collection-header');
+                    const collectionId = collectionHeader.getAttribute('data-collection-id');
+                    
+                    if (collectionId && collectionName !== 'Unassigned Requests') {
+                        const option = document.createElement('div');
+                        option.className = 'collection-menu-item';
+                        option.textContent = collectionName;
+                        option.onclick = function() {
+                            addToCollection(parseInt(collectionId));
+                        };
+                        collectionMenu.appendChild(option);
+                    }
+                });
+            }
+            
+            // Add click outside to close
+            document.body.appendChild(collectionMenu);
+            setTimeout(() => {
+                document.addEventListener('click', function closeMenu() {
+                    if (collectionMenu) {
+                        collectionMenu.remove();
+                        collectionMenu = null;
+                    }
+                    document.removeEventListener('click', closeMenu);
+                });
+            }, 100);
+        }
+        
+        async function addToCollection(collectionId) {
+            if (!currentRequestId) return;
+            
+            try {
+                const response = await fetch(`/api/saved/${currentRequestId}/collection`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ collectionId: collectionId ? parseInt(collectionId) : null })
+                });
+                
+                if (response.ok) {
+                    if (collectionMenu) {
+                        collectionMenu.remove();
+                        collectionMenu = null;
+                    }
+                    location.reload();
+                } else {
+                    await CustomDialog.showAlert('Error updating collection', 'Error');
+                }
+            } catch (error) {
+                await CustomDialog.showAlert('Error: ' + error.message, 'Error');
+            }
+        }
+        
+        window.addEventListener('DOMContentLoaded', function() {
+            // Initialize body type and auth type
+            updateBodyType();
+            updateAuthType();
+            
+            // Handle button clicks in sidebar
+            const sidebar = document.querySelector('.sidebar');
+            if (sidebar) {
+                sidebar.addEventListener('click', function(e) {
+                    // Handle duplicate button
+                    const duplicateBtn = e.target.closest('button.btn-duplicate');
+                    if (duplicateBtn) {
+                        e.stopPropagation();
+                        const requestId = duplicateBtn.getAttribute('data-request-id');
+                        if (requestId) {
+                            duplicateRequest(parseInt(requestId));
+                        }
+                        return false;
+                    }
+                    
+                    // Handle add to collection button
+                    const addCollectionBtn = e.target.closest('button.btn-add-collection');
+                    if (addCollectionBtn) {
+                        e.stopPropagation();
+                        const requestId = addCollectionBtn.getAttribute('data-request-id');
+                        if (requestId) {
+                            showAddToCollectionMenu(e, parseInt(requestId));
+                        }
+                        return false;
+                    }
+                });
+            }
+            
+            // Load collections from server for the menu
+            fetch('/api/collections')
+                .then(res => res.json())
+                .then(collections => {
+                    window.collections = collections;
+                })
+                .catch(err => console.error('Error loading collections:', err));
+            
+            const loadData = sessionStorage.getItem('loadSavedRequest');
+            if (loadData) {
+                const saved = JSON.parse(loadData);
+                sessionStorage.removeItem('loadSavedRequest');
+                
+                document.getElementById('savedRequestId').value = saved.id;
+                document.getElementById('name').value = saved.name || '';
+                document.getElementById('method').value = saved.method;
+                document.getElementById('url').value = saved.url;
+                setHeaders(saved.headers || '');
+                document.getElementById('body').value = saved.body || '';
+                document.getElementById('collectionId').value = saved.collectionId || '';
+                
+                // Detect and set body type
+                detectBodyTypeFromHeaders();
+            }
+            // Load environments on page load
+            loadEnvironments();
+        });
+        
+        // Ensure all global functions are available
+        if (typeof clearForm === 'function') {
+            window.clearForm = clearForm;
+        }
+        if (typeof saveRequest === 'function') {
+            window.saveRequest = saveRequest;
+        }
+        if (typeof addHeaderRow === 'function') {
+            window.addHeaderRow = addHeaderRow;
+        }
+        if (typeof removeHeader === 'function') {
+            window.removeHeader = removeHeader;
+        }
+        if (typeof validateBody === 'function') {
+            window.validateBody = validateBody;
+        }
+        if (typeof formatBody === 'function') {
+            window.formatBody = formatBody;
+        }
+        if (typeof copyResponse === 'function') {
+            window.copyResponse = copyResponse;
+        }
+        if (typeof loadSavedRequestFromSidebar === 'function') {
+            window.loadSavedRequestFromSidebar = loadSavedRequestFromSidebar;
+        }
+    </script>
+    <script src="/dialog.js"></script>
+    <script src="/json-formatter.js"></script>
+</body>
+</html>
