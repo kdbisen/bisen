@@ -1044,12 +1044,14 @@
                 <a href="/history" class="nav-menu-item">History</a>
                 <a href="/collections" class="nav-menu-item">Collections</a>
                 <a href="/saved" class="nav-menu-item">Saved Requests</a>
+                <a href="/environments" class="nav-menu-item">Environments</a>
                 <a href="/import" class="nav-menu-item">Import Swagger</a>
+                <a href="/guide" class="nav-menu-item">Guide</a>
             </div>
             <div class="nav-actions">
                 <button class="nav-icon-btn" title="Settings">⚙️</button>
-                <select class="env-selector" id="topEnvSelect">
-                    <option>Production Env</option>
+                <select class="env-selector" id="topEnvSelect" onchange="switchTopEnvironment()">
+                    <option value="">No Environment</option>
                 </select>
                 <button class="nav-icon-btn" title="Profile">👤</button>
             </div>
@@ -1215,18 +1217,16 @@
                         </div>
                         
                         <div class="form-group">
-                            <label>Environment & Variables</label>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <label style="margin-bottom: 0;">Environment</label>
+                                <button type="button" onclick="openEnvironmentManager()" style="padding: 4px 12px; font-size: 11px; background: #2563eb; color: white; border: none; border-radius: 4px; cursor: pointer;">Manage Environments</button>
+                            </div>
                             <select id="environmentSelect" onchange="loadEnvironmentVariables()" class="method-select" style="margin-bottom: 12px;">
                                 <option value="">No Environment</option>
                             </select>
-                            <div id="variablesContainer" style="display: none;">
-                                <textarea id="variables" placeholder='{"baseUrl": "https://api.example.com", "apiKey": "your-key"}' style="font-family: monospace; font-size: 12px; min-height: 80px; margin-bottom: 8px;"></textarea>
-                                <div style="display: flex; gap: 8px;">
-                                    <button type="button" onclick="validateVariables()" style="padding: 6px 12px; font-size: 11px; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 4px; cursor: pointer; color: #1a1a1a;">Validate JSON</button>
-                                    <button type="button" onclick="formatVariables()" style="padding: 6px 12px; font-size: 11px; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 4px; cursor: pointer; color: #1a1a1a;">Format</button>
-                                </div>
-                                <p style="font-size: 11px; color: #8a8a8a; margin-top: 6px;">Use {{variableName}} in URL, headers, or body</p>
-                                <div id="variableValidation" style="font-size: 11px; margin-top: 4px;"></div>
+                            <div id="environmentVariables" style="margin-top: 12px; padding: 12px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; display: none;">
+                                <div style="font-size: 12px; font-weight: 600; margin-bottom: 8px; color: #1a1a1a;">Environment Variables:</div>
+                                <div id="environmentVariablesList" style="font-family: monospace; font-size: 11px; color: #6b7280;"></div>
                             </div>
                         </div>
                         
@@ -1278,6 +1278,45 @@
         </div>
         <div class="status-bar-right">
             BISEN v1.2 BETA
+        </div>
+    </div>
+    
+    <!-- Environment Manager Modal - Improved UI -->
+    <div id="envManagerModal" onclick="if(event.target.id === 'envManagerModal') closeEnvironmentManager()" 
+         style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(2px);">
+        <div onclick="event.stopPropagation()" 
+             style="background: white; border-radius: 12px; width: 90%; max-width: 900px; max-height: 85vh; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3); display: flex; flex-direction: column;">
+            
+            <!-- Modal Header -->
+            <div style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; padding: 20px 24px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h2 style="margin: 0; font-size: 22px; font-weight: 600;">Environment Manager</h2>
+                    <p style="margin: 4px 0 0 0; font-size: 13px; opacity: 0.9;">Create and manage environments with variables</p>
+                </div>
+                <button onclick="closeEnvironmentManager()" 
+                        style="background: rgba(255,255,255,0.2); border: none; color: white; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; transition: background 0.2s;"
+                        onmouseover="this.style.background='rgba(255,255,255,0.3)'"
+                        onmouseout="this.style.background='rgba(255,255,255,0.2)'">×</button>
+            </div>
+            
+            <!-- Modal Body -->
+            <div style="flex: 1; overflow-y: auto; padding: 24px; background: #f8f9fa;">
+                <!-- Add Environment Button -->
+                <div style="margin-bottom: 20px;">
+                    <button onclick="addNewEnvironment()" 
+                            style="padding: 10px 20px; background: #2563eb; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 8px; transition: background 0.2s;"
+                            onmouseover="this.style.background='#1d4ed8'"
+                            onmouseout="this.style.background='#2563eb'">
+                        <span style="font-size: 18px;">+</span>
+                        <span>Add New Environment</span>
+                    </button>
+                </div>
+                
+                <!-- Environments List -->
+                <div id="environmentsList" style="display: flex; flex-direction: column; gap: 20px;">
+                    <!-- Environments will be loaded here -->
+                </div>
+            </div>
         </div>
     </div>
     
@@ -1799,12 +1838,345 @@
         let environments = [];
         let currentEnvironmentId = null;
         
+        // Environment Manager Functions
+        function openEnvironmentManager() {
+            const modal = document.getElementById('envManagerModal');
+            if (modal) {
+                modal.style.display = 'flex';
+                loadEnvironmentsForManager();
+            }
+        }
+        
+        function closeEnvironmentManager() {
+            const modal = document.getElementById('envManagerModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+        
+        // Close modal when clicking outside
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('envManagerModal');
+            if (modal) {
+                modal.addEventListener('click', function(e) {
+                    if (e.target.id === 'envManagerModal') {
+                        closeEnvironmentManager();
+                    }
+                });
+            }
+        });
+        
+        async function loadEnvironmentsForManager() {
+            try {
+                const response = await fetch('/api/environments');
+                if (response.ok) {
+                    environments = await response.json();
+                    renderEnvironmentsList();
+                }
+            } catch (e) {
+                console.error('Error loading environments:', e);
+            }
+        }
+        
+        function renderEnvironmentsList() {
+            const container = document.getElementById('environmentsList');
+            if (!container) return;
+            
+            if (environments.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 60px 20px; background: white; border-radius: 12px; border: 2px dashed #e5e7eb;">
+                        <div style="font-size: 48px; margin-bottom: 16px;">🌍</div>
+                        <p style="color: #6b7280; font-size: 16px; margin: 0 0 8px 0; font-weight: 500;">No environments yet</p>
+                        <p style="color: #9ca3af; font-size: 14px; margin: 0;">Click "Add New Environment" to create your first environment</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = environments.map(env => {
+                const vars = env.variables ? (typeof env.variables === 'string' ? JSON.parse(env.variables) : env.variables) : {};
+                const varEntries = Object.entries(vars);
+                
+                return `
+                    <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                        <!-- Environment Header -->
+                        <div style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%); padding: 16px 20px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center;">
+                            <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
+                                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 16px;">
+                                    ${(env.name || 'Env')[0].toUpperCase()}
+                                </div>
+                                <div style="flex: 1;">
+                                    <input type="text" id="env-name-${env.id}" value="${escapeHtml(env.name || '')}" 
+                                           placeholder="Environment Name"
+                                           style="padding: 8px 12px; border: 2px solid #e5e7eb; border-radius: 6px; font-size: 16px; font-weight: 600; width: 100%; max-width: 300px; transition: border-color 0.2s;"
+                                           onfocus="this.style.borderColor='#2563eb'; this.style.outline='none'"
+                                           onblur="this.style.borderColor='#e5e7eb'; updateEnvironmentName(${env.id})"
+                                           onkeypress="if(event.key==='Enter'){this.blur()}">
+                                    <div style="font-size: 12px; color: #6b7280; margin-top: 4px;">
+                                        ${varEntries.length} variable${varEntries.length !== 1 ? 's' : ''}
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <button onclick="saveEnvironment(${env.id})" 
+                                        style="padding: 8px 16px; background: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 6px; transition: background 0.2s;"
+                                        onmouseover="this.style.background='#059669'"
+                                        onmouseout="this.style.background='#10b981'">
+                                    <span>✓</span>
+                                    <span>Save</span>
+                                </button>
+                                <button onclick="deleteEnvironment(${env.id})" 
+                                        style="padding: 8px 16px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 6px; transition: background 0.2s;"
+                                        onmouseover="this.style.background='#dc2626'"
+                                        onmouseout="this.style.background='#ef4444'">
+                                    <span>🗑</span>
+                                    <span>Delete</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Variables Section -->
+                        <div style="padding: 20px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                                <div style="font-size: 14px; font-weight: 600; color: #1a1a1a;">Variables</div>
+                                <button onclick="addEnvVar(${env.id})" 
+                                        style="padding: 6px 12px; background: #f3f4f6; color: #2563eb; border: 1px solid #e5e7eb; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 500; display: flex; align-items: center; gap: 6px; transition: all 0.2s;"
+                                        onmouseover="this.style.background='#e5e7eb'; this.style.borderColor='#2563eb'"
+                                        onmouseout="this.style.background='#f3f4f6'; this.style.borderColor='#e5e7eb'">
+                                    <span>+</span>
+                                    <span>Add Variable</span>
+                                </button>
+                            </div>
+                            
+                            <div id="env-vars-${env.id}">
+                                ${varEntries.length === 0 ? `
+                                    <div style="text-align: center; padding: 40px; background: #f9fafb; border-radius: 8px; border: 1px dashed #e5e7eb;">
+                                        <div style="font-size: 32px; margin-bottom: 8px;">📝</div>
+                                        <p style="color: #6b7280; font-size: 13px; margin: 0;">No variables yet. Click "Add Variable" to add one.</p>
+                                    </div>
+                                ` : `
+                                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                                        ${varEntries.map(([key, value], idx) => `
+                                            <div style="display: flex; gap: 10px; align-items: center; padding: 12px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; transition: all 0.2s;"
+                                                 onmouseover="this.style.background='#f3f4f6'; this.style.borderColor='#d1d5db'"
+                                                 onmouseout="this.style.background='#f9fafb'; this.style.borderColor='#e5e7eb'">
+                                                <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                                                    <label style="font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px;">Key</label>
+                                                    <input type="text" value="${escapeHtml(key)}" placeholder="Variable name" 
+                                                           style="padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: 'SF Mono', monospace; background: white; transition: border-color 0.2s;"
+                                                           onfocus="this.style.borderColor='#2563eb'; this.style.outline='none'"
+                                                           onblur="this.style.borderColor='#d1d5db'; updateEnvVar(${env.id}, ${idx}, 'key', this.value)">
+                                                </div>
+                                                <div style="flex: 2; display: flex; flex-direction: column; gap: 6px;">
+                                                    <label style="font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px;">Value</label>
+                                                    <input type="text" value="${escapeHtml(value)}" placeholder="Variable value" 
+                                                           style="padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: 'SF Mono', monospace; background: white; transition: border-color 0.2s;"
+                                                           onfocus="this.style.borderColor='#2563eb'; this.style.outline='none'"
+                                                           onblur="this.style.borderColor='#d1d5db'; updateEnvVar(${env.id}, ${idx}, 'value', this.value)">
+                                                </div>
+                                                <button onclick="removeEnvVar(${env.id}, ${idx})" 
+                                                        style="padding: 8px; background: #fee2e2; color: #dc2626; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; margin-top: 20px;"
+                                                        onmouseover="this.style.background='#fecaca'"
+                                                        onmouseout="this.style.background='#fee2e2'"
+                                                        title="Remove variable">×</button>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                `}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        async function addNewEnvironment() {
+            // Use custom dialog for better UX
+            if (typeof CustomDialog !== 'undefined' && CustomDialog.showPrompt) {
+                const name = await CustomDialog.showPrompt('Enter environment name:', 'New Environment', 'Environment Name');
+                if (!name || !name.trim()) return;
+                await createEnvironment(name.trim());
+            } else {
+                const name = prompt('Enter environment name:');
+                if (!name || !name.trim()) return;
+                await createEnvironment(name.trim());
+            }
+        }
+        
+        async function createEnvironment(name) {
+            try {
+                const response = await fetch('/api/environments', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: name, variables: '{}' })
+                });
+                
+                if (response.ok) {
+                    await loadEnvironmentsForManager();
+                    await loadEnvironments();
+                    // Show success message
+                    if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
+                        await CustomDialog.showAlert(`Environment "${name}" created successfully!`, 'Success');
+                    }
+                } else {
+                    throw new Error('Failed to create environment');
+                }
+            } catch (e) {
+                console.error('Error adding environment:', e);
+                if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
+                    await CustomDialog.showAlert('Error adding environment: ' + e.message, 'Error');
+                } else {
+                    alert('Error adding environment');
+                }
+            }
+        }
+        
+        async function updateEnvironmentName(envId) {
+            const nameInput = document.getElementById('env-name-' + envId);
+            if (!nameInput) return;
+            
+            const env = environments.find(e => e.id === envId);
+            if (!env) return;
+            
+            env.name = nameInput.value;
+        }
+        
+        function updateEnvVar(envId, varIdx, type, value) {
+            const env = environments.find(e => e.id === envId);
+            if (!env) return;
+            
+            const vars = env.variables ? (typeof env.variables === 'string' ? JSON.parse(env.variables) : env.variables) : {};
+            const entries = Object.entries(vars);
+            
+            if (varIdx >= 0 && varIdx < entries.length) {
+                if (type === 'key') {
+                    const oldKey = entries[varIdx][0];
+                    const oldValue = entries[varIdx][1];
+                    if (oldKey !== value) {
+                        delete vars[oldKey];
+                        if (value && value.trim()) {
+                            vars[value.trim()] = oldValue;
+                        }
+                    }
+                } else {
+                    const key = entries[varIdx][0];
+                    if (key) {
+                        vars[key] = value;
+                    }
+                }
+                env.variables = JSON.stringify(vars);
+            }
+        }
+        
+        function addEnvVar(envId) {
+            const env = environments.find(e => e.id === envId);
+            if (!env) return;
+            
+            const vars = env.variables ? (typeof env.variables === 'string' ? JSON.parse(env.variables) : env.variables) : {};
+            vars[''] = '';
+            env.variables = JSON.stringify(vars);
+            renderEnvironmentsList();
+        }
+        
+        function removeEnvVar(envId, varIdx) {
+            const env = environments.find(e => e.id === envId);
+            if (!env) return;
+            
+            const vars = env.variables ? (typeof env.variables === 'string' ? JSON.parse(env.variables) : env.variables) : {};
+            const entries = Object.entries(vars);
+            
+            if (varIdx >= 0 && varIdx < entries.length) {
+                const key = entries[varIdx][0];
+                delete vars[key];
+                env.variables = JSON.stringify(vars);
+                renderEnvironmentsList();
+            }
+        }
+        
+        async function saveEnvironment(envId) {
+            const env = environments.find(e => e.id === envId);
+            if (!env) return;
+            
+            try {
+                const response = await fetch('/api/environments/' + envId, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: env.name,
+                        variables: env.variables
+                    })
+                });
+                
+                if (response.ok) {
+                    await loadEnvironmentsForManager();
+                    await loadEnvironments();
+                    if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
+                        await CustomDialog.showAlert('Environment saved successfully!', 'Success');
+                    } else {
+                        alert('Environment saved successfully!');
+                    }
+                }
+            } catch (e) {
+                console.error('Error saving environment:', e);
+                alert('Error saving environment');
+            }
+        }
+        
+        async function deleteEnvironment(envId) {
+            const env = environments.find(e => e.id === envId);
+            const envName = env ? env.name : 'this environment';
+            
+            let confirmed = false;
+            if (typeof CustomDialog !== 'undefined' && CustomDialog.showConfirm) {
+                confirmed = await CustomDialog.showConfirm(
+                    `Are you sure you want to delete "${envName}"? This action cannot be undone.`,
+                    'Delete Environment'
+                );
+            } else {
+                confirmed = confirm(`Are you sure you want to delete "${envName}"?`);
+            }
+            
+            if (!confirmed) return;
+            
+            try {
+                const response = await fetch('/api/environments/' + envId, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    await loadEnvironmentsForManager();
+                    await loadEnvironments();
+                    if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
+                        await CustomDialog.showAlert(`Environment "${envName}" deleted successfully.`, 'Success');
+                    }
+                } else {
+                    throw new Error('Failed to delete environment');
+                }
+            } catch (e) {
+                console.error('Error deleting environment:', e);
+                if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
+                    await CustomDialog.showAlert('Error deleting environment: ' + e.message, 'Error');
+                } else {
+                    alert('Error deleting environment');
+                }
+            }
+        }
+        
         async function loadEnvironments() {
             try {
                 const response = await fetch('/api/environments');
                 if (response.ok) {
                     environments = await response.json();
                     const select = document.getElementById('environmentSelect');
+                    const topSelect = document.getElementById('topEnvSelect');
+                    
                     if (select) {
                         select.innerHTML = '<option value="">No Environment</option>';
                         environments.forEach(env => {
@@ -1814,9 +2186,24 @@
                             if (env.isDefault) {
                                 option.selected = true;
                                 currentEnvironmentId = env.id;
-                                loadEnvironmentVariables();
                             }
                             select.appendChild(option);
+                        });
+                        if (currentEnvironmentId) {
+                            loadEnvironmentVariables();
+                        }
+                    }
+                    
+                    if (topSelect) {
+                        topSelect.innerHTML = '<option value="">No Environment</option>';
+                        environments.forEach(env => {
+                            const option = document.createElement('option');
+                            option.value = env.id;
+                            option.textContent = env.name;
+                            if (env.id === currentEnvironmentId) {
+                                option.selected = true;
+                            }
+                            topSelect.appendChild(option);
                         });
                     }
                 }
@@ -1825,15 +2212,30 @@
             }
         }
         
+        function switchTopEnvironment() {
+            const topSelect = document.getElementById('topEnvSelect');
+            const envSelect = document.getElementById('environmentSelect');
+            if (topSelect && envSelect) {
+                envSelect.value = topSelect.value;
+                loadEnvironmentVariables();
+            }
+        }
+        
         async function loadEnvironmentVariables() {
-            const select = document.getElementById('environmentSelect');
-            if (!select) return;
-            const envId = select.value;
+            const envSelect = document.getElementById('environmentSelect');
+            const envId = envSelect ? envSelect.value : null;
+            const varsContainer = document.getElementById('environmentVariables');
+            const varsList = document.getElementById('environmentVariablesList');
             currentEnvironmentId = envId;
             
-            if (!envId) {
-                const variablesEl = document.getElementById('variables');
-                if (variablesEl) variablesEl.value = '';
+            // Update top selector too
+            const topSelect = document.getElementById('topEnvSelect');
+            if (topSelect) {
+                topSelect.value = envId || '';
+            }
+            
+            if (!envId || envId === '') {
+                if (varsContainer) varsContainer.style.display = 'none';
                 return;
             }
             
@@ -1841,16 +2243,31 @@
                 const response = await fetch('/api/environments/' + envId);
                 if (response.ok) {
                     const env = await response.json();
-                    const variablesEl = document.getElementById('variables');
-                    if (variablesEl && env.variables) {
-                        variablesEl.value = env.variables;
-                        validateVariables();
+                    const vars = env.variables ? (typeof env.variables === 'string' ? JSON.parse(env.variables) : env.variables) : {};
+                    
+                    if (varsContainer) varsContainer.style.display = 'block';
+                    if (varsList) {
+                        const entries = Object.entries(vars);
+                        if (entries.length === 0) {
+                            varsList.innerHTML = '<span style="color: #6b7280;">No variables in this environment</span>';
+                        } else {
+                            varsList.innerHTML = entries.map(([key, value]) => 
+                                `<div style="margin-bottom: 4px;"><strong style="color: #1a1a1a;">${escapeHtml(key)}:</strong> <span style="color: #6b7280;">${escapeHtml(value)}</span></div>`
+                            ).join('');
+                        }
                     }
                 }
-            } catch (error) {
-                console.error('Error loading environment:', error);
+            } catch (e) {
+                console.error('Error loading environment variables:', e);
             }
         }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
         
         function toggleVariables() {
             const container = document.getElementById('variablesContainer');

@@ -92,6 +92,18 @@ public class ApiTesterController {
         return "history";
     }
     
+    @GetMapping("/guide")
+    public String guide() {
+        return "guide";
+    }
+    
+    @GetMapping("/environments")
+    public String environments(Model model) {
+        List<Environment> environments = environmentService.getAllEnvironments();
+        model.addAttribute("environments", environments);
+        return "environments";
+    }
+    
     @GetMapping("/history/{id}")
     @ResponseBody
     public ResponseEntity<ApiRequest> getRequest(@PathVariable Long id) {

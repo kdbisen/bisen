@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <link rel="icon" type="image/svg+xml" href="/icon.svg">
+    <link rel="apple-touch-icon" href="/icon.svg">
+    <link rel="stylesheet" href="/dialog.css">
+    <title>User Guide - BISEN</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f8f9fa;
+            color: #1a1a1a;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        .top-nav {
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .nav-brand .brand-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a1a;
+            letter-spacing: -0.5px;
+        }
+        
+        .nav-menu {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+        
+        .nav-menu-item {
+            color: #6b7280;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.15s;
+        }
+        
+        .nav-menu-item:hover {
+            background: #f3f4f6;
+            color: #1a1a1a;
+        }
+        
+        .nav-menu-item.active {
+            background: #f3f4f6;
+            color: #2563eb;
+            border-bottom: 2px solid #2563eb;
+        }
+        
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        
+        .page-header h1 {
+            font-size: 42px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+            letter-spacing: -1px;
+        }
+        
+        .page-header p {
+            font-size: 18px;
+            color: #6b7280;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .guide-section {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 24px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .section-icon {
+            font-size: 28px;
+        }
+        
+        .section-description {
+            font-size: 15px;
+            color: #6b7280;
+            margin-bottom: 24px;
+        }
+        
+        .step {
+            margin-bottom: 24px;
+            padding-left: 32px;
+            position: relative;
+        }
+        
+        .step-number {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 24px;
+            height: 24px;
+            background: #2563eb;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .step-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+        
+        .step-content {
+            font-size: 14px;
+            color: #4b5563;
+            line-height: 1.7;
+        }
+        
+        .step-content code {
+            background: #f3f4f6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            color: #dc2626;
+        }
+        
+        .code-block {
+            background: #1a1a1a;
+            color: #e0e0e0;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            margin: 16px 0;
+            line-height: 1.6;
+        }
+        
+        .code-block .comment {
+            color: #6b7280;
+        }
+        
+        .code-block .string {
+            color: #10b981;
+        }
+        
+        .code-block .key {
+            color: #60a5fa;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+        
+        .feature-card {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            transition: all 0.2s;
+        }
+        
+        .feature-card:hover {
+            border-color: #2563eb;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+        }
+        
+        .feature-card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .feature-card-desc {
+            font-size: 13px;
+            color: #6b7280;
+            line-height: 1.6;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%);
+            border-left: 4px solid #2563eb;
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .highlight-box-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 8px;
+        }
+        
+        .highlight-box-content {
+            font-size: 14px;
+            color: #1e3a8a;
+        }
+        
+        .tip-box {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .tip-box-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tip-box-content {
+            font-size: 14px;
+            color: #78350f;
+        }
+        
+        .warning-box {
+            background: #fee2e2;
+            border-left: 4px solid #ef4444;
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .warning-box-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #991b1b;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .warning-box-content {
+            font-size: 14px;
+            color: #7f1d1d;
+        }
+        
+        .table-of-contents {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .toc-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+        }
+        
+        .toc-list {
+            list-style: none;
+        }
+        
+        .toc-list li {
+            margin-bottom: 8px;
+        }
+        
+        .toc-list a {
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+        
+        .toc-list a:hover {
+            color: #1d4ed8;
+            text-decoration: underline;
+        }
+        
+        .toc-list .toc-sub {
+            margin-left: 20px;
+            margin-top: 4px;
+        }
+        
+        .screenshot-placeholder {
+            background: #f3f4f6;
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            color: #6b7280;
+            font-size: 14px;
+            margin: 16px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-nav">
+        <div class="nav-brand">
+            <img src="/icon.svg" alt="BISEN" style="width: 28px; height: 28px;">
+            <span class="brand-name">BISEN</span>
+        </div>
+        <div class="nav-menu">
+            <a href="/" class="nav-menu-item">Home</a>
+            <a href="/history" class="nav-menu-item">History</a>
+            <a href="/collections" class="nav-menu-item">Collections</a>
+            <a href="/saved" class="nav-menu-item">Saved Requests</a>
+            <a href="/environments" class="nav-menu-item">Environments</a>
+            <a href="/import" class="nav-menu-item">Import Swagger</a>
+            <a href="/guide" class="nav-menu-item active">Guide</a>
+        </div>
+        <div class="nav-actions">
+            <button class="nav-icon-btn" title="Settings" style="width: 36px; height: 36px; border-radius: 6px; background: transparent; border: none; color: #6b7280; cursor: pointer;">⚙️</button>
+            <button class="nav-icon-btn" title="Profile" style="width: 36px; height: 36px; border-radius: 6px; background: transparent; border: none; color: #6b7280; cursor: pointer;">👤</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="page-header">
+            <h1>BISEN User Guide</h1>
+            <p>Learn how to use BISEN to test and manage your API requests efficiently</p>
+        </div>
+        
+        <div class="table-of-contents">
+            <div class="toc-title">📑 Table of Contents</div>
+            <ul class="toc-list">
+                <li><a href="#getting-started">Getting Started</a></li>
+                <li><a href="#making-requests">Making API Requests</a></li>
+                <li><a href="#collections">Collections</a></li>
+                <li><a href="#saved-requests">Saved Requests</a></li>
+                <li><a href="#environments">Environments & Variables</a>
+                    <ul class="toc-list toc-sub">
+                        <li><a href="#creating-environments">Creating Environments</a></li>
+                        <li><a href="#managing-variables">Managing Variables</a></li>
+                        <li><a href="#using-variables">Using Variables in Requests</a></li>
+                    </ul>
+                </li>
+                <li><a href="#authorization">Authorization</a></li>
+                <li><a href="#import-swagger">Importing Swagger/OpenAPI</a></li>
+                <li><a href="#history">Request History</a></li>
+                <li><a href="#tips">Tips & Best Practices</a></li>
+            </ul>
+        </div>
+        
+        <!-- Getting Started -->
+        <div class="guide-section" id="getting-started">
+            <div class="section-title">
+                <span class="section-icon">🚀</span>
+                <span>Getting Started</span>
+            </div>
+            <div class="section-description">
+                Welcome to BISEN! This guide will help you get started with testing your APIs.
+            </div>
+            
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-title">Access the Application</div>
+                <div class="step-content">
+                    Open BISEN in your browser. The default URL is <code>http://localhost:2000</code>. 
+                    You'll see the main request builder interface.
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-title">Familiarize Yourself with the Interface</div>
+                <div class="step-content">
+                    The interface consists of:
+                    <ul style="margin-top: 8px; margin-left: 20px;">
+                        <li><strong>Left Sidebar:</strong> Collections and saved requests</li>
+                        <li><strong>Top Navigation:</strong> Access to different sections (Home, History, Collections, Environments, etc.)</li>
+                        <li><strong>Request Builder:</strong> Main area to configure and send API requests</li>
+                        <li><strong>Response Section:</strong> View API responses below the request builder</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-title">Make Your First Request</div>
+                <div class="step-content">
+                    Try a simple GET request:
+                    <ol style="margin-top: 8px; margin-left: 20px;">
+                        <li>Select <code>GET</code> from the method dropdown</li>
+                        <li>Enter a URL (e.g., <code>https://jsonplaceholder.typicode.com/posts/1</code>)</li>
+                        <li>Click the <strong>Send</strong> button</li>
+                        <li>View the response below</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Making API Requests -->
+        <div class="guide-section" id="making-requests">
+            <div class="section-title">
+                <span class="section-icon">📡</span>
+                <span>Making API Requests</span>
+            </div>
+            <div class="section-description">
+                Learn how to configure and send different types of API requests.
+            </div>
+            
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-title">Select HTTP Method</div>
+                <div class="step-content">
+                    Choose from: <code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>DELETE</code>, 
+                    <code>PATCH</code>, <code>HEAD</code>, or <code>OPTIONS</code>.
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-title">Enter URL</div>
+                <div class="step-content">
+                    Type the complete API endpoint URL. You can use variables like <code>{{baseUrl}}/api/users</code> 
+                    (see Environments section for details).
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-title">Configure Request Parameters</div>
+                <div class="step-content">
+                    Use the tabs to configure different aspects:
+                    <ul style="margin-top: 8px; margin-left: 20px;">
+                        <li><strong>Params:</strong> URL query parameters (e.g., <code>?page=1&limit=10</code>)</li>
+                        <li><strong>Authorization:</strong> Set up authentication (Basic, Bearer Token, API Key, etc.)</li>
+                        <li><strong>Headers:</strong> Add custom HTTP headers</li>
+                        <li><strong>Body:</strong> Request body for POST, PUT, PATCH requests</li>
+                        <li><strong>Settings:</strong> Request name, timeout, environment selection</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-title">Send Request</div>
+                <div class="step-content">
+                    Click the <strong>Send</strong> button (or press Enter). The response will appear below with:
+                    <ul style="margin-top: 8px; margin-left: 20px;">
+                        <li>Status code (200 OK, 404 Not Found, etc.)</li>
+                        <li>Response time in milliseconds</li>
+                        <li>Response size</li>
+                        <li>Response body (formatted JSON if applicable)</li>
+                        <li>Response headers</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="highlight-box">
+                <div class="highlight-box-title">💡 Pro Tip</div>
+                <div class="highlight-box-content">
+                    Use the <strong>Format</strong> button in the Body tab to automatically format JSON. 
+                    The <strong>Validate</strong> button checks if your JSON is valid before sending.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Collections -->
+        <div class="guide-section" id="collections">
+            <div class="section-title">
+                <span class="section-icon">📁</span>
+                <span>Collections</span>
+            </div>
+            <div class="section-description">
+                Organize your API requests into collections for better management.
+            </div>
+            
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-title">Create a Collection</div>
+                <div class="step-content">
+                    Go to the <strong>Collections</strong> page and click <strong>Create Collection</strong>. 
+                    Give it a name and optional description (e.g., "User Management APIs").
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-title">Add Requests to Collection</div>
+                <div class="step-content">
+                    When saving a request, select the collection from the dropdown in the <strong>Settings</strong> tab. 
+                    You can also add existing saved requests to collections using the <strong>+</strong> button on saved requests.
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-title">View Collection Requests</div>
+                <div class="step-content">
+                    Collections appear in the left sidebar. Click to expand and see all requests in that collection. 
+                    Click any request to load it into the request builder.
+                </div>
+            </div>
+            
+            <div class="tip-box">
+                <div class="tip-box-title">💡 Tip</div>
+                <div class="tip-box-content">
+                    Collections help organize APIs by feature, service, or environment. For example, 
+                    create separate collections for "Authentication", "User Management", and "Payment APIs".
+                </div>
+            </div>
+        </div>
+        
+        <!-- Saved Requests -->
+        <div class="guide-section" id="saved-requests">
+            <div class="section-title">
+                <span class="section-icon">💾</span>
+                <span>Saved Requests</span>
+            </div>
+            <div class="section-description">
+                Save frequently used requests for quick access.
+            </div>
+            
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-title">Save a Request</div>
+                <div class="step-content">
+                    After configuring a request, click the <strong>Save</strong> button. 
+                    Optionally enter a name in the <strong>Settings</strong> tab. 
+                    The request will appear in the left sidebar.
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-title">Load a Saved Request</div>
+                <div class="step-content">
+                    Click any saved request in the left sidebar to load it into the request builder. 
+                    You can modify and send it, or save changes.
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-title">Duplicate Requests</div>
+                <div class="step-content">
+                    Click the <strong>⧉</strong> button on any saved request to create a copy. 
+                    Useful for creating variations of the same request.
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-title">Search Requests</div>
+                <div class="step-content">
+                    Use the search box in the left sidebar to quickly find requests by name, method, or URL.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Environments & Variables -->
+        <div class="guide-section" id="environments">
+            <div class="section-title">
+                <span class="section-icon">🌍</span>
+                <span>Environments & Variables</span>
+            </div>
+            <div class="section-description">
+                Manage different environments (Development, Staging, Production) and use variables to make requests dynamic.
+            </div>
+            
+            <div class="highlight-box">
+                <div class="highlight-box-title">🎯 Why Use Environments?</div>
+                <div class="highlight-box-content">
+                    Environments let you switch between different API endpoints, API keys, and configurations 
+                    without manually changing URLs and headers. Perfect for testing across Development, Staging, and Production.
+                </div>
+            </div>
+            
+            <h3 style="font-size: 20px; font-weight: 600; color: #1a1a1a; margin-top: 32px; margin-bottom: 16px;" id="creating-environments">Creating Environments</h3>
+            
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-title">Access Environment Manager</div>
+                <div class="step-content">
+                    Click <strong>Environments</strong> in the top navigation menu, or click 
+                    <strong>Manage Environments</strong> in the Settings tab on the Home page.
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-title">Create New Environment</div>
+                <div class="step-content">
+                    Click the <strong>Create Environment</strong> button. Enter a name like:
+                    <ul style="margin-top: 8px; margin-left: 20px;">
+                        <li><code>Production</code></li>
+                        <li><code>Staging</code></li>
+                        <li><code>Development</code></li>
+                        <li><code>Local Dev</code></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-title">Add Variables</div>
+                <div class="step-content">
+                    In the environment modal, click <strong>+ Add Variable</strong> for each variable you want to define. 
+                    Common variables include:
+                    <ul style="margin-top: 8px; margin-left: 20px;">
+                        <li><code>baseUrl</code> - Base API URL</li>
+                        <li><code>apiKey</code> - API authentication key</li>
+                        <li><code>token</code> - Authentication token</li>
+                        <li><code>timeout</code> - Request timeout value</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="code-block">
+<span class="comment">// Example: Production Environment Variables</span>
+{
+  <span class="key">"baseUrl"</span>: <span class="string">"https://api.example.com"</span>,
+  <span class="key">"apiKey"</span>: <span class="string">"prod_key_12345"</span>,
+  <span class="key">"version"</span>: <span class="string">"v1"</span>
+}
+
+<span class="comment">// Example: Development Environment Variables</span>
+{
+  <span class="key">"baseUrl"</span>: <span class="string">"http://localhost:3000"</span>,
+  <span class="key">"apiKey"</span>: <span class="string">"dev_key_67890"</span>,
+  <span class="key">"version"</span>: <span class="string">"v1"</span>
+}
+            </div>
+            
+            <h3 style="font-size: 20px; font-weight: 600; color: #1a1a1a; margin-top: 32px; margin-bottom: 16px;" id="managing-variables">Managing Variables</h3>
+            
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-title">Edit Environment Variables</div>
+                <div class="step-content">
+                    On the Environments page, click the <strong>✏️ Edit</strong> button on any environment card. 
+                    You can add, modify, or remove variables. Click <strong>Save</strong> when done.
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-title">Duplicate Environments</div>
+                <div class="step-content">
+                    Use the <strong>📋 Duplicate</strong> button to create a copy of an environment. 
+                    Great for creating similar environments with slight variations.
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-title">Set Default Environment</div>
+                <div class="step-content">
+                    Environments can be marked as default. The default environment's variables are automatically 
+                    available when no environment is selected.
+                </div>
+            </div>
+            
+            <div class="warning-box">
+                <div class="warning-box-title">⚠️ Security Note</div>
+                <div class="warning-box-content">
+                    Sensitive values like API keys and passwords are automatically masked in the UI with 🔒 •••••• 
+                    for security. However, always be careful when sharing environment exports.
+                </div>
+            </div>
+            
+            <h3 style="font-size: 20px; font-weight: 600; color: #1a1a1a; margin-top: 32px; margin-bottom: 16px;" id="using-variables">Using Variables in Requests</h3>
+            
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-title">Select an Environment</div>
+                <div class="step-content">
+                    In the <strong>Settings</strong> tab, select an environment from the dropdown. 
+                    You can also use the environment selector in the top navigation bar.
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-title">Use Variable Syntax</div>
+                <div class="step-content">
+                    Use <code>{{variableName}}</code> syntax anywhere in your request:
+                    <ul style="margin-top: 8px; margin-left: 20px;">
+                        <li><strong>URL:</strong> <code>{{baseUrl}}/api/users</code></li>
+                        <li><strong>Headers:</strong> <code>X-API-Key: {{apiKey}}</code></li>
+                        <li><strong>Body:</strong> <code>{"url": "{{baseUrl}}/webhook"}</code></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="code-block">
+<span class="comment">// Example Request URL with Variables</span>
+<span class="string">{{baseUrl}}</span>/api/<span class="string">{{version}}</span>/users?page=1
+
+<span class="comment">// Example Header with Variable</span>
+Authorization: Bearer <span class="string">{{token}}</span>
+
+<span class="comment">// Example Body with Variables</span>
+{
+  <span class="key">"endpoint"</span>: <span class="string">"{{baseUrl}}/api/notify"</span>,
+  <span class="key">"apiKey"</span>: <span class="string">"{{apiKey}}"</span>
+}
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-title">Variable Substitution</div>
+                <div class="step-content">
+                    When you send a request, BISEN automatically replaces all <code>{{variableName}}</code> 
+                    placeholders with the actual values from the selected environment. 
+                    Variables are substituted in:
+                    <ul style="margin-top: 8px; margin-left: 20px;">
+                        <li>Request URL</li>
+                        <li>Query parameters</li>
+                        <li>Request headers</li>
+                        <li>Request body</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="tip-box">
+                <div class="tip-box-title">💡 Best Practice</div>
+                <div class="tip-box-content">
+                    Create separate environments for each deployment stage. Use consistent variable names 
+                    across environments (e.g., always use <code>baseUrl</code>) so you can easily switch 
+                    between environments without changing your requests.
+                </div>
+            </div>
+            
+            <div class="highlight-box">
+                <div class="highlight-box-title">📝 Example Workflow</div>
+                <div class="highlight-box-content">
+                    <ol style="margin-left: 20px;">
+                        <li>Create "Production" environment with <code>baseUrl: "https://api.prod.com"</code></li>
+                        <li>Create "Staging" environment with <code>baseUrl: "https://api.staging.com"</code></li>
+                        <li>Create a request with URL: <code>{{baseUrl}}/users</code></li>
+                        <li>Switch environments to test the same request against different servers</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Authorization -->
+        <div class="guide-section" id="authorization">
+            <div class="section-title">
+                <span class="section-icon">🔐</span>
+                <span>Authorization</span>
+            </div>
+            <div class="section-description">
+                Secure your API requests with various authentication methods.
+            </div>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-card-title">🔑 Basic Auth</div>
+                    <div class="feature-card-desc">
+                        Username and password authentication. Credentials are Base64 encoded and sent in the Authorization header.
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-card-title">🎫 Bearer Token</div>
+                    <div class="feature-card-desc">
+                        Token-based authentication. Enter your token and it will be sent as <code>Authorization: Bearer &lt;token&gt;</code>.
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-card-title">🔑 API Key</div>
+                    <div class="feature-card-desc">
+                        API key authentication. Specify the key value and header name (default: <code>X-API-Key</code>).
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-card-title">🔒 Digest Auth</div>
+                    <div class="feature-card-desc">
+                        Digest authentication with username and password. Handles the authentication challenge automatically.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tip-box">
+                <div class="tip-box-title">💡 Pro Tip</div>
+                <div class="tip-box-content">
+                    Store authentication tokens and API keys as environment variables for better security and easier management. 
+                    Use <code>{{apiKey}}</code> in headers instead of hardcoding values.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Import Swagger -->
+        <div class="guide-section" id="import-swagger">
+            <div class="section-title">
+                <span class="section-icon">📥</span>
+                <span>Importing Swagger/OpenAPI</span>
+            </div>
+            <div class="section-description">
+                Import API specifications to automatically create collections and requests.
+            </div>
+            
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-title">Access Import Page</div>
+                <div class="step-content">
+                    Go to <strong>Import Swagger</strong> from the top navigation menu.
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-title">Import from URL or File</div>
+                <div class="step-content">
+                    You can import in two ways:
+                    <ul style="margin-top: 8px; margin-left: 20px;">
+                        <li><strong>From URL:</strong> Enter the Swagger/OpenAPI JSON URL</li>
+                        <li><strong>From File:</strong> Upload a Swagger/OpenAPI JSON or YAML file</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-title">Automatic Collection Creation</div>
+                <div class="step-content">
+                    BISEN automatically:
+                    <ul style="margin-top: 8px; margin-left: 20px;">
+                        <li>Creates collections based on API tags</li>
+                        <li>Generates saved requests for each endpoint</li>
+                        <li>Sets up request methods, URLs, and parameters</li>
+                        <li>Configures request bodies based on schemas</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- History -->
+        <div class="guide-section" id="history">
+            <div class="section-title">
+                <span class="section-icon">📜</span>
+                <span>Request History</span>
+            </div>
+            <div class="section-description">
+                View and manage all your past API requests.
+            </div>
+            
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-title">Access History</div>
+                <div class="step-content">
+                    Click <strong>History</strong> in the top navigation to view all executed requests.
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-title">View Request Details</div>
+                <div class="step-content">
+                    Each history entry shows:
+                    <ul style="margin-top: 8px; margin-left: 20px;">
+                        <li>HTTP method and URL</li>
+                        <li>Status code and response time</li>
+                        <li>Request and response data</li>
+                        <li>Timestamp</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-title">Reuse History Requests</div>
+                <div class="step-content">
+                    Click on any history entry to view full details. You can copy the request configuration 
+                    to create a new request or save it for future use.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tips & Best Practices -->
+        <div class="guide-section" id="tips">
+            <div class="section-title">
+                <span class="section-icon">💡</span>
+                <span>Tips & Best Practices</span>
+            </div>
+            <div class="section-description">
+                Get the most out of BISEN with these helpful tips.
+            </div>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-card-title">📝 Naming Conventions</div>
+                    <div class="feature-card-desc">
+                        Use descriptive names for requests and collections. 
+                        Example: "GET User Profile" instead of "Request 1".
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-card-title">🔄 Environment Strategy</div>
+                    <div class="feature-card-desc">
+                        Create environments for each deployment stage. Use consistent variable names 
+                        across environments for easy switching.
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-card-title">📁 Organization</div>
+                    <div class="feature-card-desc">
+                        Group related APIs into collections. Create collections by feature, 
+                        service, or team for better organization.
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-card-title">🔍 Search & Filter</div>
+                    <div class="feature-card-desc">
+                        Use the search box in the sidebar to quickly find requests. 
+                        Filter by method, URL, or collection name.
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-card-title">⏱️ Timeout Settings</div>
+                    <div class="feature-card-desc">
+                        Set appropriate timeouts in the Settings tab. Default is 30 seconds. 
+                        Adjust based on your API response times.
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-card-title">📋 Copy Responses</div>
+                    <div class="feature-card-desc">
+                        Use the Copy button in the response section to quickly copy response data 
+                        for use in other tools or documentation.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="warning-box">
+                <div class="warning-box-title">⚠️ Security Reminders</div>
+                <div class="warning-box-content">
+                    <ul style="margin-left: 20px;">
+                        <li>Never commit environment files with real production credentials to version control</li>
+                        <li>Use environment variables for sensitive data like API keys and tokens</li>
+                        <li>Be cautious when sharing exported collections that contain sensitive information</li>
+                        <li>Regularly rotate API keys and tokens stored in environments</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Reference -->
+        <div class="guide-section">
+            <div class="section-title">
+                <span class="section-icon">⚡</span>
+                <span>Quick Reference</span>
+            </div>
+            <div class="section-description">
+                Common tasks and keyboard shortcuts.
+            </div>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-card-title">⌨️ Keyboard Shortcuts</div>
+                    <div class="feature-card-desc">
+                        <ul style="margin-left: 20px; font-size: 13px;">
+                            <li><strong>Enter</strong> in URL field: Send request</li>
+                            <li><strong>Tab</strong>: Navigate between fields</li>
+                            <li><strong>Ctrl/Cmd + S</strong>: Save request</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-card-title">🔗 Common URLs</div>
+                    <div class="feature-card-desc">
+                        <ul style="margin-left: 20px; font-size: 13px;">
+                            <li><code>/</code> - Home/Request Builder</li>
+                            <li><code>/history</code> - Request History</li>
+                            <li><code>/collections</code> - Collections</li>
+                            <li><code>/environments</code> - Environments</li>
+                            <li><code>/guide</code> - This guide</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 48px; padding: 32px; background: white; border-radius: 12px; border: 1px solid #e5e7eb;">
+            <div style="font-size: 18px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">Need More Help?</div>
+            <div style="font-size: 14px; color: #6b7280;">
+                For additional support or feature requests, please refer to the project documentation or contact the development team.
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
