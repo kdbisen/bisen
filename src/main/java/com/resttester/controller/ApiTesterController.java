@@ -18,11 +18,17 @@ import com.resttester.dto.BisenExportDto;
 import com.resttester.dto.EnvironmentDto;
 import com.resttester.model.Environment;
 import com.resttester.service.ApiRequestService;
+import com.resttester.service.ApplicationService;
 import com.resttester.service.CollectionService;
 import com.resttester.service.EnvironmentService;
 import com.resttester.service.ExportImportService;
+import com.resttester.service.ProjectService;
 import com.resttester.service.SavedRequestService;
 import com.resttester.service.SwaggerImportService;
+import com.resttester.dto.ProjectDto;
+import com.resttester.dto.ApplicationDto;
+import com.resttester.model.Project;
+import com.resttester.model.Application;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -54,6 +60,12 @@ public class ApiTesterController {
     
     @Autowired
     private ExportImportService exportImportService;
+    
+    @Autowired
+    private ProjectService projectService;
+    
+    @Autowired
+    private ApplicationService applicationService;
     
     @Autowired
     private ObjectMapper objectMapper;
@@ -331,6 +343,101 @@ public class ApiTesterController {
     public ResponseEntity<Map<String, Object>> importBisen(@RequestBody BisenExportDto importData) {
         Map<String, Object> result = exportImportService.importBisenFormat(importData);
         return ResponseEntity.ok(result);
+    }
+    
+    // Project endpoints
+    @GetMapping("/projects")
+    public String projects(Model model) {
+        List<Project> projects = projectService.getAllProjects();
+        model.addAttribute("projects", projects);
+        return "projects";
+    }
+    
+    @GetMapping("/api/projects")
+    @ResponseBody
+    public ResponseEntity<List<Project>> getAllProjects() {
+        return ResponseEntity.ok(projectService.getAllProjects());
+    }
+    
+    @GetMapping("/api/projects/{id}")
+    @ResponseBody
+    public ResponseEntity<Project> getProject(@PathVariable Long id) {
+        Project project = projectService.getProjectById(id);
+        if (project != null) {
+            return ResponseEntity.ok(project);
+        }
+        return ResponseEntity.notFound().build();
+    }
+    
+    @PostMapping("/api/projects")
+    @ResponseBody
+    public ResponseEntity<Project> createProject(@RequestBody ProjectDto projectDto) {
+        Project project = projectService.createProject(projectDto);
+        return ResponseEntity.ok(project);
+    }
+    
+    @PutMapping("/api/projects/{id}")
+    @ResponseBody
+    public ResponseEntity<Project> updateProject(@PathVariable Long id, @RequestBody ProjectDto projectDto) {
+        Project project = projectService.updateProject(id, projectDto);
+        if (project != null) {
+            return ResponseEntity.ok(project);
+        }
+        return ResponseEntity.notFound().build();
+    }
+    
+    @DeleteMapping("/api/projects/{id}")
+    @ResponseBody
+    public ResponseEntity<Void> deleteProject(@PathVariable Long id) {
+        projectService.deleteProject(id);
+        return ResponseEntity.ok().build();
+    }
+    
+    // Application endpoints
+    @GetMapping("/api/applications")
+    @ResponseBody
+    public ResponseEntity<List<Application>> getAllApplications() {
+        return ResponseEntity.ok(applicationService.getAllApplications());
+    }
+    
+    @GetMapping("/api/projects/{projectId}/applications")
+    @ResponseBody
+    public ResponseEntity<List<Application>> getApplicationsByProject(@PathVariable Long projectId) {
+        return ResponseEntity.ok(applicationService.getApplicationsByProject(projectId));
+    }
+    
+    @GetMapping("/api/applications/{id}")
+    @ResponseBody
+    public ResponseEntity<Application> getApplication(@PathVariable Long id) {
+        Application application = applicationService.getApplicationById(id);
+        if (application != null) {
+            return ResponseEntity.ok(application);
+        }
+        return ResponseEntity.notFound().build();
+    }
+    
+    @PostMapping("/api/applications")
+    @ResponseBody
+    public ResponseEntity<Application> createApplication(@RequestBody ApplicationDto applicationDto) {
+        Application application = applicationService.createApplication(applicationDto);
+        return ResponseEntity.ok(application);
+    }
+    
+    @PutMapping("/api/applications/{id}")
+    @ResponseBody
+    public ResponseEntity<Application> updateApplication(@PathVariable Long id, @RequestBody ApplicationDto applicationDto) {
+        Application application = applicationService.updateApplication(id, applicationDto);
+        if (application != null) {
+            return ResponseEntity.ok(application);
+        }
+        return ResponseEntity.notFound().build();
+    }
+    
+    @DeleteMapping("/api/applications/{id}")
+    @ResponseBody
+    public ResponseEntity<Void> deleteApplication(@PathVariable Long id) {
+        applicationService.deleteApplication(id);
+        return ResponseEntity.ok().build();
     }
 }
 

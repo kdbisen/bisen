@@ -11,11 +11,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "saved_requests")
+@Table(name = "projects")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class SavedRequest {
+public class Project {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,32 +26,17 @@ public class SavedRequest {
     @Column(nullable = false)
     private String name;
     
-    @Column(nullable = false)
-    private String method;
-    
-    @Column(nullable = false, length = 2000)
-    private String url;
-    
     @Column(columnDefinition = "TEXT")
-    private String headers;
-    
-    @Column(columnDefinition = "TEXT")
-    private String body;
-    
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "collection_id")
-    @JsonIgnore
-    private Collection collection;
-    
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "application_id")
-    @JsonIgnore
-    private Application application;
+    private String description;
     
     @Column(nullable = false)
     private LocalDateTime createdAt;
     
     private LocalDateTime updatedAt;
+    
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Application> applications = new ArrayList<>();
     
     @PrePersist
     protected void onCreate() {
@@ -79,52 +66,12 @@ public class SavedRequest {
         this.name = name;
     }
     
-    public String getMethod() {
-        return method;
+    public String getDescription() {
+        return description;
     }
     
-    public void setMethod(String method) {
-        this.method = method;
-    }
-    
-    public String getUrl() {
-        return url;
-    }
-    
-    public void setUrl(String url) {
-        this.url = url;
-    }
-    
-    public String getHeaders() {
-        return headers;
-    }
-    
-    public void setHeaders(String headers) {
-        this.headers = headers;
-    }
-    
-    public String getBody() {
-        return body;
-    }
-    
-    public void setBody(String body) {
-        this.body = body;
-    }
-    
-    public Collection getCollection() {
-        return collection;
-    }
-    
-    public void setCollection(Collection collection) {
-        this.collection = collection;
-    }
-    
-    public Application getApplication() {
-        return application;
-    }
-    
-    public void setApplication(Application application) {
-        this.application = application;
+    public void setDescription(String description) {
+        this.description = description;
     }
     
     public LocalDateTime getCreatedAt() {
@@ -141,6 +88,14 @@ public class SavedRequest {
     
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+    
+    public List<Application> getApplications() {
+        return applications;
+    }
+    
+    public void setApplications(List<Application> applications) {
+        this.applications = applications;
     }
 }
 

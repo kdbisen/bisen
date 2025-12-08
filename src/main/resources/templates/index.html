@@ -1046,6 +1046,7 @@
                 <a href="/saved" class="nav-menu-item">Saved Requests</a>
                 <a href="/environments" class="nav-menu-item">Environments</a>
                 <a href="/import" class="nav-menu-item">Import Swagger</a>
+                <a href="/projects" class="nav-menu-item">Projects</a>
                 <a href="/guide" class="nav-menu-item">Guide</a>
             </div>
             <div class="nav-actions">
@@ -1208,6 +1209,19 @@
                                         th:value="${collection.id}" 
                                         th:text="${collection.name}"></option>
                             </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <label style="margin-bottom: 0;">Assign to Application (Optional)</label>
+                                <a href="/projects" target="_blank" style="padding: 4px 12px; font-size: 11px; background: #2563eb; color: white; border: none; border-radius: 4px; cursor: pointer; text-decoration: none;">Manage Projects</a>
+                            </div>
+                            <select id="applicationId" onchange="updateApplicationInfo()">
+                                <option value="">-- No Application --</option>
+                            </select>
+                            <div id="applicationInfo" style="margin-top: 8px; padding: 8px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 11px; color: #6b7280; display: none;">
+                                <span id="applicationProjectName"></span> > <span id="applicationName"></span>
+                            </div>
                         </div>
                         
                         <div class="form-group">
@@ -1397,6 +1411,30 @@
                     setHeaders(savedRequest.headers || '');
                     document.getElementById('body').value = savedRequest.body || '';
                     document.getElementById('collectionId').value = savedRequest.collection ? savedRequest.collection.id : '';
+                    
+                    // Load application if available
+                    if (savedRequest.application && savedRequest.application.id) {
+                        const applicationSelect = document.getElementById('applicationId');
+                        if (applicationSelect) {
+                            // Wait for applications to load
+                            if (applications.length === 0) {
+                                await loadProjectsAndApplications();
+                            }
+                            applicationSelect.value = savedRequest.application.id;
+                            if (typeof updateApplicationInfo === 'function') {
+                                updateApplicationInfo();
+                            }
+                        }
+                    } else {
+                        const applicationSelect = document.getElementById('applicationId');
+                        if (applicationSelect) {
+                            applicationSelect.value = '';
+                            if (typeof updateApplicationInfo === 'function') {
+                                updateApplicationInfo();
+                            }
+                        }
+                    }
+                    
                     document.getElementById('timeout').value = '30000';
                     
                     // Detect body type from Content-Type header
@@ -2928,6 +2966,8 @@
             const headers = getHeaders();
             const body = bodyEl ? (bodyEl.value || '') : '';
             const collectionId = collectionIdEl ? collectionIdEl.value : '';
+            const applicationIdEl = document.getElementById('applicationId');
+            const applicationId = applicationIdEl ? applicationIdEl.value : '';
             const savedRequestId = savedRequestIdEl ? savedRequestIdEl.value : '';
             
             let requestName = name;
@@ -2946,7 +2986,8 @@
                 url: url,
                 headers: headers,
                 body: body,
-                collectionId: collectionId ? parseInt(collectionId) : null
+                collectionId: collectionId ? parseInt(collectionId) : null,
+                applicationId: applicationId ? parseInt(applicationId) : null
             };
             
             try {
@@ -3128,12 +3169,97 @@
                 document.getElementById('body').value = saved.body || '';
                 document.getElementById('collectionId').value = saved.collectionId || '';
                 
+                // Load application if available
+                if (saved.applicationId) {
+                    const applicationSelect = document.getElementById('applicationId');
+                    if (applicationSelect) {
+                        applicationSelect.value = saved.applicationId;
+                        updateApplicationInfo();
+                    }
+                } else {
+                    const applicationSelect = document.getElementById('applicationId');
+                    if (applicationSelect) {
+                        applicationSelect.value = '';
+                        updateApplicationInfo();
+                    }
+                }
+                
                 // Detect and set body type
                 detectBodyTypeFromHeaders();
             }
             // Load environments on page load
             loadEnvironments();
+            
+            // Load projects and applications
+            loadProjectsAndApplications();
+            
+            const applicationSelect = document.getElementById('applicationId');
+            if (applicationSelect) {
+                applicationSelect.addEventListener('change', updateApplicationInfo);
+            }
         });
+        
+        // Load applications on page load
+        let projects = [];
+        let applications = [];
+        
+        async function loadProjectsAndApplications() {
+            try {
+                const projectsResponse = await fetch('/api/projects');
+                projects = await projectsResponse.json();
+                
+                // Load applications for all projects
+                applications = [];
+                for (const project of projects) {
+                    const appsResponse = await fetch(`/api/projects/${project.id}/applications`);
+                    const projectApps = await appsResponse.json();
+                    projectApps.forEach(app => {
+                        app.project = project; // Attach project info
+                        applications.push(app);
+                    });
+                }
+                
+                updateApplicationSelect();
+            } catch (error) {
+                console.error('Error loading projects and applications:', error);
+            }
+        }
+        
+        function updateApplicationSelect() {
+            const select = document.getElementById('applicationId');
+            if (!select) return;
+            
+            select.innerHTML = '<option value="">-- No Application --</option>';
+            
+            applications.forEach(app => {
+                const option = document.createElement('option');
+                option.value = app.id;
+                option.textContent = `${app.project.name} > ${app.name}${app.version ? ' (' + app.version + ')' : ''}`;
+                option.dataset.projectName = app.project.name;
+                option.dataset.appName = app.name;
+                select.appendChild(option);
+            });
+        }
+        
+        function updateApplicationInfo() {
+            const select = document.getElementById('applicationId');
+            const infoDiv = document.getElementById('applicationInfo');
+            const projectNameSpan = document.getElementById('applicationProjectName');
+            const appNameSpan = document.getElementById('applicationName');
+            
+            if (!select || !infoDiv) return;
+            
+            const selectedOption = select.options[select.selectedIndex];
+            if (selectedOption && selectedOption.value) {
+                infoDiv.style.display = 'block';
+                if (projectNameSpan) projectNameSpan.textContent = selectedOption.dataset.projectName || '';
+                if (appNameSpan) appNameSpan.textContent = selectedOption.dataset.appName || '';
+            } else {
+                infoDiv.style.display = 'none';
+            }
+        }
+        
+        window.updateApplicationInfo = updateApplicationInfo;
         
         // Ensure all global functions are available
         if (typeof clearForm === 'function') {

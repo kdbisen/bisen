@@ -17,15 +17,20 @@ import java.util.Optional;
 @Repository
 public interface SavedRequestRepository extends JpaRepository<SavedRequest, Long> {
     
-    @EntityGraph(attributePaths = {"collection"})
+    @EntityGraph(attributePaths = {"collection", "application", "application.project"})
     List<SavedRequest> findAllByOrderByUpdatedAtDesc();
     
-    @EntityGraph(attributePaths = {"collection"})
+    @EntityGraph(attributePaths = {"collection", "application", "application.project"})
     Optional<SavedRequest> findById(Long id);
     
-    @EntityGraph(attributePaths = {"collection"})
+    @EntityGraph(attributePaths = {"collection", "application", "application.project"})
     List<SavedRequest> findByCollectionIdOrderByUpdatedAtDesc(Long collectionId);
     
+    @EntityGraph(attributePaths = {"collection", "application", "application.project"})
+    List<SavedRequest> findByApplicationIdOrderByUpdatedAtDesc(Long applicationId);
+    
     List<SavedRequest> findByCollectionIsNullOrderByUpdatedAtDesc();
+    
+    List<SavedRequest> findByApplicationIsNullOrderByUpdatedAtDesc();
 }
 

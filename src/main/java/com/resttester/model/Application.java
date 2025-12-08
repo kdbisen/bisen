@@ -11,11 +11,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "saved_requests")
+@Table(name = "applications")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class SavedRequest {
+public class Application {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,27 +26,20 @@ public class SavedRequest {
     @Column(nullable = false)
     private String name;
     
-    @Column(nullable = false)
-    private String method;
-    
-    @Column(nullable = false, length = 2000)
-    private String url;
-    
     @Column(columnDefinition = "TEXT")
-    private String headers;
+    private String description;
     
-    @Column(columnDefinition = "TEXT")
-    private String body;
+    @Column
+    private String version;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "collection_id")
+    @JoinColumn(name = "project_id", nullable = false)
     @JsonIgnore
-    private Collection collection;
+    private Project project;
     
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "application_id")
+    @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private Application application;
+    private List<SavedRequest> savedRequests = new ArrayList<>();
     
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -79,52 +74,36 @@ public class SavedRequest {
         this.name = name;
     }
     
-    public String getMethod() {
-        return method;
+    public String getDescription() {
+        return description;
     }
     
-    public void setMethod(String method) {
-        this.method = method;
+    public void setDescription(String description) {
+        this.description = description;
     }
     
-    public String getUrl() {
-        return url;
+    public String getVersion() {
+        return version;
     }
     
-    public void setUrl(String url) {
-        this.url = url;
+    public void setVersion(String version) {
+        this.version = version;
     }
     
-    public String getHeaders() {
-        return headers;
+    public Project getProject() {
+        return project;
     }
     
-    public void setHeaders(String headers) {
-        this.headers = headers;
+    public void setProject(Project project) {
+        this.project = project;
     }
     
-    public String getBody() {
-        return body;
+    public List<SavedRequest> getSavedRequests() {
+        return savedRequests;
     }
     
-    public void setBody(String body) {
-        this.body = body;
-    }
-    
-    public Collection getCollection() {
-        return collection;
-    }
-    
-    public void setCollection(Collection collection) {
-        this.collection = collection;
-    }
-    
-    public Application getApplication() {
-        return application;
-    }
-    
-    public void setApplication(Application application) {
-        this.application = application;
+    public void setSavedRequests(List<SavedRequest> savedRequests) {
+        this.savedRequests = savedRequests;
     }
     
     public LocalDateTime getCreatedAt() {

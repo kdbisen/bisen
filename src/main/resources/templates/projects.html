@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <link rel="icon" type="image/svg+xml" href="/icon.svg">
+    <link rel="apple-touch-icon" href="/icon.svg">
+    <link rel="stylesheet" href="/dialog.css">
+    <title>Projects - BISEN</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f8f9fa;
+            color: #1a1a1a;
+            min-height: 100vh;
+        }
+        
+        .top-nav {
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .nav-brand .brand-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a1a;
+            letter-spacing: -0.5px;
+        }
+        
+        .nav-menu {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+        
+        .nav-menu-item {
+            color: #6b7280;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.15s;
+        }
+        
+        .nav-menu-item:hover {
+            background: #f3f4f6;
+            color: #1a1a1a;
+        }
+        
+        .nav-menu-item.active {
+            background: #f3f4f6;
+            color: #2563eb;
+            border-bottom: 2px solid #2563eb;
+        }
+        
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .btn-new-project {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        
+        .btn-new-project:hover {
+            background: #1d4ed8;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+        
+        .breadcrumbs {
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 16px;
+        }
+        
+        .breadcrumbs a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+        
+        .breadcrumbs a:hover {
+            text-decoration: underline;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .page-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a1a1a;
+            letter-spacing: -0.5px;
+        }
+        
+        .filter-bar {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .filter-btn {
+            background: white;
+            border: 1px solid #e5e7eb;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+        
+        .view-toggle {
+            display: flex;
+            gap: 4px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 4px;
+        }
+        
+        .view-toggle-btn {
+            padding: 6px 12px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        
+        .view-toggle-btn.active {
+            background: #2563eb;
+            color: white;
+        }
+        
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 24px;
+        }
+        
+        .project-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.2s;
+            position: relative;
+        }
+        
+        .project-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border-color: #2563eb;
+        }
+        
+        .project-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+        
+        .project-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-right: 12px;
+        }
+        
+        .project-icon.blue { background: #dbeafe; color: #1e40af; }
+        .project-icon.green { background: #d1fae5; color: #065f46; }
+        .project-icon.gray { background: #f3f4f6; color: #374151; }
+        .project-icon.purple { background: #ede9fe; color: #5b21b6; }
+        
+        .project-title-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+        
+        .project-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .project-menu-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            color: #6b7280;
+            font-size: 18px;
+        }
+        
+        .project-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        
+        .status-dot.active { background: #10b981; }
+        .status-dot.production { background: #2563eb; }
+        .status-dot.staging { background: #f59e0b; }
+        .status-dot.localhost { background: #10b981; }
+        .status-dot.inactive { background: #9ca3af; }
+        
+        .status-text {
+            font-size: 12px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+        
+        .project-stats {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .stat-item {
+            font-size: 13px;
+            color: #6b7280;
+        }
+        
+        .stat-value {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .project-actions {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .btn-manage-env {
+            background: white;
+            border: 1px solid #e5e7eb;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .btn-setup-env {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        
+        .applications-list {
+            margin-top: 16px;
+        }
+        
+        .application-item {
+            padding: 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .application-item:hover {
+            background: #f9fafb;
+            border-color: #2563eb;
+        }
+        
+        .application-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .application-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a1a1a;
+        }
+        
+        .application-version {
+            font-size: 12px;
+            color: #6b7280;
+            margin-left: 8px;
+        }
+        
+        .application-endpoints {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+        
+        .expand-icon {
+            transition: transform 0.2s;
+        }
+        
+        .application-item.expanded .expand-icon {
+            transform: rotate(90deg);
+        }
+        
+        .endpoints-list {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #e5e7eb;
+            display: none;
+        }
+        
+        .application-item.expanded .endpoints-list {
+            display: block;
+        }
+        
+        .endpoint-item {
+            padding: 8px;
+            background: #f9fafb;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+        }
+        
+        .endpoint-method {
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 11px;
+        }
+        
+        .endpoint-method.get { background: #dbeafe; color: #1e40af; }
+        .endpoint-method.post { background: #d1fae5; color: #065f46; }
+        .endpoint-method.put { background: #fef3c7; color: #92400e; }
+        .endpoint-method.delete { background: #fee2e2; color: #991b1b; }
+        
+        .endpoint-status {
+            margin-left: auto;
+            font-size: 11px;
+        }
+        
+        .endpoint-status.success { color: #10b981; }
+        .endpoint-status.error { color: #ef4444; }
+        .endpoint-status.pending { color: #6b7280; }
+        
+        .empty-state {
+            text-align: center;
+            padding: 48px;
+            color: #6b7280;
+        }
+        
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+        
+        .empty-state-text {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        .empty-state-action {
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .modal-close {
+            background: transparent;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6b7280;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: #1a1a1a;
+            margin-bottom: 6px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+        
+        .form-textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 13px;
+            min-height: 80px;
+            resize: vertical;
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 13px;
+            background: white;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #1a1a1a;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .btn-secondary:hover {
+            background: #f9fafb;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-nav">
+        <div class="nav-brand">
+            <img src="/icon.svg" alt="BISEN" style="width: 28px; height: 28px;">
+            <span class="brand-name">BISEN</span>
+        </div>
+        <div class="nav-menu">
+            <a href="/" class="nav-menu-item">Home</a>
+            <a href="/history" class="nav-menu-item">History</a>
+            <a href="/collections" class="nav-menu-item">Collections</a>
+            <a href="/saved" class="nav-menu-item">Saved Requests</a>
+            <a href="/environments" class="nav-menu-item">Environments</a>
+            <a href="/import" class="nav-menu-item">Import Swagger</a>
+            <a href="/projects" class="nav-menu-item active">Projects</a>
+            <a href="/guide" class="nav-menu-item">Guide</a>
+        </div>
+        <div class="nav-actions">
+            <button class="btn-new-project" onclick="openProjectModal()">+ New Project</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="breadcrumbs">
+            <a href="/">Workspace</a> > <span>Overview</span>
+        </div>
+        
+        <div class="page-header">
+            <h1>Project Dashboard</h1>
+        </div>
+        
+        <div class="filter-bar">
+            <button class="filter-btn" onclick="openFilterModal()">
+                <span>🔽</span> Filter
+            </button>
+            <input type="text" class="search-input" placeholder="Search projects..." id="searchProjects" onkeyup="filterProjects()">
+            <div class="view-toggle">
+                <button class="view-toggle-btn active" onclick="setView('grid')">⊞</button>
+                <button class="view-toggle-btn" onclick="setView('list')">☰</button>
+            </div>
+        </div>
+        
+        <div class="projects-grid" id="projectsGrid">
+            <!-- Projects will be loaded here -->
+        </div>
+    </div>
+    
+    <!-- Project Modal -->
+    <div class="modal" id="projectModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="projectModalTitle">New Project</h2>
+                <button class="modal-close" onclick="closeProjectModal()">×</button>
+            </div>
+            <form id="projectForm" onsubmit="saveProject(event)">
+                <div class="form-group">
+                    <label class="form-label">Project Name</label>
+                    <input type="text" class="form-input" id="projectName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-textarea" id="projectDescription"></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeProjectModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Application Modal -->
+    <div class="modal" id="applicationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="applicationModalTitle">New Application</h2>
+                <button class="modal-close" onclick="closeApplicationModal()">×</button>
+            </div>
+            <form id="applicationForm" onsubmit="saveApplication(event)">
+                <input type="hidden" id="applicationProjectId">
+                <div class="form-group">
+                    <label class="form-label">Application Name</label>
+                    <input type="text" class="form-input" id="applicationName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Version</label>
+                    <input type="text" class="form-input" id="applicationVersion" placeholder="e.g., V1.0.0">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-textarea" id="applicationDescription"></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeApplicationModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="/dialog.js"></script>
+    <script>
+        let projects = [];
+        let applications = {};
+        let currentProjectId = null;
+        
+        // Load projects on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProjects();
+        });
+        
+        async function loadProjects() {
+            try {
+                const response = await fetch('/api/projects');
+                projects = await response.json();
+                
+                // Load applications for each project
+                for (const project of projects) {
+                    const appsResponse = await fetch(`/api/projects/${project.id}/applications`);
+                    applications[project.id] = await appsResponse.json();
+                }
+                
+                renderProjects();
+            } catch (error) {
+                console.error('Error loading projects:', error);
+                if (typeof CustomDialog !== 'undefined') {
+                    CustomDialog.showAlert('Error', 'Failed to load projects. Please try again.');
+                } else {
+                    alert('Failed to load projects. Please try again.');
+                }
+            }
+        }
+        
+        function renderProjects() {
+            const grid = document.getElementById('projectsGrid');
+            grid.innerHTML = '';
+            
+            if (projects.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <div class="empty-state-icon">📁</div>
+                        <div class="empty-state-text">No projects yet</div>
+                        <div style="font-size: 12px; margin-top: 4px;">Start by creating your first project</div>
+                        <a href="#" class="empty-state-action" onclick="openProjectModal(); return false;">Create Project</a>
+                    </div>
+                `;
+                return;
+            }
+            
+            projects.forEach(project => {
+                const projectApps = applications[project.id] || [];
+                const iconColors = ['blue', 'green', 'gray', 'purple'];
+                const iconColor = iconColors[project.id % iconColors.length];
+                const icons = ['🛒', '📦', '⚙️', '📊'];
+                const icon = icons[project.id % icons.length];
+                
+                // Count APIs
+                let totalApis = 0;
+                projectApps.forEach(app => {
+                    totalApis += app.savedRequests ? app.savedRequests.length : 0;
+                });
+                
+                const card = document.createElement('div');
+                card.className = 'project-card';
+                card.innerHTML = `
+                    <div class="project-card-header">
+                        <div class="project-title-row">
+                            <div class="project-icon ${iconColor}">${icon}</div>
+                            <div>
+                                <div class="project-title">${escapeHtml(project.name)}</div>
+                            </div>
+                        </div>
+                        <button class="project-menu-btn" onclick="openProjectMenu(${project.id})">⋯</button>
+                    </div>
+                    <div class="project-status">
+                        <span class="status-dot active"></span>
+                        <span class="status-text">ACTIVE: STAGING</span>
+                    </div>
+                    <div class="project-stats">
+                        <div class="stat-item">
+                            <span class="stat-value">${projectApps.length}</span> Apps
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">${totalApis}</span> APIs
+                        </div>
+                    </div>
+                    <div class="project-actions">
+                        <button class="btn-manage-env" onclick="manageEnvironment(${project.id})">
+                            <span>⚙️</span> Manage Env
+                        </button>
+                    </div>
+                    <div class="applications-list" id="apps-${project.id}">
+                        ${renderApplications(projectApps, project.id)}
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+        
+        function renderApplications(apps, projectId) {
+            if (apps.length === 0) {
+                return `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">+</div>
+                        <div class="empty-state-text">No APIs yet</div>
+                        <div style="font-size: 12px; margin-top: 4px;">Start by creating your first application endpoint for this project.</div>
+                        <a href="#" class="empty-state-action" onclick="openApplicationModal(${projectId}); return false;">Create Application</a>
+                    </div>
+                `;
+            }
+            
+            return apps.map(app => {
+                const apiCount = app.savedRequests ? app.savedRequests.length : 0;
+                return `
+                    <div class="application-item" onclick="toggleApplication(${app.id})">
+                        <div class="application-header">
+                            <div>
+                                <span class="application-name">${escapeHtml(app.name)}</span>
+                                ${app.version ? `<span class="application-version">${escapeHtml(app.version)}</span>` : ''}
+                            </div>
+                            <span class="expand-icon">▶</span>
+                        </div>
+                        <div class="application-endpoints">${apiCount} ENDPOINTS</div>
+                        <div class="endpoints-list" id="endpoints-${app.id}">
+                            ${renderEndpoints(app.savedRequests || [])}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function renderEndpoints(requests) {
+            if (requests.length === 0) {
+                return '<div style="padding: 8px; color: #6b7280; font-size: 12px;">No endpoints yet</div>';
+            }
+            
+            return requests.map(req => {
+                const methodClass = req.method.toLowerCase();
+                return `
+                    <div class="endpoint-item">
+                        <span class="endpoint-method ${methodClass}">${req.method}</span>
+                        <span>${escapeHtml(req.url)}</span>
+                        <span class="endpoint-status success">200 OK</span>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function toggleApplication(appId) {
+            const item = document.querySelector(`.application-item[onclick*="${appId}"]`);
+            if (item) {
+                item.classList.toggle('expanded');
+            }
+        }
+        
+        function openProjectModal(projectId = null) {
+            const modal = document.getElementById('projectModal');
+            const form = document.getElementById('projectForm');
+            const title = document.getElementById('projectModalTitle');
+            
+            if (projectId) {
+                const project = projects.find(p => p.id === projectId);
+                if (project) {
+                    title.textContent = 'Edit Project';
+                    document.getElementById('projectName').value = project.name;
+                    document.getElementById('projectDescription').value = project.description || '';
+                    form.dataset.projectId = projectId;
+                }
+            } else {
+                title.textContent = 'New Project';
+                form.reset();
+                delete form.dataset.projectId;
+            }
+            
+            modal.classList.add('active');
+        }
+        
+        function closeProjectModal() {
+            document.getElementById('projectModal').classList.remove('active');
+            document.getElementById('projectForm').reset();
+        }
+        
+        function openApplicationModal(projectId, appId = null) {
+            const modal = document.getElementById('applicationModal');
+            const form = document.getElementById('applicationForm');
+            const title = document.getElementById('applicationModalTitle');
+            
+            document.getElementById('applicationProjectId').value = projectId;
+            
+            if (appId) {
+                const app = applications[projectId]?.find(a => a.id === appId);
+                if (app) {
+                    title.textContent = 'Edit Application';
+                    document.getElementById('applicationName').value = app.name;
+                    document.getElementById('applicationVersion').value = app.version || '';
+                    document.getElementById('applicationDescription').value = app.description || '';
+                    form.dataset.applicationId = appId;
+                }
+            } else {
+                title.textContent = 'New Application';
+                form.reset();
+                document.getElementById('applicationProjectId').value = projectId;
+                delete form.dataset.applicationId;
+            }
+            
+            modal.classList.add('active');
+        }
+        
+        function closeApplicationModal() {
+            document.getElementById('applicationModal').classList.remove('active');
+            document.getElementById('applicationForm').reset();
+        }
+        
+        async function saveProject(event) {
+            event.preventDefault();
+            const form = event.target;
+            const projectId = form.dataset.projectId;
+            
+            const projectData = {
+                name: document.getElementById('projectName').value,
+                description: document.getElementById('projectDescription').value
+            };
+            
+            try {
+                const url = projectId ? `/api/projects/${projectId}` : '/api/projects';
+                const method = projectId ? 'PUT' : 'POST';
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(projectData)
+                });
+                
+                if (response.ok) {
+                    closeProjectModal();
+                    await loadProjects();
+                    if (typeof CustomDialog !== 'undefined') {
+                        CustomDialog.showAlert('Success', projectId ? 'Project updated successfully!' : 'Project created successfully!');
+                    } else {
+                        alert(projectId ? 'Project updated successfully!' : 'Project created successfully!');
+                    }
+                } else {
+                    throw new Error('Failed to save project');
+                }
+            } catch (error) {
+                console.error('Error saving project:', error);
+                if (typeof CustomDialog !== 'undefined') {
+                    CustomDialog.showAlert('Error', 'Failed to save project. Please try again.');
+                } else {
+                    alert('Failed to save project. Please try again.');
+                }
+            }
+        }
+        
+        async function saveApplication(event) {
+            event.preventDefault();
+            const form = event.target;
+            const appId = form.dataset.applicationId;
+            const projectId = document.getElementById('applicationProjectId').value;
+            
+            const appData = {
+                name: document.getElementById('applicationName').value,
+                version: document.getElementById('applicationVersion').value,
+                description: document.getElementById('applicationDescription').value,
+                projectId: parseInt(projectId)
+            };
+            
+            try {
+                const url = appId ? `/api/applications/${appId}` : '/api/applications';
+                const method = appId ? 'PUT' : 'POST';
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(appData)
+                });
+                
+                if (response.ok) {
+                    closeApplicationModal();
+                    await loadProjects();
+                    if (typeof CustomDialog !== 'undefined') {
+                        CustomDialog.showAlert('Success', appId ? 'Application updated successfully!' : 'Application created successfully!');
+                    } else {
+                        alert(appId ? 'Application updated successfully!' : 'Application created successfully!');
+                    }
+                } else {
+                    throw new Error('Failed to save application');
+                }
+            } catch (error) {
+                console.error('Error saving application:', error);
+                if (typeof CustomDialog !== 'undefined') {
+                    CustomDialog.showAlert('Error', 'Failed to save application. Please try again.');
+                } else {
+                    alert('Failed to save application. Please try again.');
+                }
+            }
+        }
+        
+        function filterProjects() {
+            const searchTerm = document.getElementById('searchProjects').value.toLowerCase();
+            const cards = document.querySelectorAll('.project-card');
+            
+            cards.forEach(card => {
+                const title = card.querySelector('.project-title').textContent.toLowerCase();
+                if (title.includes(searchTerm)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+        
+        function setView(view) {
+            const grid = document.getElementById('projectsGrid');
+            if (view === 'list') {
+                grid.style.gridTemplateColumns = '1fr';
+            } else {
+                grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(400px, 1fr))';
+            }
+            
+            document.querySelectorAll('.view-toggle-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+        
+        function openProjectMenu(projectId) {
+            // TODO: Implement project menu (edit, delete, etc.)
+        }
+        
+        function manageEnvironment(projectId) {
+            // TODO: Implement environment management for project
+            window.location.href = '/environments';
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
+

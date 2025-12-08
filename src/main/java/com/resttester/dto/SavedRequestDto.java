@@ -15,6 +15,7 @@ public class SavedRequestDto {
     private String headers;
     private String body;
     private Long collectionId;
+    private Long applicationId;
     
     public Long getId() {
         return id;
@@ -70,6 +71,14 @@ public class SavedRequestDto {
     
     public void setCollectionId(Long collectionId) {
         this.collectionId = collectionId;
+    }
+    
+    public Long getApplicationId() {
+        return applicationId;
+    }
+    
+    public void setApplicationId(Long applicationId) {
+        this.applicationId = applicationId;
     }
 }
 

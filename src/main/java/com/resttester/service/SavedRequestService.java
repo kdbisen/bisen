@@ -8,8 +8,10 @@
 package com.resttester.service;
 
 import com.resttester.dto.SavedRequestDto;
+import com.resttester.model.Application;
 import com.resttester.model.Collection;
 import com.resttester.model.SavedRequest;
+import com.resttester.repository.ApplicationRepository;
 import com.resttester.repository.CollectionRepository;
 import com.resttester.repository.SavedRequestRepository;
 import org.springframework.stereotype.Service;
@@ -21,10 +23,12 @@ public class SavedRequestService {
     
     private final SavedRequestRepository repository;
     private final CollectionRepository collectionRepository;
+    private final ApplicationRepository applicationRepository;
     
-    public SavedRequestService(SavedRequestRepository repository, CollectionRepository collectionRepository) {
+    public SavedRequestService(SavedRequestRepository repository, CollectionRepository collectionRepository, ApplicationRepository applicationRepository) {
         this.repository = repository;
         this.collectionRepository = collectionRepository;
+        this.applicationRepository = applicationRepository;
     }
     
     public SavedRequest saveRequest(SavedRequestDto dto) {
@@ -51,6 +55,13 @@ public class SavedRequestService {
             savedRequest.setCollection(null);
         }
         
+        if (dto.getApplicationId() != null) {
+            Application application = applicationRepository.findById(dto.getApplicationId()).orElse(null);
+            savedRequest.setApplication(application);
+        } else {
+            savedRequest.setApplication(null);
+        }
+        
         return repository.save(savedRequest);
     }
     
@@ -72,6 +83,14 @@ public class SavedRequestService {
     
     public List<SavedRequest> getSavedRequestsWithoutCollection() {
         return repository.findByCollectionIsNullOrderByUpdatedAtDesc();
+    }
+    
+    public List<SavedRequest> getSavedRequestsByApplication(Long applicationId) {
+        return repository.findByApplicationIdOrderByUpdatedAtDesc(applicationId);
+    }
+    
+    public List<SavedRequest> getSavedRequestsWithoutApplication() {
+        return repository.findByApplicationIsNullOrderByUpdatedAtDesc();
     }
 }
 
