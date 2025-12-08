@@ -21,21 +21,24 @@
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: #f5f5f5;
+            background: #f8f9fa;
+            color: #2d2d2d;
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
         }
         
         .sidebar {
-            width: 260px;
+            width: 280px;
             background: #ffffff;
-            border-right: 1px solid #e5e5e5;
+            border-right: 1px solid #e5e7eb;
             padding: 20px;
             overflow-y: auto;
             position: fixed;
             height: 100vh;
             left: 0;
             top: 0;
+            z-index: 100;
         }
         
         .sidebar-header {
@@ -54,7 +57,7 @@
         }
         
         .sidebar-header p {
-            color: #8a8a8a;
+            color: #6b7280;
             font-size: 12px;
             font-weight: 400;
         }
@@ -70,7 +73,7 @@
         }
         
         .saved-request-item:hover {
-            background: #f5f5f5;
+            background: #f3f4f6;
         }
         
         .saved-request-name {
@@ -124,7 +127,7 @@
         }
         
         .collection-header:hover {
-            background: #f5f5f5;
+            background: #f3f4f6;
         }
         
         .collection-name {
@@ -154,7 +157,7 @@
         }
         
         .saved-request-item.nested:hover {
-            background: #f5f5f5;
+            background: #f3f4f6;
         }
         
         .saved-request-item.nested:hover .btn-add-to-collection {
@@ -224,7 +227,7 @@
         .btn-add-new-request {
             width: 100%;
             padding: 10px 16px;
-            background: #1a1a1a;
+            background: #2563eb;
             color: white;
             border: none;
             border-radius: 6px;
@@ -239,29 +242,33 @@
         }
         
         .btn-add-new-request:hover {
-            background: #333;
+            background: #1d4ed8;
         }
         
         .btn-add-new-request:active {
-            background: #000;
+            background: #1e40af;
         }
         
         .main-content {
             flex: 1;
-            margin-left: 260px;
-            padding: 24px;
-            background: #f5f5f5;
+            margin-left: 280px;
+            padding: 0;
+            background: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
         }
         
         .top-nav {
-            background: white;
-            border-radius: 0;
-            border-bottom: 1px solid #e5e5e5;
-            padding: 16px 24px;
-            margin: -24px -24px 24px -24px;
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 12px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
         }
         
         .nav-brand {
@@ -270,8 +277,14 @@
             gap: 8px;
         }
         
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
         .nav-brand .brand-name {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 700;
             color: #1a1a1a;
             letter-spacing: -0.5px;
@@ -280,10 +293,11 @@
         .nav-menu {
             display: flex;
             gap: 4px;
+            align-items: center;
         }
         
         .nav-menu-item {
-            color: #8a8a8a;
+            color: #6b7280;
             text-decoration: none;
             padding: 8px 12px;
             border-radius: 4px;
@@ -293,13 +307,49 @@
         }
         
         .nav-menu-item:hover {
-            background: #f5f5f5;
+            background: #f3f4f6;
             color: #1a1a1a;
         }
         
         .nav-menu-item.active {
-            background: #1a1a1a;
-            color: white;
+            background: #f3f4f6;
+            color: #2563eb;
+            border-bottom: 2px solid #2563eb;
+        }
+        
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .nav-icon-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            background: transparent;
+            border: none;
+            color: #6b7280;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+        }
+        
+        .nav-icon-btn:hover {
+            background: #f3f4f6;
+            color: #1a1a1a;
+        }
+        
+        .env-selector {
+            padding: 6px 12px;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            color: #1a1a1a;
+            font-size: 12px;
+            cursor: pointer;
         }
         
         .banner {
@@ -359,11 +409,146 @@
         }
         
         .card {
-            background: white;
+            background: #ffffff;
             border-radius: 0;
-            border: 1px solid #e5e5e5;
+            border: 1px solid #e5e7eb;
+            padding: 0;
+            margin: 0;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .request-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .request-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+        
+        .request-breadcrumb {
+            font-size: 12px;
+            color: #6b7280;
+        }
+        
+        .request-builder {
             padding: 24px;
-            margin-bottom: 16px;
+            flex: 1;
+            overflow-y: auto;
+            padding-bottom: 40px; /* Space for status bar */
+        }
+        
+        .method-url-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            align-items: center;
+        }
+        
+        .method-select {
+            width: 120px;
+            padding: 10px 12px;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            color: #1a1a1a;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        .url-input {
+            flex: 1;
+            padding: 10px 16px;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            color: #1a1a1a;
+            font-size: 13px;
+        }
+        
+        .url-input:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-send {
+            padding: 10px 20px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .btn-send:hover {
+            background: #1d4ed8;
+        }
+        
+        .btn-save {
+            padding: 10px 16px;
+            background: #ffffff;
+            color: #1a1a1a;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        .btn-save:hover {
+            background: #f9fafb;
+        }
+        
+        .request-tabs {
+            display: flex;
+            gap: 4px;
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 20px;
+        }
+        
+        .request-tab {
+            padding: 12px 16px;
+            background: transparent;
+            border: none;
+            color: #6b7280;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.15s;
+        }
+        
+        .request-tab:hover {
+            color: #1a1a1a;
+        }
+        
+        .request-tab.active {
+            color: #2563eb;
+            border-bottom-color: #2563eb;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
         }
         
         .form-group {
@@ -384,20 +569,21 @@
             gap: 12px;
         }
         
-        select, input[type="text"], textarea {
+        select, input[type="text"], textarea, input[type="number"] {
             width: 100%;
             padding: 10px 12px;
-            border: 1px solid #e5e5e5;
-            border-radius: 4px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
             font-size: 13px;
             transition: border-color 0.15s;
             font-family: inherit;
-            background: white;
+            background: #ffffff;
+            color: #1a1a1a;
         }
         
         select:focus, input:focus, textarea:focus {
             outline: none;
-            border-color: #1a1a1a;
+            border-color: #2563eb;
         }
         
         select {
@@ -420,10 +606,41 @@
         }
         
         .headers-container {
-            border: 1px solid #e5e5e5;
-            border-radius: 4px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
             padding: 12px;
-            background: #fafafa;
+            background: #f9fafb;
+        }
+        
+        .params-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+        
+        .params-table th {
+            text-align: left;
+            padding: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .params-table td {
+            padding: 10px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .params-table input {
+            width: 100%;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            color: #1a1a1a;
+        }
+        
+        .params-table tr:last-child td {
+            border-bottom: none;
         }
         
         .header-row {
@@ -604,17 +821,68 @@
         }
         
         .response-body {
-            background: #fafafa;
-            border: 1px solid #e5e5e5;
-            border-radius: 4px;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
             padding: 16px;
-            max-height: 400px;
+            max-height: 500px;
             overflow-y: auto;
             font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
             font-size: 12px;
             white-space: pre-wrap;
             word-wrap: break-word;
             line-height: 1.6;
+            color: #1a1a1a;
+        }
+        
+        .response-header-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .response-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .status-text {
+            font-weight: 600;
+            font-size: 13px;
+        }
+        
+        .response-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 12px;
+            color: #6b7280;
+        }
+        
+        .status-bar {
+            position: fixed;
+            bottom: 0;
+            left: 280px;
+            right: 0;
+            background: #ffffff;
+            border-top: 1px solid #e5e7eb;
+            padding: 8px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: #6b7280;
+            z-index: 40;
+            height: 28px;
+        }
+        
+        .status-bar-left {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .status-bar-right {
+            color: #6b7280;
         }
         
         .loading {
@@ -682,8 +950,8 @@
         </div>
         
         <div style="margin-bottom: 12px;">
-            <input type="text" id="sidebarSearch" placeholder="Search requests..." 
-                   style="width: 100%; padding: 8px 12px; border: 1px solid #e5e5e5; border-radius: 4px; font-size: 12px;"
+            <input type="text" id="sidebarSearch" placeholder="Filter collections..." 
+                   style="width: 100%; padding: 8px 12px; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 12px; color: #1a1a1a;"
                    onkeyup="filterSidebarRequests()">
         </div>
         
@@ -768,185 +1036,232 @@
     <div class="main-content">
         <div class="top-nav">
             <div class="nav-brand">
-                <img src="/icon.svg" alt="BISEN" style="width: 32px; height: 32px; margin-right: 12px; vertical-align: middle;">
+                <img src="/icon.svg" alt="BISEN" style="width: 28px; height: 28px;">
                 <span class="brand-name">BISEN</span>
             </div>
             <div class="nav-menu">
-                <a href="/" class="nav-menu-item">Home</a>
+                <a href="/" class="nav-menu-item active">Home</a>
                 <a href="/history" class="nav-menu-item">History</a>
-                <a href="/saved" class="nav-menu-item">Saved</a>
                 <a href="/collections" class="nav-menu-item">Collections</a>
+                <a href="/saved" class="nav-menu-item">Saved Requests</a>
                 <a href="/import" class="nav-menu-item">Import Swagger</a>
+            </div>
+            <div class="nav-actions">
+                <button class="nav-icon-btn" title="Settings">⚙️</button>
+                <select class="env-selector" id="topEnvSelect">
+                    <option>Production Env</option>
+                </select>
+                <button class="nav-icon-btn" title="Profile">👤</button>
             </div>
         </div>
         
         <div class="card">
-            <form id="requestForm">
-                <input type="hidden" id="savedRequestId">
-                <div class="form-group">
-                    <label>Request Name (Optional)</label>
-                    <input type="text" id="name" placeholder="e.g., Get User Profile">
-                </div>
-                
-                <div class="form-group">
-                    <label>Save to Collection (Optional)</label>
-                    <select id="collectionId">
-                        <option value="">-- No Collection --</option>
-                        <option th:each="collection : ${collections}" 
-                                th:value="${collection.id}" 
-                                th:text="${collection.name}"></option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                        <label style="margin-bottom: 0;">Environment & Variables</label>
-                        <div style="display: flex; gap: 8px; align-items: center;">
-                            <select id="environmentSelect" onchange="loadEnvironmentVariables()" style="padding: 4px 8px; border: 1px solid #e5e5e5; border-radius: 4px; font-size: 12px; background: white;">
+            <div class="request-header">
+                <div class="request-title" id="requestTitle">New Request</div>
+                <div class="request-breadcrumb" id="requestBreadcrumb"></div>
+            </div>
+            
+            <div class="request-builder">
+                <form id="requestForm">
+                    <input type="hidden" id="savedRequestId">
+                    
+                    <div class="method-url-bar">
+                        <select id="method" class="method-select" required>
+                            <option th:each="method : ${methods}" th:value="${method}" th:text="${method}"></option>
+                        </select>
+                        <input type="text" id="url" class="url-input" placeholder="https://api.example.com/users" required>
+                        <div class="action-buttons">
+                            <button type="submit" class="btn-send">
+                                <span>Send</span>
+                                <span>✈️</span>
+                            </button>
+                            <button type="button" class="btn-save" onclick="saveRequest()">Save</button>
+                        </div>
+                    </div>
+                    
+                    <div class="request-tabs">
+                        <button type="button" class="request-tab active" onclick="switchTab('params')">Params</button>
+                        <button type="button" class="request-tab" onclick="switchTab('authorization')">Authorization</button>
+                        <button type="button" class="request-tab" onclick="switchTab('headers')">Headers <span id="headersCount">(0)</span></button>
+                        <button type="button" class="request-tab" onclick="switchTab('body')">Body</button>
+                        <button type="button" class="request-tab" onclick="switchTab('settings')">Settings</button>
+                    </div>
+                    
+                    <div class="tab-content active" id="tab-params">
+                        <table class="params-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 40px;"><input type="checkbox"></th>
+                                    <th>KEY</th>
+                                    <th>VALUE</th>
+                                    <th>DESCRIPTION</th>
+                                </tr>
+                            </thead>
+                            <tbody id="paramsTableBody">
+                                <tr>
+                                    <td><input type="checkbox" checked></td>
+                                    <td><input type="text" placeholder="Key" value="active"></td>
+                                    <td><input type="text" placeholder="Value" value="true"></td>
+                                    <td><input type="text" placeholder="Description" value="Filter by active status"></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox" checked></td>
+                                    <td><input type="text" placeholder="Key" value="limit"></td>
+                                    <td><input type="text" placeholder="Value" value="50"></td>
+                                    <td><input type="text" placeholder="Description" value="Pagination limit"></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox"></td>
+                                    <td><input type="text" placeholder="Key"></td>
+                                    <td><input type="text" placeholder="Value"></td>
+                                    <td><input type="text" placeholder="Description"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="tab-content" id="tab-authorization">
+                        <div class="form-group">
+                            <label>Authorization Type</label>
+                            <select id="authType" onchange="updateAuthType()" class="method-select">
+                                <option value="none">No Auth</option>
+                                <option value="basic">Basic Auth</option>
+                                <option value="bearer">Bearer Token</option>
+                                <option value="apikey">API Key</option>
+                                <option value="digest">Digest Auth</option>
+                            </select>
+                            
+                            <div id="authBasic" style="display: none; margin-top: 12px;">
+                                <input type="text" id="authUsername" placeholder="Username" class="url-input" style="margin-bottom: 8px;">
+                                <input type="password" id="authPassword" placeholder="Password" class="url-input">
+                            </div>
+                            
+                            <div id="authBearer" style="display: none; margin-top: 12px;">
+                                <input type="text" id="authToken" placeholder="Bearer Token" class="url-input">
+                            </div>
+                            
+                            <div id="authApiKey" style="display: none; margin-top: 12px;">
+                                <input type="text" id="authApiKey" placeholder="API Key" class="url-input" style="margin-bottom: 8px;">
+                                <input type="text" id="authApiKeyHeader" placeholder="Header Name (e.g., X-API-Key)" value="X-API-Key" class="url-input">
+                            </div>
+                            
+                            <div id="authDigest" style="display: none; margin-top: 12px;">
+                                <input type="text" id="authDigestUsername" placeholder="Username" class="url-input" style="margin-bottom: 8px;">
+                                <input type="password" id="authDigestPassword" placeholder="Password" class="url-input">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="tab-headers">
+                        <div class="form-group">
+                            <label>Request Headers</label>
+                            <div class="headers-container" id="headersContainer">
+                                <div class="header-row">
+                                    <input type="text" class="header-key" placeholder="Key" value="Content-Type">
+                                    <input type="text" class="header-value" placeholder="Value" value="application/json">
+                                    <button type="button" class="btn-remove-header" onclick="removeHeader(this)">Remove</button>
+                                </div>
+                            </div>
+                            <button type="button" class="btn-add-header" onclick="addHeaderRow()">+ Add Header</button>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="tab-body">
+                        <div class="form-group">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <label style="margin-bottom: 0;">Request Body</label>
+                                <select id="bodyType" onchange="updateBodyType()" class="method-select" style="width: 180px;">
+                                    <option value="json">JSON</option>
+                                    <option value="xml">XML</option>
+                                    <option value="form-data">Form Data</option>
+                                    <option value="x-www-form-urlencoded">Form URL Encoded</option>
+                                    <option value="text">Text/Plain</option>
+                                    <option value="html">HTML</option>
+                                    <option value="none">None</option>
+                                </select>
+                            </div>
+                            <div style="position: relative;">
+                                <textarea id="body" class="body-textarea" placeholder='{"key": "value"}' onkeyup="validateBody()" onblur="formatBodyIfNeeded()"></textarea>
+                                <div style="position: absolute; top: 8px; right: 8px; display: flex; gap: 4px;">
+                                    <button type="button" onclick="formatBody()" title="Format JSON/XML" style="padding: 6px 12px; font-size: 11px; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 4px; cursor: pointer; color: #1a1a1a;">Format</button>
+                                    <button type="button" onclick="validateBody()" title="Validate JSON" style="padding: 6px 12px; font-size: 11px; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 4px; cursor: pointer; color: #1a1a1a;">Validate</button>
+                                </div>
+                            </div>
+                            <div id="bodyTypeHint" style="margin-top: 6px; font-size: 11px; color: #8a8a8a;"></div>
+                            <div id="bodyValidation" style="font-size: 11px; margin-top: 4px;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="tab-settings">
+                        <div class="form-group">
+                            <label>Request Name (Optional)</label>
+                            <input type="text" id="name" placeholder="e.g., Get User Profile">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Save to Collection (Optional)</label>
+                            <select id="collectionId">
+                                <option value="">-- No Collection --</option>
+                                <option th:each="collection : ${collections}" 
+                                        th:value="${collection.id}" 
+                                        th:text="${collection.name}"></option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Request Timeout (ms)</label>
+                            <input type="number" id="timeout" placeholder="30000" value="30000" min="1000" max="300000" style="width: 200px;">
+                            <span style="font-size: 11px; color: #8a8a8a; margin-left: 8px;">Default: 30000ms (30s)</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Environment & Variables</label>
+                            <select id="environmentSelect" onchange="loadEnvironmentVariables()" class="method-select" style="margin-bottom: 12px;">
                                 <option value="">No Environment</option>
                             </select>
-                            <button type="button" class="btn-add-header" onclick="toggleVariables()" style="margin: 0; padding: 4px 8px; font-size: 11px;">Edit</button>
-                            <button type="button" class="btn-add-header" onclick="previewVariableSubstitution()" style="margin: 0; padding: 4px 8px; font-size: 11px;">Preview</button>
+                            <div id="variablesContainer" style="display: none;">
+                                <textarea id="variables" placeholder='{"baseUrl": "https://api.example.com", "apiKey": "your-key"}' style="font-family: monospace; font-size: 12px; min-height: 80px; margin-bottom: 8px;"></textarea>
+                                <div style="display: flex; gap: 8px;">
+                                    <button type="button" onclick="validateVariables()" style="padding: 6px 12px; font-size: 11px; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 4px; cursor: pointer; color: #1a1a1a;">Validate JSON</button>
+                                    <button type="button" onclick="formatVariables()" style="padding: 6px 12px; font-size: 11px; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 4px; cursor: pointer; color: #1a1a1a;">Format</button>
+                                </div>
+                                <p style="font-size: 11px; color: #8a8a8a; margin-top: 6px;">Use {{variableName}} in URL, headers, or body</p>
+                                <div id="variableValidation" style="font-size: 11px; margin-top: 4px;"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Certificate (Optional)</label>
+                            <input type="file" id="certificateFile" accept=".p12,.pem,.jks,.pfx" class="url-input" style="margin-bottom: 8px;">
+                            <input type="password" id="certificatePassword" placeholder="Certificate Password (if required)" class="url-input" style="margin-bottom: 8px;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" id="ignoreSslErrors" style="width: auto;">
+                                <label for="ignoreSslErrors" style="font-size: 12px; margin: 0; font-weight: 500; color: #1a1a1a;">Ignore SSL Certificate Errors</label>
+                            </div>
                         </div>
                     </div>
-                    <div id="variablesContainer" style="display: none;">
-                        <textarea id="variables" placeholder='{"baseUrl": "https://api.example.com", "apiKey": "your-key"}' style="font-family: monospace; font-size: 12px; min-height: 80px; border: 1px solid #e5e5e5; border-radius: 4px; padding: 8px; width: 100%;"></textarea>
-                        <div style="display: flex; gap: 8px; margin-top: 6px;">
-                            <button type="button" onclick="validateVariables()" style="padding: 4px 12px; font-size: 11px; background: #f5f5f5; border: 1px solid #e5e5e5; border-radius: 4px; cursor: pointer;">Validate JSON</button>
-                            <button type="button" onclick="formatVariables()" style="padding: 4px 12px; font-size: 11px; background: #f5f5f5; border: 1px solid #e5e5e5; border-radius: 4px; cursor: pointer;">Format</button>
-                        </div>
-                        <p style="font-size: 11px; color: #8a8a8a; margin-top: 6px;">Use {{variableName}} in URL, headers, or body</p>
-                        <div id="variableValidation" style="font-size: 11px; margin-top: 4px;"></div>
-                    </div>
-                    <div id="variablePreview" style="display: none; margin-top: 8px; padding: 12px; background: #fafafa; border: 1px solid #e5e5e5; border-radius: 4px; font-size: 12px;">
-                        <div style="font-weight: 600; margin-bottom: 8px; color: #1a1a1a;">Variable Substitution Preview:</div>
-                        <div id="variablePreviewContent" style="font-family: monospace; color: #8a8a8a;"></div>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label>Request Timeout (ms)</label>
-                    <input type="number" id="timeout" placeholder="30000" value="30000" min="1000" max="300000" style="width: 150px;">
-                    <span style="font-size: 11px; color: #8a8a8a; margin-left: 8px;">Default: 30000ms (30s)</span>
-                </div>
-                
-                <div class="form-group">
-                    <div class="method-url-row">
-                        <div>
-                            <label>Method</label>
-                            <select id="method" required>
-                                <option th:each="method : ${methods}" th:value="${method}" th:text="${method}"></option>
-                            </select>
-                        </div>
-                        <div>
-                            <label>URL</label>
-                            <input type="text" id="url" placeholder="https://api.example.com/users" required>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label>Headers</label>
-                    <div class="headers-container" id="headersContainer">
-                        <div class="header-row">
-                            <input type="text" class="header-key" placeholder="Key" value="Content-Type">
-                            <input type="text" class="header-value" placeholder="Value" value="application/json">
-                            <button type="button" class="btn-remove-header" onclick="removeHeader(this)">Remove</button>
-                        </div>
-                    </div>
-                    <button type="button" class="btn-add-header" onclick="addHeaderRow()">+ Add Header</button>
-                </div>
-                
-                <div class="form-group">
-                    <label>Authorization</label>
-                    <select id="authType" onchange="updateAuthType()" style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 13px; margin-bottom: 12px;">
-                        <option value="none">No Auth</option>
-                        <option value="basic">Basic Auth</option>
-                        <option value="bearer">Bearer Token</option>
-                        <option value="apikey">API Key</option>
-                        <option value="digest">Digest Auth</option>
-                    </select>
-                    
-                    <div id="authBasic" style="display: none;">
-                        <input type="text" id="authUsername" placeholder="Username" style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 13px; margin-bottom: 8px;">
-                        <input type="password" id="authPassword" placeholder="Password" style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 13px;">
-                    </div>
-                    
-                    <div id="authBearer" style="display: none;">
-                        <input type="text" id="authToken" placeholder="Bearer Token" style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 13px;">
-                    </div>
-                    
-                    <div id="authApiKey" style="display: none;">
-                        <input type="text" id="authApiKey" placeholder="API Key" style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 13px; margin-bottom: 8px;">
-                        <input type="text" id="authApiKeyHeader" placeholder="Header Name (e.g., X-API-Key)" value="X-API-Key" style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 13px;">
-                    </div>
-                    
-                    <div id="authDigest" style="display: none;">
-                        <input type="text" id="authDigestUsername" placeholder="Username" style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 13px; margin-bottom: 8px;">
-                        <input type="password" id="authDigestPassword" placeholder="Password" style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 13px;">
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label>Certificate (Optional)</label>
-                    <div style="margin-bottom: 8px;">
-                        <label style="font-size: 12px; font-weight: 500; margin-bottom: 6px; display: block;">Certificate File (P12/PEM/JKS)</label>
-                        <input type="file" id="certificateFile" accept=".p12,.pem,.jks,.pfx" style="width: 100%; padding: 8px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 13px;">
-                    </div>
-                    <div style="margin-bottom: 8px;">
-                        <input type="password" id="certificatePassword" placeholder="Certificate Password (if required)" style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 13px;">
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <input type="checkbox" id="ignoreSslErrors" style="width: auto;">
-                        <label for="ignoreSslErrors" style="font-size: 12px; margin: 0; font-weight: 500;">Ignore SSL Certificate Errors (for self-signed certs)</label>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                        <label style="margin-bottom: 0;">Body</label>
-                        <select id="bodyType" onchange="updateBodyType()" style="width: 180px; padding: 6px 10px; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 12px; font-weight: 600;">
-                            <option value="json">JSON</option>
-                            <option value="xml">XML</option>
-                            <option value="form-data">Form Data</option>
-                            <option value="x-www-form-urlencoded">Form URL Encoded</option>
-                            <option value="text">Text/Plain</option>
-                            <option value="html">HTML</option>
-                            <option value="none">None</option>
-                        </select>
-                    </div>
-                    <div style="position: relative;">
-                        <textarea id="body" class="body-textarea" placeholder='{"key": "value"}' onkeyup="validateBody()" onblur="formatBodyIfNeeded()"></textarea>
-                        <div style="position: absolute; top: 8px; right: 8px; display: flex; gap: 4px;">
-                            <button type="button" onclick="formatBody()" title="Format JSON/XML" style="padding: 4px 8px; font-size: 11px; background: #f5f5f5; border: 1px solid #e5e5e5; border-radius: 4px; cursor: pointer;">Format</button>
-                            <button type="button" onclick="validateBody()" title="Validate JSON" style="padding: 4px 8px; font-size: 11px; background: #f5f5f5; border: 1px solid #e5e5e5; border-radius: 4px; cursor: pointer;">Validate</button>
-                        </div>
-                    </div>
-                    <div id="bodyTypeHint" style="margin-top: 6px; font-size: 11px; color: #718096;"></div>
-                    <div id="bodyValidation" style="font-size: 11px; margin-top: 4px;"></div>
-                </div>
-                
-                <div class="button-group">
-                    <button type="submit" class="btn-primary">Send Request</button>
-                    <button type="button" class="btn-secondary" onclick="saveRequest()">Save Request</button>
-                    <button type="button" class="btn-secondary" onclick="clearForm()">Clear</button>
-                </div>
-            </form>
+                </form>
             
-            <div id="responseSection" class="response-section" style="display: none;">
+            <div id="responseSection" class="response-section" style="display: none; margin-top: 24px; padding-top: 24px; border-top: 1px solid #e5e7eb;">
                 <div class="response-header">
-                    <div>
-                        <span id="statusBadge" class="status-badge"></span>
-                        <span id="responseTime" class="response-time"></span>
+                    <div class="response-header-info">
+                        <div class="response-status">
+                            <span class="status-text">Response</span>
+                            <span id="statusBadge" class="status-badge"></span>
+                        </div>
+                        <div class="response-meta">
+                            <span id="responseTime" class="response-time"></span>
+                            <span id="responseSize"></span>
+                        </div>
                     </div>
-                    <button class="btn-copy-response" onclick="copyResponse()" title="Copy Response">
+                    <button class="btn-copy-response" onclick="copyResponse()" title="Copy Response" style="background: #ffffff; border: 1px solid #e5e7eb; color: #1a1a1a;">
                         <span>Copy</span>
                     </button>
                 </div>
                 
-                <div id="responseHeaders" class="response-headers" style="display: none;"></div>
+                <div id="responseHeaders" class="response-headers" style="display: none; margin-top: 12px; padding: 12px; background: #f9fafb; border-radius: 6px; font-family: monospace; font-size: 11px; max-height: 150px; overflow-y: auto; border: 1px solid #e5e7eb; color: #1a1a1a;"></div>
                 
-                <div class="response-body" id="responseBody"></div>
+                <div class="response-body" id="responseBody" style="margin-top: 12px;"></div>
             </div>
             
             <div id="loading" class="loading" style="display: none;">
@@ -955,7 +1270,51 @@
         </div>
     </div>
     
+    <div class="status-bar">
+        <div class="status-bar-left">
+            <span>Ln 1, Col 1</span>
+            <span>JSON</span>
+            <span>UTF-8</span>
+        </div>
+        <div class="status-bar-right">
+            BISEN v1.2 BETA
+        </div>
+    </div>
+    
     <script>
+        // Tab switching function
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.request-tab').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            const tabContent = document.getElementById('tab-' + tabName);
+            const tabButton = Array.from(document.querySelectorAll('.request-tab')).find(btn => 
+                btn.textContent.toLowerCase().includes(tabName.toLowerCase())
+            );
+            
+            if (tabContent) {
+                tabContent.classList.add('active');
+            }
+            if (tabButton) {
+                tabButton.classList.add('active');
+            }
+        }
+        
+        // Update headers count
+        function updateHeadersCount() {
+            const count = document.querySelectorAll('#headersContainer .header-row').length;
+            const countSpan = document.getElementById('headersCount');
+            if (countSpan) {
+                countSpan.textContent = '(' + count + ')';
+            }
+        }
+        
         // Define toggleCollection early to make it available for onclick handlers
         function toggleCollection(collectionId) {
             const collectionDiv = document.getElementById('collection-' + collectionId);
@@ -1363,32 +1722,44 @@
                 return;
             }
             
-            statusBadge.textContent = `Status: ${statusCode}`;
-            statusBadge.className = 'status-badge ';
-            
+            // Format status badge
+            let statusText = statusCode.toString();
             if (statusCode >= 200 && statusCode < 300) {
-                statusBadge.className += 'status-2xx';
+                statusText += ' OK';
+                statusBadge.className = 'status-badge status-2xx';
             } else if (statusCode >= 400 && statusCode < 500) {
-                statusBadge.className += 'status-4xx';
+                statusText += ' Error';
+                statusBadge.className = 'status-badge status-4xx';
             } else if (statusCode >= 500) {
-                statusBadge.className += 'status-5xx';
+                statusText += ' Server Error';
+                statusBadge.className = 'status-badge status-5xx';
             } else {
-                statusBadge.className += 'status-0';
+                statusText = statusCode > 0 ? statusText : 'Error';
+                statusBadge.className = 'status-badge status-0';
             }
+            statusBadge.textContent = statusText;
             
             const responseTimeMs = data.responseTime != null ? data.responseTime : 0;
-            responseTime.textContent = `Response Time: ${responseTimeMs}ms`;
+            responseTime.textContent = `${responseTimeMs} ms`;
+            
+            // Calculate and display response size
+            const responseText = data.response != null ? data.response : '';
+            const responseSizeBytes = new Blob([responseText]).size;
+            const responseSizeKB = (responseSizeBytes / 1024).toFixed(1);
+            const responseSizeEl = document.getElementById('responseSize');
+            if (responseSizeEl) {
+                responseSizeEl.textContent = `${responseSizeKB} KB`;
+            }
             
             try {
-                const responseText = data.response != null ? data.response : '';
                 if (responseText.trim().startsWith('{') || responseText.trim().startsWith('[')) {
                     const json = JSON.parse(responseText);
-                    responseBody.textContent = JSON.stringify(json, null, 2);
+                    responseBody.textContent = '// JSON Response\n' + JSON.stringify(json, null, 2);
                 } else {
                     responseBody.textContent = responseText || 'No response body';
                 }
             } catch (e) {
-                responseBody.textContent = (data.response != null ? data.response : 'No response body');
+                responseBody.textContent = responseText || 'No response body';
             }
             
             if (data.headers && data.headers.trim && data.headers.trim() !== '') {
@@ -1412,9 +1783,13 @@
                 return;
             }
             
-            statusBadge.textContent = 'Status: Error';
+            statusBadge.textContent = 'Error';
             statusBadge.className = 'status-badge status-0';
             responseTime.textContent = '';
+            const responseSizeEl = document.getElementById('responseSize');
+            if (responseSizeEl) {
+                responseSizeEl.textContent = '';
+            }
             
             const errorMessage = error && error.message ? error.message : (error ? String(error) : 'Unknown error');
             responseBody.textContent = 'Error: ' + errorMessage;
