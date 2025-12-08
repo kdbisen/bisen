@@ -33,9 +33,11 @@ if [ "$JAVA_VERSION" -lt 17 ]; then
     exit 1
 fi
 
-# Check if JAR file exists
-if [ ! -f "rest-api-tester-1.0.0.jar" ]; then
-    echo "ERROR: rest-api-tester-1.0.0.jar not found!"
+# Find JAR file (supports version numbers)
+JAR_FILE=$(ls rest-api-tester-*.jar 2>/dev/null | head -n 1)
+
+if [ -z "$JAR_FILE" ]; then
+    echo "ERROR: JAR file not found!"
     echo "Please make sure the JAR file is in the same folder as this script."
     echo ""
     read -p "Press Enter to exit..."
@@ -44,13 +46,13 @@ fi
 
 echo "Starting BISEN API Tester..."
 echo ""
-echo "The application will open in your browser at: http://localhost:8080"
+echo "The application will open in your browser at: http://localhost:2000"
 echo ""
 echo "Press Ctrl+C to stop the application."
 echo ""
 
 # Start the application
-java -jar rest-api-tester-1.0.0.jar
+java -jar "$JAR_FILE"
 
 if [ $? -ne 0 ]; then
     echo ""

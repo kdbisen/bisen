@@ -4,15 +4,15 @@
 
 ### For Windows Users:
 1. Double-click `start-windows.bat` to start the application
-2. The application will open automatically at http://localhost:8080
+2. The application will open automatically at http://localhost:2000
 
 ### For macOS Users:
 1. Double-click `start-mac.command` (or `start-mac.sh` in terminal)
-2. The application will open automatically at http://localhost:8080
+2. The application will open automatically at http://localhost:2000
 
 ### For Linux Users:
 1. Run in terminal: `./start-mac.sh`
-2. The application will open automatically at http://localhost:8080
+2. The application will open automatically at http://localhost:2000
 
 ## Requirements
 
@@ -51,11 +51,17 @@ sudo apt-get install openjdk-17-jdk
 ## Package Contents
 
 ```
-bisen-api-tester/
+bisen-api-tester-1.0.0/
 ├── rest-api-tester-1.0.0.jar    # Main application JAR file
 ├── start-windows.bat            # Windows startup script
-├── start-mac.sh                 # macOS/Linux startup script
-└── README.md                    # This file
+├── start-mac.sh                 # macOS/Linux startup script (terminal)
+├── start-mac.command            # macOS startup script (double-click)
+├── DISTRIBUTION_README.md       # This file
+└── docs/                        # Documentation folder
+    ├── README.md
+    ├── QUICK_START.md
+    ├── FEATURES.md
+    └── ...
 ```
 
 ## Usage
@@ -64,7 +70,7 @@ bisen-api-tester/
 2. **Run the appropriate startup script** for your operating system:
    - Windows: Double-click `start-windows.bat`
    - macOS/Linux: Double-click `start-mac.sh` or run `./start-mac.sh` in terminal
-3. **Open your browser** and go to: http://localhost:8080
+3. **Open your browser** and go to: http://localhost:2000
 4. **Start testing APIs!**
 
 ## Data Storage
@@ -85,9 +91,9 @@ All your data (collections, saved requests, history) is stored locally on your m
 - Java is not installed or not in your PATH
 - Install Java 17+ and try again
 
-### "Port 8080 is already in use"
-- Another application is using port 8080
-- Stop that application or change the port in `application.yml`
+### "Port 2000 is already in use"
+- Another application is using port 2000
+- Stop that application or change the port in the application configuration
 
 ### Application won't start
 - Check that Java 17+ is installed: `java -version`

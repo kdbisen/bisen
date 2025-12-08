@@ -21,9 +21,12 @@ if %errorlevel% neq 0 (
 REM Get the directory where the batch file is located
 cd /d "%~dp0"
 
-REM Check if JAR file exists
-if not exist "rest-api-tester-1.0.0.jar" (
-    echo ERROR: rest-api-tester-1.0.0.jar not found!
+REM Find JAR file (supports version numbers)
+set JAR_FILE=
+for %%f in (rest-api-tester-*.jar) do set JAR_FILE=%%f
+
+if "%JAR_FILE%"=="" (
+    echo ERROR: JAR file not found!
     echo Please make sure the JAR file is in the same folder as this script.
     echo.
     pause
@@ -32,13 +35,13 @@ if not exist "rest-api-tester-1.0.0.jar" (
 
 echo Starting BISEN API Tester...
 echo.
-echo The application will open in your browser at: http://localhost:8080
+echo The application will open in your browser at: http://localhost:2000
 echo.
 echo Press Ctrl+C to stop the application.
 echo.
 
 REM Start the application
-java -jar rest-api-tester-1.0.0.jar
+java -jar "%JAR_FILE%"
 
 if %errorlevel% neq 0 (
     echo.
