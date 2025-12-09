@@ -752,21 +752,39 @@
         
         .response-section {
             margin-top: 24px;
-            animation: fadeIn 0.2s ease-in;
+            animation: fadeIn 0.3s ease-in;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
         
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .response-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #e5e5e5;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        .response-header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .response-header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
         
         .btn-copy-response {
@@ -814,25 +832,156 @@
         }
         
         .response-time {
-            color: #8a8a8a;
-            font-size: 12px;
-            font-weight: 400;
-            margin-left: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: #f3f4f6;
+            border-radius: 6px;
+            color: #374151;
+            font-size: 13px;
+            font-weight: 500;
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+        }
+        
+        .response-time-icon {
+            width: 16px;
+            height: 16px;
+            color: #2563eb;
+        }
+        
+        .response-size {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: #f3f4f6;
+            border-radius: 6px;
+            color: #374151;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        .response-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .response-tab {
+            padding: 10px 16px;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            color: #6b7280;
+            transition: all 0.2s;
+            margin-bottom: -1px;
+        }
+        
+        .response-tab:hover {
+            color: #2563eb;
+        }
+        
+        .response-tab.active {
+            color: #2563eb;
+            border-bottom-color: #2563eb;
+        }
+        
+        .response-tab-content {
+            display: none;
+        }
+        
+        .response-tab-content.active {
+            display: block;
         }
         
         .response-body {
+            background: #1a1a1a;
+            border: 1px solid #374151;
+            border-radius: 6px;
+            padding: 20px;
+            max-height: 600px;
+            overflow-y: auto;
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            line-height: 1.7;
+            color: #e5e7eb;
+            position: relative;
+        }
+        
+        .response-body::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .response-body::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        
+        .response-body::-webkit-scrollbar-thumb {
+            background: #4b5563;
+            border-radius: 4px;
+        }
+        
+        .response-body::-webkit-scrollbar-thumb:hover {
+            background: #6b7280;
+        }
+        
+        .response-headers-container {
             background: #f9fafb;
             border: 1px solid #e5e7eb;
             border-radius: 6px;
             padding: 16px;
-            max-height: 500px;
+            max-height: 400px;
             overflow-y: auto;
             font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
             font-size: 12px;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            line-height: 1.6;
+        }
+        
+        .response-headers-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .response-headers-table th {
+            text-align: left;
+            padding: 8px 12px;
+            background: #f3f4f6;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #374151;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .response-headers-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e5e7eb;
             color: #1a1a1a;
+        }
+        
+        .response-headers-table tr:hover {
+            background: #f9fafb;
+        }
+        
+        .response-headers-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .header-key {
+            font-weight: 600;
+            color: #1a1a1a;
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+        }
+        
+        .header-value {
+            color: #4b5563;
+            word-break: break-all;
         }
         
         .response-header-info {
@@ -887,15 +1036,60 @@
         
         .loading {
             text-align: center;
-            padding: 20px;
-            color: #667eea;
+            padding: 40px 20px;
+            color: #2563eb;
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 500;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+        
+        .loading-spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #e5e7eb;
+            border-top-color: #2563eb;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            font-size: 15px;
+            color: #374151;
+            font-weight: 500;
+        }
+        
+        .loading-dots {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #2563eb;
+            animation: pulse 1.4s ease-in-out infinite;
+        }
+        
+        .loading-dots:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .loading-dots:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1); }
         }
         
         .loading::after {
-            content: '...';
-            animation: dots 1.5s steps(4, end) infinite;
+            content: '';
         }
         
         @keyframes dots {
@@ -1206,30 +1400,67 @@
                     </div>
                 </form>
             
-            <div id="responseSection" class="response-section" style="display: none; margin-top: 24px; padding-top: 24px; border-top: 1px solid #e5e7eb;">
-                <div class="response-header">
-                    <div class="response-header-info">
-                        <div class="response-status">
-                            <span class="status-text">Response</span>
-                            <span id="statusBadge" class="status-badge"></span>
-                        </div>
-                        <div class="response-meta">
-                            <span id="responseTime" class="response-time"></span>
-                            <span id="responseSize"></span>
-                        </div>
-                    </div>
-                    <button class="btn-copy-response" onclick="copyResponse()" title="Copy Response" style="background: #ffffff; border: 1px solid #e5e7eb; color: #1a1a1a;">
-                        <span>Copy</span>
-                    </button>
-                </div>
-                
-                <div id="responseHeaders" class="response-headers" style="display: none; margin-top: 12px; padding: 12px; background: #f9fafb; border-radius: 6px; font-family: monospace; font-size: 11px; max-height: 150px; overflow-y: auto; border: 1px solid #e5e7eb; color: #1a1a1a;"></div>
-                
-                <div class="response-body" id="responseBody" style="margin-top: 12px;"></div>
+            <div id="loading" class="loading" style="display: none;">
+                <div class="loading-spinner"></div>
+                <div class="loading-text">Sending request<span class="loading-dots"></span><span class="loading-dots"></span><span class="loading-dots"></span></div>
             </div>
             
-            <div id="loading" class="loading" style="display: none;">
-                Sending request
+            <div id="responseSection" class="response-section" style="display: none;">
+                <div class="response-header">
+                    <div class="response-header-left">
+                        <div class="response-status">
+                            <span class="status-text" style="font-size: 14px; color: #6b7280; margin-right: 8px;">Status:</span>
+                            <span id="statusBadge" class="status-badge"></span>
+                        </div>
+                        <span id="responseTime" class="response-time">
+                            <svg class="response-time-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span id="responseTimeValue">0 ms</span>
+                        </span>
+                        <span id="responseSize" class="response-size">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            <span id="responseSizeValue">0 KB</span>
+                        </span>
+                    </div>
+                    <div class="response-header-right">
+                        <button class="btn-copy-response" onclick="copyResponse()" title="Copy Response">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-right: 6px;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                            </svg>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="response-tabs">
+                    <button class="response-tab active" onclick="switchResponseTab('body')">Body</button>
+                    <button class="response-tab" onclick="switchResponseTab('headers')">Headers</button>
+                </div>
+                
+                <div id="responseBodyTab" class="response-tab-content active">
+                    <div class="response-body" id="responseBody"></div>
+                </div>
+                
+                <div id="responseHeadersTab" class="response-tab-content">
+                    <div class="response-headers-container" id="responseHeadersContainer">
+                        <table class="response-headers-table" id="responseHeadersTable">
+                            <thead>
+                                <tr>
+                                    <th style="width: 30%;">Header</th>
+                                    <th>Value</th>
+                                </tr>
+                            </thead>
+                            <tbody id="responseHeadersBody">
+                                <tr>
+                                    <td colspan="2" style="text-align: center; color: #9ca3af; padding: 20px;">No headers available</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1808,8 +2039,16 @@
             const loadingEl = document.getElementById('loading');
             const responseSectionEl = document.getElementById('responseSection');
             
-            if (loadingEl) loadingEl.style.display = 'block';
-            if (responseSectionEl) responseSectionEl.style.display = 'none';
+            // Show loading screen
+            if (loadingEl) {
+                loadingEl.style.display = 'flex';
+            }
+            if (responseSectionEl) {
+                responseSectionEl.style.display = 'none';
+            }
+            
+            // Record start time for accurate timing
+            window.requestStartTime = Date.now();
             
             try {
                 const response = await fetch('/api/execute', {
@@ -1833,9 +2072,35 @@
             } catch (error) {
                 displayError(error);
             } finally {
-                if (loadingEl) loadingEl.style.display = 'none';
+                // Hide loading screen
+                if (loadingEl) {
+                    loadingEl.style.display = 'none';
+                }
             }
         });
+        
+        function switchResponseTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.response-tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.response-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            const tabContent = document.getElementById(`response${tabName.charAt(0).toUpperCase() + tabName.slice(1)}Tab`);
+            const tabButton = event.target;
+            
+            if (tabContent) {
+                tabContent.classList.add('active');
+            }
+            if (tabButton) {
+                tabButton.classList.add('active');
+            }
+        }
+        
+        window.switchResponseTab = switchResponseTab;
         
         function displayResponse(data) {
             if (!data) {
@@ -1845,12 +2110,12 @@
             
             const statusCode = data.statusCode != null ? data.statusCode : 0;
             const statusBadge = document.getElementById('statusBadge');
-            const responseTime = document.getElementById('responseTime');
+            const responseTimeValue = document.getElementById('responseTimeValue');
             const responseBody = document.getElementById('responseBody');
-            const responseHeaders = document.getElementById('responseHeaders');
+            const responseHeadersBody = document.getElementById('responseHeadersBody');
             const responseSection = document.getElementById('responseSection');
             
-            if (!statusBadge || !responseTime || !responseBody || !responseSection) {
+            if (!statusBadge || !responseTimeValue || !responseBody || !responseSection) {
                 console.error('Response elements not found');
                 return;
             }
@@ -1872,22 +2137,42 @@
             }
             statusBadge.textContent = statusText;
             
+            // Display response time prominently
             const responseTimeMs = data.responseTime != null ? data.responseTime : 0;
-            responseTime.textContent = `${responseTimeMs} ms`;
+            let timeDisplay = '';
+            if (responseTimeMs < 1000) {
+                timeDisplay = `${responseTimeMs} ms`;
+            } else if (responseTimeMs < 60000) {
+                timeDisplay = `${(responseTimeMs / 1000).toFixed(2)} s`;
+            } else {
+                timeDisplay = `${(responseTimeMs / 60000).toFixed(2)} min`;
+            }
+            responseTimeValue.textContent = timeDisplay;
             
             // Calculate and display response size
             const responseText = data.response != null ? data.response : '';
             const responseSizeBytes = new Blob([responseText]).size;
-            const responseSizeKB = (responseSizeBytes / 1024).toFixed(1);
-            const responseSizeEl = document.getElementById('responseSize');
-            if (responseSizeEl) {
-                responseSizeEl.textContent = `${responseSizeKB} KB`;
+            let sizeDisplay = '';
+            if (responseSizeBytes < 1024) {
+                sizeDisplay = `${responseSizeBytes} B`;
+            } else if (responseSizeBytes < 1048576) {
+                sizeDisplay = `${(responseSizeBytes / 1024).toFixed(2)} KB`;
+            } else {
+                sizeDisplay = `${(responseSizeBytes / 1048576).toFixed(2)} MB`;
+            }
+            const responseSizeValue = document.getElementById('responseSizeValue');
+            if (responseSizeValue) {
+                responseSizeValue.textContent = sizeDisplay;
             }
             
+            // Format and display response body
             try {
                 if (responseText.trim().startsWith('{') || responseText.trim().startsWith('[')) {
                     const json = JSON.parse(responseText);
-                    responseBody.textContent = '// JSON Response\n' + JSON.stringify(json, null, 2);
+                    responseBody.textContent = JSON.stringify(json, null, 2);
+                } else if (responseText.trim().startsWith('<')) {
+                    // XML/HTML response
+                    responseBody.textContent = responseText;
                 } else {
                     responseBody.textContent = responseText || 'No response body';
                 }
@@ -1895,11 +2180,45 @@
                 responseBody.textContent = responseText || 'No response body';
             }
             
+            // Parse and display headers in table format
             if (data.headers && data.headers.trim && data.headers.trim() !== '') {
-                responseHeaders.textContent = data.headers;
-                responseHeaders.style.display = 'block';
+                const headersText = data.headers;
+                const headersArray = headersText.split('\n').filter(line => line.trim() !== '');
+                
+                if (responseHeadersBody) {
+                    responseHeadersBody.innerHTML = '';
+                    
+                    if (headersArray.length === 0) {
+                        responseHeadersBody.innerHTML = '<tr><td colspan="2" style="text-align: center; color: #9ca3af; padding: 20px;">No headers available</td></tr>';
+                    } else {
+                        headersArray.forEach(headerLine => {
+                            const colonIndex = headerLine.indexOf(':');
+                            if (colonIndex > 0) {
+                                const key = headerLine.substring(0, colonIndex).trim();
+                                const value = headerLine.substring(colonIndex + 1).trim();
+                                
+                                const row = document.createElement('tr');
+                                row.innerHTML = `
+                                    <td class="header-key">${escapeHtml(key)}</td>
+                                    <td class="header-value">${escapeHtml(value)}</td>
+                                `;
+                                responseHeadersBody.appendChild(row);
+                            } else {
+                                // Handle headers without colon (shouldn't happen, but just in case)
+                                const row = document.createElement('tr');
+                                row.innerHTML = `
+                                    <td class="header-key">${escapeHtml(headerLine)}</td>
+                                    <td class="header-value">-</td>
+                                `;
+                                responseHeadersBody.appendChild(row);
+                            }
+                        });
+                    }
+                }
             } else {
-                responseHeaders.style.display = 'none';
+                if (responseHeadersBody) {
+                    responseHeadersBody.innerHTML = '<tr><td colspan="2" style="text-align: center; color: #9ca3af; padding: 20px;">No headers available</td></tr>';
+                }
             }
             
             responseSection.style.display = 'block';
@@ -1907,25 +2226,47 @@
         
         function displayError(error) {
             const statusBadge = document.getElementById('statusBadge');
-            const responseTime = document.getElementById('responseTime');
+            const responseTimeValue = document.getElementById('responseTimeValue');
             const responseBody = document.getElementById('responseBody');
             const responseSection = document.getElementById('responseSection');
+            const responseHeadersBody = document.getElementById('responseHeadersBody');
             
-            if (!statusBadge || !responseTime || !responseBody || !responseSection) {
+            if (!statusBadge || !responseBody || !responseSection) {
                 console.error('Error display elements not found');
                 return;
             }
             
             statusBadge.textContent = 'Error';
             statusBadge.className = 'status-badge status-0';
-            responseTime.textContent = '';
-            const responseSizeEl = document.getElementById('responseSize');
-            if (responseSizeEl) {
-                responseSizeEl.textContent = '';
+            
+            if (responseTimeValue) {
+                responseTimeValue.textContent = 'N/A';
+            }
+            
+            const responseSizeValue = document.getElementById('responseSizeValue');
+            if (responseSizeValue) {
+                responseSizeValue.textContent = 'N/A';
             }
             
             const errorMessage = error && error.message ? error.message : (error ? String(error) : 'Unknown error');
-            responseBody.textContent = 'Error: ' + errorMessage;
+            responseBody.textContent = '// Error\n' + errorMessage;
+            
+            if (responseHeadersBody) {
+                responseHeadersBody.innerHTML = '<tr><td colspan="2" style="text-align: center; color: #9ca3af; padding: 20px;">No headers available</td></tr>';
+            }
+            
+            // Switch to body tab
+            document.querySelectorAll('.response-tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.response-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            const bodyTab = document.getElementById('responseBodyTab');
+            const bodyTabButton = document.querySelector('.response-tab');
+            if (bodyTab) bodyTab.classList.add('active');
+            if (bodyTabButton) bodyTabButton.classList.add('active');
+            
             responseSection.style.display = 'block';
         }
         
