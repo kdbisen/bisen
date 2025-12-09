@@ -1386,13 +1386,23 @@
                 if (response.ok) {
                     const savedRequest = await response.json();
                     
-                    document.getElementById('savedRequestId').value = savedRequest.id;
-                    document.getElementById('name').value = savedRequest.name || '';
-                    document.getElementById('method').value = savedRequest.method;
-                    document.getElementById('url').value = savedRequest.url;
+                    // Set form values with null checks
+                    const savedRequestIdEl = document.getElementById('savedRequestId');
+                    if (savedRequestIdEl) savedRequestIdEl.value = savedRequest.id || '';
+                    
+                    const nameEl = document.getElementById('name');
+                    if (nameEl) nameEl.value = savedRequest.name || '';
+                    
+                    const methodEl = document.getElementById('method');
+                    if (methodEl) methodEl.value = savedRequest.method || 'GET';
+                    
+                    const urlEl = document.getElementById('url');
+                    if (urlEl) urlEl.value = savedRequest.url || '';
+                    
                     setHeaders(savedRequest.headers || '');
-                    document.getElementById('body').value = savedRequest.body || '';
-                    document.getElementById('collectionId').value = savedRequest.collection ? savedRequest.collection.id : '';
+                    
+                    const bodyEl = document.getElementById('body');
+                    if (bodyEl) bodyEl.value = savedRequest.body || '';
                     
                     // Update request title
                     updateRequestTitle(savedRequest.name || 'Untitled Request', savedRequest);
@@ -1409,6 +1419,22 @@
                             if (typeof updateApplicationInfo === 'function') {
                                 updateApplicationInfo();
                             }
+                            // Update project assignment display
+                            if (savedRequest.application.project) {
+                                const assignedProjectName = document.getElementById('assignedProjectName');
+                                const assignedApplicationName = document.getElementById('assignedApplicationName');
+                                const assignedApplicationVersion = document.getElementById('assignedApplicationVersion');
+                                const noAssignment = document.getElementById('noAssignment');
+                                const assignmentInfo = document.getElementById('assignmentInfo');
+                                
+                                if (assignedProjectName) assignedProjectName.textContent = savedRequest.application.project.name || '-';
+                                if (assignedApplicationName) assignedApplicationName.textContent = savedRequest.application.name || '-';
+                                if (assignedApplicationVersion) {
+                                    assignedApplicationVersion.textContent = savedRequest.application.version ? ` (${savedRequest.application.version})` : '';
+                                }
+                                if (noAssignment) noAssignment.style.display = 'none';
+                                if (assignmentInfo) assignmentInfo.style.display = 'block';
+                            }
                         }
                     } else {
                         const applicationSelect = document.getElementById('applicationId');
@@ -1418,9 +1444,15 @@
                                 updateApplicationInfo();
                             }
                         }
+                        // Clear project assignment display
+                        const noAssignment = document.getElementById('noAssignment');
+                        const assignmentInfo = document.getElementById('assignmentInfo');
+                        if (noAssignment) noAssignment.style.display = 'block';
+                        if (assignmentInfo) assignmentInfo.style.display = 'none';
                     }
                     
-                    document.getElementById('timeout').value = '30000';
+                    const timeoutEl = document.getElementById('timeout');
+                    if (timeoutEl) timeoutEl.value = '30000';
                     
                     // Detect body type from Content-Type header
                     if (typeof detectBodyTypeFromHeaders === 'function') {
@@ -1434,6 +1466,7 @@
                     }
                 }
             } catch (error) {
+                console.error('Error loading saved request:', error);
                 if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
                     await CustomDialog.showAlert('Error: ' + error.message, 'Error');
                 } else {
@@ -1704,7 +1737,7 @@
             const bodyType = document.getElementById('bodyType').value;
             const body = bodyType === 'none' ? '' : document.getElementById('body').value;
             const name = document.getElementById('name').value;
-            const collectionId = document.getElementById('collectionId').value;
+            // Collections are deprecated - removed collectionId reference
             
             // Get authorization data
             const authType = document.getElementById('authType').value;
@@ -1759,7 +1792,7 @@
                 variables: variables,
                 body: body,
                 name: name,
-                collectionId: collectionId ? parseInt(collectionId) : null,
+                collectionId: null, // Collections are deprecated
                 authType: authType,
                 username: authType === 'basic' ? authUsername : (authType === 'digest' ? authDigestUsername : null),
                 password: authType === 'basic' ? authPassword : (authType === 'digest' ? authDigestPassword : null),
@@ -3216,16 +3249,7 @@
                         return false;
                     }
                     
-                    // Handle add to collection button
-                    const addCollectionBtn = e.target.closest('button.btn-add-collection');
-                    if (addCollectionBtn) {
-                        e.stopPropagation();
-                        const requestId = addCollectionBtn.getAttribute('data-request-id');
-                        if (requestId) {
-                            showAddToCollectionMenu(e, parseInt(requestId));
-                        }
-                        return false;
-                    }
+                    // Collections are deprecated - removed add to collection button handler
                 });
             }
             
@@ -3405,10 +3429,11 @@
                                                             <span class="saved-request-url">${escapeHtml(req.url || '')}</span>
                                                         </div>
                                                         <div style="position: absolute; top: 8px; right: 8px; display: flex; gap: 4px;">
-                                                            <button class="btn-add-to-collection btn-duplicate" 
+                                                            <button class="btn-duplicate" 
                                                                     data-request-id="${req.id}"
                                                                     title="Duplicate Request"
-                                                                    style="width: 20px; height: 20px; font-size: 11px;">⧉</button>
+                                                                    onclick="event.stopPropagation(); duplicateRequest(${req.id});"
+                                                                    style="width: 20px; height: 20px; font-size: 11px; background: transparent; border: none; cursor: pointer; color: #6b7280;">⧉</button>
                                                         </div>
                                                     </div>
                                                 `).join('')}
@@ -3439,10 +3464,11 @@
                                         <span class="saved-request-url">${escapeHtml(req.url || '')}</span>
                                     </div>
                                     <div style="position: absolute; top: 8px; right: 8px; display: flex; gap: 4px;">
-                                        <button class="btn-add-to-collection btn-duplicate" 
+                                        <button class="btn-duplicate" 
                                                 data-request-id="${req.id}"
                                                 title="Duplicate Request"
-                                                style="width: 20px; height: 20px; font-size: 11px;">⧉</button>
+                                                onclick="event.stopPropagation(); duplicateRequest(${req.id});"
+                                                style="width: 20px; height: 20px; font-size: 11px; background: transparent; border: none; cursor: pointer; color: #6b7280;">⧉</button>
                                     </div>
                                 </div>
                             `).join('');

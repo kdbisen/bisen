@@ -74,14 +74,15 @@ public class ApiTesterController {
     public String index(Model model) {
         model.addAttribute("requestDto", new RequestDto());
         model.addAttribute("methods", List.of("GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"));
-        List<Collection> collections = collectionService.getAllCollections();
-        model.addAttribute("collections", collections);
-        // Get all saved requests grouped by collection
+        // Get all projects with their applications
+        List<Project> projects = projectService.getAllProjects();
+        model.addAttribute("projects", projects);
+        // Get all saved requests
         List<SavedRequest> allSavedRequests = savedRequestService.getAllSavedRequests();
         model.addAttribute("savedRequests", allSavedRequests);
-        // Also pass requests without collection
-        List<SavedRequest> requestsWithoutCollection = savedRequestService.getSavedRequestsWithoutCollection();
-        model.addAttribute("requestsWithoutCollection", requestsWithoutCollection);
+        // Get requests without application
+        List<SavedRequest> requestsWithoutApplication = savedRequestService.getSavedRequestsWithoutApplication();
+        model.addAttribute("requestsWithoutApplication", requestsWithoutApplication);
         // Get environments
         List<Environment> environments = environmentService.getAllEnvironments();
         model.addAttribute("environments", environments);
