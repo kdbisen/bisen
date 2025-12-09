@@ -25,16 +25,21 @@ public class SecurityValidator {
     private static final int MAX_BODY_SIZE = 10 * 1024 * 1024; // 10MB
     private static final int MAX_HEADER_COUNT = 50;
 
-    // Blocked internal IP ranges and localhost
-    private static final Set<String> BLOCKED_HOSTS = new HashSet<>(Arrays.asList(
+    // Allowed localhost hosts for local testing
+    private static final Set<String> ALLOWED_LOCALHOST_HOSTS = new HashSet<>(Arrays.asList(
         "localhost",
         "127.0.0.1",
-        "0.0.0.0",
         "::1",
         "[::1]"
     ));
 
-    // Blocked private IP ranges
+    // Blocked hosts (excluding localhost for local testing)
+    private static final Set<String> BLOCKED_HOSTS = new HashSet<>(Arrays.asList(
+        "0.0.0.0"
+    ));
+
+    // Blocked private IP ranges (excluding localhost)
+    // Note: We allow localhost (127.0.0.1) for local testing
     private static final Pattern PRIVATE_IP_PATTERN = Pattern.compile(
         "^(10\\.|172\\.(1[6-9]|2[0-9]|3[01])\\.|192\\.168\\.|169\\.254\\.)"
     );
@@ -91,24 +96,32 @@ public class SecurityValidator {
 
             host = host.toLowerCase();
 
-            // Check for blocked hosts
+            // Allow localhost for local testing
+            if (ALLOWED_LOCALHOST_HOSTS.contains(host) || 
+                host.equals("127.0.0.1") || 
+                host.startsWith("localhost") || 
+                host.contains(".local") ||
+                host.equals("[::1]")) {
+                // Allow localhost - this is a local testing tool
+                return ValidationResult.success(url);
+            }
+
+            // Check for blocked hosts (excluding localhost)
             if (BLOCKED_HOSTS.contains(host)) {
-                return ValidationResult.error("Requests to localhost/internal addresses are blocked for security");
+                return ValidationResult.error("Requests to " + host + " are blocked for security");
             }
 
-            // Check for private IP ranges
+            // Check for private IP ranges (but allow localhost)
             if (PRIVATE_IP_PATTERN.matcher(host).find()) {
-                return ValidationResult.error("Requests to private IP ranges are blocked for security");
+                // Allow localhost IPs (127.0.0.1) but block other private IPs
+                if (!host.equals("127.0.0.1") && !host.startsWith("127.")) {
+                    return ValidationResult.error("Requests to private IP ranges are blocked for security. Use localhost for local testing.");
+                }
             }
 
-            // Check for localhost variants
-            if (host.startsWith("localhost") || host.contains(".local")) {
-                return ValidationResult.error("Requests to localhost/internal addresses are blocked for security");
-            }
-
-            // Additional validation: check for suspicious patterns
-            if (host.contains("127.") || host.contains("0.0.0.0") || host.contains("[::")) {
-                return ValidationResult.error("Requests to localhost/internal addresses are blocked for security");
+            // Block 0.0.0.0 specifically
+            if (host.contains("0.0.0.0")) {
+                return ValidationResult.error("Requests to 0.0.0.0 are blocked for security");
             }
 
             return ValidationResult.success(url);

@@ -938,7 +938,7 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <h2>Collections & Requests</h2>
+            <h2>Projects & APIs</h2>
             <p>Click to load</p>
         </div>
         
@@ -950,86 +950,31 @@
         </div>
         
         <div style="margin-bottom: 12px;">
-            <input type="text" id="sidebarSearch" placeholder="Filter collections..." 
+            <input type="text" id="sidebarSearch" placeholder="Filter projects..." 
                    style="width: 100%; padding: 8px 12px; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 12px; color: #1a1a1a;"
                    onkeyup="filterSidebarRequests()">
         </div>
         
-        <!-- Collections with nested requests -->
-        <div th:if="${!collections.isEmpty()}" id="collections-container">
-            <div th:each="collection : ${collections}" class="collection-item">
-                <div class="collection-header" 
-                     th:data-collection-id="${collection.id}"
-                     th:onclick="'toggleCollection(' + ${collection.id} + '); return false;'">
-                    <span class="collection-name" th:text="${collection.name}">Collection Name</span>
-                    <span class="collection-toggle" th:id="'toggle-' + ${collection.id}">▼</span>
-                </div>
-                <div class="collection-requests" th:id="'collection-' + ${collection.id}" style="display: block;">
-                    <div th:each="saved : ${savedRequests}" 
-                         th:if="${saved.collection != null && saved.collection.id == collection.id}"
-                         class="saved-request-item nested" 
-                         th:data-request-id="${saved.id}"
-                         th:attr="onclick='if(!event.target.closest(&quot;button&quot;)){loadSavedRequestFromSidebar(' + ${saved.id} + ');}'"
-                         th:oncontextmenu="'event.preventDefault(); showAddToCollectionMenu(event, ' + ${saved.id} + ')'">
-                        <div class="saved-request-name" th:text="${saved.name}">Request Name</div>
-                        <div>
-                            <span class="saved-request-method" 
-                                  th:class="'saved-request-method method-' + ${saved.method}" 
-                                  th:text="${saved.method}"></span>
-                            <span class="saved-request-url" th:text="${saved.url}"></span>
-                        </div>
-                        <div style="position: absolute; top: 8px; right: 8px; display: flex; gap: 4px;">
-                            <button class="btn-add-to-collection btn-duplicate" 
-                                    th:data-request-id="${saved.id}"
-                                    title="Duplicate Request"
-                                    style="width: 20px; height: 20px; font-size: 11px;">⧉</button>
-                            <button class="btn-add-to-collection btn-add-collection" 
-                                    th:data-request-id="${saved.id}"
-                                    title="Add to Collection">+</button>
-                        </div>
-                    </div>
-                </div>
+        <!-- Projects with nested applications and APIs -->
+        <div id="projects-container">
+            <!-- Projects will be loaded dynamically via JavaScript -->
+            <div class="empty-sidebar" id="empty-projects-state">
+                <p>No projects yet</p>
+                <p style="font-size: 0.8em; margin-top: 5px;">Create a project from the Projects page</p>
             </div>
         </div>
         
-        <!-- Requests without collection -->
-        <div th:if="${!requestsWithoutCollection.isEmpty()}">
+        <!-- Unassigned Requests -->
+        <div id="unassigned-requests-container" style="display: none;">
             <div class="collection-item">
-                <div class="collection-header" data-collection-id="unassigned" style="cursor: pointer;">
+                <div class="collection-header" data-project-id="unassigned" style="cursor: pointer;" onclick="toggleProject('unassigned')">
                     <span class="collection-name">Unassigned Requests</span>
                     <span class="collection-toggle" id="toggle-unassigned">▼</span>
                 </div>
-                <div class="collection-requests" id="collection-unassigned" style="display: block;">
-                    <div th:each="saved : ${requestsWithoutCollection}" 
-                         class="saved-request-item nested" 
-                         th:data-request-id="${saved.id}"
-                         th:attr="onclick='if(!event.target.closest(&quot;button&quot;)){loadSavedRequestFromSidebar(' + ${saved.id} + ');}'"
-                         th:oncontextmenu="'event.preventDefault(); showAddToCollectionMenu(event, ' + ${saved.id} + ')'">
-                        <div class="saved-request-name" th:text="${saved.name}">Request Name</div>
-                        <div>
-                            <span class="saved-request-method" 
-                                  th:class="'saved-request-method method-' + ${saved.method}" 
-                                  th:text="${saved.method}"></span>
-                            <span class="saved-request-url" th:text="${saved.url}"></span>
-                        </div>
-                        <div style="position: absolute; top: 8px; right: 8px; display: flex; gap: 4px;">
-                            <button class="btn-add-to-collection btn-duplicate" 
-                                    th:data-request-id="${saved.id}"
-                                    title="Duplicate Request"
-                                    style="width: 20px; height: 20px; font-size: 11px;">⧉</button>
-                            <button class="btn-add-to-collection btn-add-collection" 
-                                    th:data-request-id="${saved.id}"
-                                    title="Add to Collection">+</button>
-                        </div>
-                    </div>
+                <div class="collection-requests" id="project-unassigned" style="display: block;">
+                    <!-- Unassigned requests will be loaded here -->
                 </div>
             </div>
-        </div>
-        
-        <!-- Empty state -->
-        <div th:if="${collections.isEmpty() && requestsWithoutCollection.isEmpty()}" class="empty-sidebar">
-            <p>No saved requests yet</p>
-            <p style="font-size: 0.8em; margin-top: 5px;">Save requests to see them here</p>
         </div>
     </div>
     
@@ -1040,13 +985,12 @@
                 <span class="brand-name">BISEN</span>
             </div>
             <div class="nav-menu">
+                <a href="/projects" class="nav-menu-item">Projects</a>
                 <a href="/" class="nav-menu-item active">Home</a>
-                <a href="/history" class="nav-menu-item">History</a>
-                <a href="/collections" class="nav-menu-item">Collections</a>
                 <a href="/saved" class="nav-menu-item">Saved Requests</a>
+                <a href="/history" class="nav-menu-item">History</a>
                 <a href="/environments" class="nav-menu-item">Environments</a>
                 <a href="/import" class="nav-menu-item">Import Swagger</a>
-                <a href="/projects" class="nav-menu-item">Projects</a>
                 <a href="/guide" class="nav-menu-item">Guide</a>
             </div>
             <div class="nav-actions">
@@ -1202,26 +1146,32 @@
                         </div>
                         
                         <div class="form-group">
-                            <label>Save to Collection (Optional)</label>
-                            <select id="collectionId">
-                                <option value="">-- No Collection --</option>
-                                <option th:each="collection : ${collections}" 
-                                        th:value="${collection.id}" 
-                                        th:text="${collection.name}"></option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                                <label style="margin-bottom: 0;">Assign to Application (Optional)</label>
-                                <a href="/projects" target="_blank" style="padding: 4px 12px; font-size: 11px; background: #2563eb; color: white; border: none; border-radius: 4px; cursor: pointer; text-decoration: none;">Manage Projects</a>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                <label style="margin-bottom: 0; font-weight: 500;">Assign to Project & Application</label>
+                                <button type="button" onclick="openProjectAssignmentModal()" style="padding: 6px 12px; font-size: 11px; background: #2563eb; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 500;">+ Assign</button>
                             </div>
-                            <select id="applicationId" onchange="updateApplicationInfo()">
-                                <option value="">-- No Application --</option>
-                            </select>
-                            <div id="applicationInfo" style="margin-top: 8px; padding: 8px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 11px; color: #6b7280; display: none;">
-                                <span id="applicationProjectName"></span> > <span id="applicationName"></span>
+                            <div id="projectApplicationAssignment" style="padding: 12px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; min-height: 50px; display: flex; align-items: center; justify-content: center;">
+                                <div id="noAssignment" style="text-align: center; color: #9ca3af; font-size: 13px;">
+                                    <div style="font-size: 24px; margin-bottom: 4px;">📁</div>
+                                    <div>Not assigned to any project</div>
+                                    <div style="font-size: 11px; margin-top: 4px;">Click "+ Assign" to assign</div>
+                                </div>
+                                <div id="assignmentInfo" style="display: none; width: 100%;">
+                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                        <div style="flex: 1;">
+                                            <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Project</div>
+                                            <div style="font-size: 14px; font-weight: 600; color: #1a1a1a;" id="assignedProjectName">-</div>
+                                        </div>
+                                        <div style="color: #d1d5db; font-size: 18px;">›</div>
+                                        <div style="flex: 1;">
+                                            <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Application</div>
+                                            <div style="font-size: 14px; font-weight: 600; color: #1a1a1a;" id="assignedApplicationName">-<span id="assignedApplicationVersion"></span></div>
+                                        </div>
+                                        <button type="button" onclick="clearProjectAssignment()" style="padding: 6px 12px; font-size: 11px; background: #fee2e2; color: #dc2626; border: none; border-radius: 6px; cursor: pointer; font-weight: 500;">Remove</button>
+                                    </div>
+                                </div>
                             </div>
+                            <input type="hidden" id="applicationId">
                         </div>
                         
                         <div class="form-group">
@@ -1292,6 +1242,38 @@
         </div>
         <div class="status-bar-right">
             BISEN v1.2 BETA
+        </div>
+    </div>
+    
+    <!-- Project Assignment Modal -->
+    <div id="projectAssignmentModal" onclick="if(event.target.id === 'projectAssignmentModal') closeProjectAssignmentModal()" 
+         style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(2px);">
+        <div onclick="event.stopPropagation()" 
+             style="background: white; border-radius: 12px; width: 90%; max-width: 600px; max-height: 80vh; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3); display: flex; flex-direction: column;">
+            
+            <!-- Modal Header -->
+            <div style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; padding: 20px 24px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h2 style="margin: 0; font-size: 22px; font-weight: 600;">Assign to Project & Application</h2>
+                    <p style="margin: 4px 0 0 0; font-size: 13px; opacity: 0.9;">Select a project and application for this request</p>
+                </div>
+                <button onclick="closeProjectAssignmentModal()" 
+                        style="background: rgba(255,255,255,0.2); border: none; color: white; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; transition: background 0.2s;"
+                        onmouseover="this.style.background='rgba(255,255,255,0.3)'"
+                        onmouseout="this.style.background='rgba(255,255,255,0.2)'">×</button>
+            </div>
+            
+            <!-- Modal Body -->
+            <div style="flex: 1; overflow-y: auto; padding: 24px; background: #f8f9fa;">
+                <div id="projectAssignmentList" style="display: flex; flex-direction: column; gap: 16px;">
+                    <!-- Projects and applications will be loaded here -->
+                    <div style="text-align: center; padding: 40px 20px; color: #9ca3af;">
+                        <div style="font-size: 48px; margin-bottom: 12px;">📁</div>
+                        <div style="font-size: 16px; font-weight: 500; margin-bottom: 8px;">No projects available</div>
+                        <div style="font-size: 13px;">Create a project first from the Projects page</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     
@@ -1412,6 +1394,9 @@
                     document.getElementById('body').value = savedRequest.body || '';
                     document.getElementById('collectionId').value = savedRequest.collection ? savedRequest.collection.id : '';
                     
+                    // Update request title
+                    updateRequestTitle(savedRequest.name || 'Untitled Request', savedRequest);
+                    
                     // Load application if available
                     if (savedRequest.application && savedRequest.application.id) {
                         const applicationSelect = document.getElementById('applicationId');
@@ -1454,6 +1439,44 @@
                 } else {
                     alert('Error: ' + error.message);
                 }
+            }
+        }
+        
+        // Function to update request title and breadcrumb
+        function updateRequestTitle(requestName, savedRequest) {
+            const titleEl = document.getElementById('requestTitle');
+            const breadcrumbEl = document.getElementById('requestBreadcrumb');
+            
+            if (titleEl) {
+                titleEl.textContent = requestName || 'New Request';
+            }
+            
+            if (breadcrumbEl) {
+                let breadcrumb = '';
+                
+                // Add project/application info if available
+                if (savedRequest && savedRequest.application) {
+                    const app = savedRequest.application;
+                    if (app.project) {
+                        breadcrumb = `${app.project.name} > ${app.name}`;
+                        if (app.version) {
+                            breadcrumb += ` (${app.version})`;
+                        }
+                    } else if (app.name) {
+                        breadcrumb = app.name;
+                    }
+                }
+                
+                // Add collection info if available
+                if (savedRequest && savedRequest.collection) {
+                    if (breadcrumb) {
+                        breadcrumb += ' • ';
+                    }
+                    breadcrumb += `Collection: ${savedRequest.collection.name}`;
+                }
+                
+                breadcrumbEl.textContent = breadcrumb;
+                breadcrumbEl.style.display = breadcrumb ? 'block' : 'none';
             }
         }
         
@@ -2790,9 +2813,28 @@
             document.getElementById('variablesContainer').style.display = 'none';
             document.getElementById('variables').value = '';
             document.getElementById('environmentSelect').value = '';
+            // Collections are deprecated - no need to clear
+            document.getElementById('applicationId').value = '';
             updateBodyType();
             updateAuthType();
             setHeaders('');
+            
+            // Reset title and breadcrumb
+            const titleEl = document.getElementById('requestTitle');
+            const breadcrumbEl = document.getElementById('requestBreadcrumb');
+            if (titleEl) {
+                titleEl.textContent = 'New Request';
+            }
+            if (breadcrumbEl) {
+                breadcrumbEl.textContent = '';
+                breadcrumbEl.style.display = 'none';
+            }
+            
+            // Hide application info
+            const appInfo = document.getElementById('applicationInfo');
+            if (appInfo) {
+                appInfo.style.display = 'none';
+            }
         }
         
         // Make function globally available
@@ -2946,7 +2988,6 @@
             const methodEl = document.getElementById('method');
             const urlEl = document.getElementById('url');
             const bodyEl = document.getElementById('body');
-            const collectionIdEl = document.getElementById('collectionId');
             const savedRequestIdEl = document.getElementById('savedRequestId');
             
             if (!methodEl || !urlEl) {
@@ -2965,7 +3006,6 @@
             const name = nameEl ? (nameEl.value || '') : '';
             const headers = getHeaders();
             const body = bodyEl ? (bodyEl.value || '') : '';
-            const collectionId = collectionIdEl ? collectionIdEl.value : '';
             const applicationIdEl = document.getElementById('applicationId');
             const applicationId = applicationIdEl ? applicationIdEl.value : '';
             const savedRequestId = savedRequestIdEl ? savedRequestIdEl.value : '';
@@ -2986,11 +3026,13 @@
                 url: url,
                 headers: headers,
                 body: body,
-                collectionId: collectionId ? parseInt(collectionId) : null,
+                collectionId: null, // Collections are deprecated, use applications instead
                 applicationId: applicationId ? parseInt(applicationId) : null
             };
             
             try {
+                console.log('Saving request with data:', savedRequestDto);
+                
                 const response = await fetch('/api/saved', {
                     method: 'POST',
                     headers: {
@@ -3001,14 +3043,53 @@
                 
                 if (response.ok) {
                     const savedRequest = await response.json();
+                    console.log('Saved request response:', savedRequest);
                     document.getElementById('savedRequestId').value = savedRequest.id;
-                    await CustomDialog.showAlert('Request saved successfully!', 'Success');
-                    location.reload();
+                    
+                    // Update title after saving
+                    updateRequestTitle(requestName, savedRequest);
+                    
+                    let successMessage = 'Request saved successfully!';
+                    if (applicationId) {
+                        const selectedApp = applications.find(app => app.id === parseInt(applicationId));
+                        if (selectedApp) {
+                            successMessage = `Request saved successfully and assigned to ${selectedApp.project.name} > ${selectedApp.name}!`;
+                        }
+                    }
+                    
+                    if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
+                        await CustomDialog.showAlert(successMessage, 'Success');
+                    } else {
+                        alert(successMessage);
+                    }
+                    
+                    // Reload sidebar to show updated hierarchy
+                    await loadAllSavedRequests();
                 } else {
-                    await CustomDialog.showAlert('Error saving request', 'Error');
+                    const errorText = await response.text();
+                    console.error('Error saving request:', response.status, errorText);
+                    let errorMessage = 'Error saving request';
+                    try {
+                        const errorJson = JSON.parse(errorText);
+                        errorMessage = errorJson.message || errorMessage;
+                    } catch (e) {
+                        errorMessage = errorText || errorMessage;
+                    }
+                    
+                    if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
+                        await CustomDialog.showAlert(errorMessage, 'Error');
+                    } else {
+                        alert(errorMessage);
+                    }
                 }
             } catch (error) {
-                await CustomDialog.showAlert('Error: ' + error.message, 'Error');
+                console.error('Exception saving request:', error);
+                const errorMessage = 'Error: ' + (error.message || 'Unknown error occurred');
+                if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
+                    await CustomDialog.showAlert(errorMessage, 'Error');
+                } else {
+                    alert(errorMessage);
+                }
             }
         }
         
@@ -3148,13 +3229,7 @@
                 });
             }
             
-            // Load collections from server for the menu
-            fetch('/api/collections')
-                .then(res => res.json())
-                .then(collections => {
-                    window.collections = collections;
-                })
-                .catch(err => console.error('Error loading collections:', err));
+            // Collections are no longer used - using Projects/Applications instead
             
             const loadData = sessionStorage.getItem('loadSavedRequest');
             if (loadData) {
@@ -3167,8 +3242,6 @@
                 document.getElementById('url').value = saved.url;
                 setHeaders(saved.headers || '');
                 document.getElementById('body').value = saved.body || '';
-                document.getElementById('collectionId').value = saved.collectionId || '';
-                
                 // Load application if available
                 if (saved.applicationId) {
                     const applicationSelect = document.getElementById('applicationId');
@@ -3193,6 +3266,9 @@
             // Load projects and applications
             loadProjectsAndApplications();
             
+            // Load all saved requests
+            loadAllSavedRequests();
+            
             const applicationSelect = document.getElementById('applicationId');
             if (applicationSelect) {
                 applicationSelect.addEventListener('change', updateApplicationInfo);
@@ -3205,33 +3281,234 @@
         
         async function loadProjectsAndApplications() {
             try {
+                console.log('Loading projects and applications...');
                 const projectsResponse = await fetch('/api/projects');
+                if (!projectsResponse.ok) {
+                    console.error('Failed to load projects:', projectsResponse.status);
+                    return;
+                }
                 projects = await projectsResponse.json();
+                console.log('Loaded projects:', projects.length);
                 
                 // Load applications for all projects
                 applications = [];
                 for (const project of projects) {
-                    const appsResponse = await fetch(`/api/projects/${project.id}/applications`);
-                    const projectApps = await appsResponse.json();
-                    projectApps.forEach(app => {
-                        app.project = project; // Attach project info
-                        applications.push(app);
-                    });
+                    try {
+                        const appsResponse = await fetch(`/api/projects/${project.id}/applications`);
+                        if (appsResponse.ok) {
+                            const projectApps = await appsResponse.json();
+                            console.log(`Loaded ${projectApps.length} applications for project ${project.name}`);
+                            projectApps.forEach(app => {
+                                app.project = project; // Attach project info
+                                applications.push(app);
+                            });
+                        } else {
+                            console.warn(`Failed to load applications for project ${project.id}:`, appsResponse.status);
+                        }
+                    } catch (error) {
+                        console.error(`Error loading applications for project ${project.id}:`, error);
+                    }
                 }
                 
+                console.log('Total applications loaded:', applications.length);
                 updateApplicationSelect();
+                // Render sidebar with projects/applications/APIs
+                renderSidebarHierarchy();
             } catch (error) {
                 console.error('Error loading projects and applications:', error);
+                if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
+                    CustomDialog.showAlert('Error loading projects and applications. Please refresh the page.', 'Error');
+                }
             }
         }
         
+        // Load all saved requests
+        let allSavedRequests = [];
+        
+        async function loadAllSavedRequests() {
+            try {
+                const response = await fetch('/api/saved');
+                if (response.ok) {
+                    allSavedRequests = await response.json();
+                    console.log('Loaded saved requests:', allSavedRequests.length);
+                    renderSidebarHierarchy();
+                } else {
+                    console.error('Failed to load saved requests:', response.status);
+                }
+            } catch (error) {
+                console.error('Error loading saved requests:', error);
+            }
+        }
+        
+        // Render Projects > Applications > APIs hierarchy in sidebar
+        function renderSidebarHierarchy() {
+            const container = document.getElementById('projects-container');
+            const emptyState = document.getElementById('empty-projects-state');
+            const unassignedContainer = document.getElementById('unassigned-requests-container');
+            
+            if (!container) return;
+            
+            // Filter unassigned requests
+            const unassignedRequests = allSavedRequests.filter(req => !req.application || !req.application.id);
+            
+            // Show/hide empty state
+            if (projects.length === 0 && unassignedRequests.length === 0) {
+                if (emptyState) emptyState.style.display = 'block';
+                container.innerHTML = '';
+            } else {
+                if (emptyState) emptyState.style.display = 'none';
+                
+                let html = '';
+                
+                // Render each project
+                projects.forEach(project => {
+                    const projectApps = applications.filter(app => app.project && app.project.id === project.id);
+                    
+                    html += `
+                        <div class="collection-item" data-project-id="${project.id}">
+                            <div class="collection-header" 
+                                 data-project-id="${project.id}"
+                                 onclick="toggleProject(${project.id})">
+                                <span class="collection-name">${escapeHtml(project.name)}</span>
+                                <span class="collection-toggle" id="toggle-project-${project.id}">▼</span>
+                            </div>
+                            <div class="collection-requests" id="project-${project.id}" style="display: block;">
+                                ${projectApps.length === 0 ? `
+                                    <div style="padding: 8px 12px; color: #9ca3af; font-size: 11px; font-style: italic;">
+                                        No applications in this project
+                                    </div>
+                                ` : projectApps.map(app => {
+                                    const appRequests = allSavedRequests.filter(req => 
+                                        req.application && req.application.id === app.id
+                                    );
+                                    
+                                    return `
+                                        <div class="application-item" data-application-id="${app.id}">
+                                            <div class="application-header" 
+                                                 data-application-id="${app.id}"
+                                                 onclick="toggleApplication(${app.id})">
+                                                <span class="application-name">${escapeHtml(app.name)}${app.version ? ' (' + escapeHtml(app.version) + ')' : ''}</span>
+                                                <span class="application-toggle" id="toggle-app-${app.id}">▼</span>
+                                            </div>
+                                            <div class="application-requests" id="app-${app.id}" style="display: block;">
+                                                ${appRequests.length === 0 ? `
+                                                    <div style="padding: 6px 12px; color: #9ca3af; font-size: 10px; font-style: italic;">
+                                                        No APIs in this application
+                                                    </div>
+                                                ` : appRequests.map(req => `
+                                                    <div class="saved-request-item nested" 
+                                                         data-request-id="${req.id}"
+                                                         onclick="if(!event.target.closest('button')){loadSavedRequestFromSidebar(${req.id});}">
+                                                        <div class="saved-request-name">${escapeHtml(req.name || 'Untitled')}</div>
+                                                        <div>
+                                                            <span class="saved-request-method method-${req.method}" style="margin-right: 6px;">${escapeHtml(req.method)}</span>
+                                                            <span class="saved-request-url">${escapeHtml(req.url || '')}</span>
+                                                        </div>
+                                                        <div style="position: absolute; top: 8px; right: 8px; display: flex; gap: 4px;">
+                                                            <button class="btn-add-to-collection btn-duplicate" 
+                                                                    data-request-id="${req.id}"
+                                                                    title="Duplicate Request"
+                                                                    style="width: 20px; height: 20px; font-size: 11px;">⧉</button>
+                                                        </div>
+                                                    </div>
+                                                `).join('')}
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                container.innerHTML = html;
+                
+                // Render unassigned requests
+                if (unassignedRequests.length > 0) {
+                    if (unassignedContainer) {
+                        unassignedContainer.style.display = 'block';
+                        const unassignedDiv = unassignedContainer.querySelector('#project-unassigned');
+                        if (unassignedDiv) {
+                            unassignedDiv.innerHTML = unassignedRequests.map(req => `
+                                <div class="saved-request-item nested" 
+                                     data-request-id="${req.id}"
+                                     onclick="if(!event.target.closest('button')){loadSavedRequestFromSidebar(${req.id});}">
+                                    <div class="saved-request-name">${escapeHtml(req.name || 'Untitled')}</div>
+                                    <div>
+                                        <span class="saved-request-method method-${req.method}" style="margin-right: 6px;">${escapeHtml(req.method)}</span>
+                                        <span class="saved-request-url">${escapeHtml(req.url || '')}</span>
+                                    </div>
+                                    <div style="position: absolute; top: 8px; right: 8px; display: flex; gap: 4px;">
+                                        <button class="btn-add-to-collection btn-duplicate" 
+                                                data-request-id="${req.id}"
+                                                title="Duplicate Request"
+                                                style="width: 20px; height: 20px; font-size: 11px;">⧉</button>
+                                    </div>
+                                </div>
+                            `).join('');
+                        }
+                    }
+                } else {
+                    if (unassignedContainer) unassignedContainer.style.display = 'none';
+                }
+            }
+        }
+        
+        // Toggle project expansion
+        function toggleProject(projectId) {
+            const projectDiv = document.getElementById(`project-${projectId}`);
+            const toggle = document.getElementById(`toggle-project-${projectId}`);
+            
+            if (projectDiv && toggle) {
+                if (projectDiv.style.display === 'none') {
+                    projectDiv.style.display = 'block';
+                    toggle.classList.remove('collapsed');
+                } else {
+                    projectDiv.style.display = 'none';
+                    toggle.classList.add('collapsed');
+                }
+            }
+        }
+        
+        // Toggle application expansion
+        function toggleApplication(applicationId) {
+            const appDiv = document.getElementById(`app-${applicationId}`);
+            const toggle = document.getElementById(`toggle-app-${applicationId}`);
+            
+            if (appDiv && toggle) {
+                if (appDiv.style.display === 'none') {
+                    appDiv.style.display = 'block';
+                    toggle.classList.remove('collapsed');
+                } else {
+                    appDiv.style.display = 'none';
+                    toggle.classList.add('collapsed');
+                }
+            }
+        }
+        
+        window.toggleProject = toggleProject;
+        window.toggleApplication = toggleApplication;
+        
         function updateApplicationSelect() {
             const select = document.getElementById('applicationId');
-            if (!select) return;
+            if (!select) {
+                console.warn('Application select element not found');
+                return;
+            }
             
             select.innerHTML = '<option value="">-- No Application --</option>';
             
+            if (applications.length === 0) {
+                console.log('No applications available');
+                return;
+            }
+            
             applications.forEach(app => {
+                if (!app.id || !app.project || !app.project.name || !app.name) {
+                    console.warn('Invalid application data:', app);
+                    return;
+                }
+                
                 const option = document.createElement('option');
                 option.value = app.id;
                 option.textContent = `${app.project.name} > ${app.name}${app.version ? ' (' + app.version + ')' : ''}`;
@@ -3239,6 +3516,8 @@
                 option.dataset.appName = app.name;
                 select.appendChild(option);
             });
+            
+            console.log(`Populated application select with ${applications.length} applications`);
         }
         
         function updateApplicationInfo() {
@@ -3260,6 +3539,120 @@
         }
         
         window.updateApplicationInfo = updateApplicationInfo;
+        
+        // Project Assignment Modal Functions
+        async function openProjectAssignmentModal() {
+            const modal = document.getElementById('projectAssignmentModal');
+            if (!modal) {
+                console.error('Project assignment modal not found');
+                return;
+            }
+            
+            // Ensure projects and applications are loaded
+            if (projects.length === 0) {
+                await loadProjectsAndApplications();
+            }
+            
+            // Render projects and applications
+            renderProjectAssignmentList();
+            
+            modal.style.display = 'flex';
+        }
+        
+        function closeProjectAssignmentModal() {
+            const modal = document.getElementById('projectAssignmentModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+        
+        function renderProjectAssignmentList() {
+            const container = document.getElementById('projectAssignmentList');
+            if (!container) return;
+            
+            if (projects.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px 20px; color: #9ca3af;">
+                        <div style="font-size: 48px; margin-bottom: 12px;">📁</div>
+                        <div style="font-size: 16px; font-weight: 500; margin-bottom: 8px;">No projects available</div>
+                        <div style="font-size: 13px;">Create a project first from the <a href="/projects" style="color: #2563eb; text-decoration: none;">Projects page</a></div>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            projects.forEach(project => {
+                const projectApps = applications.filter(app => app.project && app.project.id === project.id);
+                html += `
+                    <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
+                        <div style="padding: 16px; background: #f9fafb; border-bottom: 1px solid #e5e7eb;">
+                            <div style="font-size: 16px; font-weight: 600; color: #1a1a1a; margin-bottom: 4px;">${escapeHtml(project.name)}</div>
+                            ${project.description ? `<div style="font-size: 12px; color: #6b7280;">${escapeHtml(project.description)}</div>` : ''}
+                        </div>
+                        <div style="padding: 12px;">
+                            ${projectApps.length === 0 ? `
+                                <div style="text-align: center; padding: 20px; color: #9ca3af; font-size: 13px;">
+                                    No applications in this project
+                                </div>
+                            ` : projectApps.map(app => `
+                                <button onclick="selectApplication(${app.id}, '${escapeHtml(project.name)}', '${escapeHtml(app.name)}', '${escapeHtml(app.version || '')}')" 
+                                        style="width: 100%; padding: 12px; margin-bottom: 8px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; cursor: pointer; text-align: left; transition: all 0.2s;"
+                                        onmouseover="this.style.background='#f3f4f6'; this.style.borderColor='#2563eb'"
+                                        onmouseout="this.style.background='#f9fafb'; this.style.borderColor='#e5e7eb'">
+                                    <div style="font-size: 14px; font-weight: 500; color: #1a1a1a; margin-bottom: 2px;">${escapeHtml(app.name)}</div>
+                                    ${app.version ? `<div style="font-size: 12px; color: #6b7280;">Version: ${escapeHtml(app.version)}</div>` : ''}
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        function selectApplication(applicationId, projectName, appName, appVersion) {
+            const hiddenInput = document.getElementById('applicationId');
+            if (hiddenInput) {
+                hiddenInput.value = applicationId;
+            }
+            
+            // Update the assignment info display
+            const noAssignment = document.getElementById('noAssignment');
+            const assignmentInfo = document.getElementById('assignmentInfo');
+            const assignedProjectName = document.getElementById('assignedProjectName');
+            const assignedApplicationName = document.getElementById('assignedApplicationName');
+            const assignedApplicationVersion = document.getElementById('assignedApplicationVersion');
+            
+            if (noAssignment) noAssignment.style.display = 'none';
+            if (assignmentInfo) assignmentInfo.style.display = 'block';
+            if (assignedProjectName) assignedProjectName.textContent = projectName;
+            if (assignedApplicationName) assignedApplicationName.textContent = appName;
+            if (assignedApplicationVersion) {
+                assignedApplicationVersion.textContent = appVersion ? ` (${appVersion})` : '';
+            }
+            
+            closeProjectAssignmentModal();
+        }
+        
+        function clearProjectAssignment() {
+            const hiddenInput = document.getElementById('applicationId');
+            if (hiddenInput) {
+                hiddenInput.value = '';
+            }
+            
+            const noAssignment = document.getElementById('noAssignment');
+            const assignmentInfo = document.getElementById('assignmentInfo');
+            
+            if (noAssignment) noAssignment.style.display = 'block';
+            if (assignmentInfo) assignmentInfo.style.display = 'none';
+        }
+        
+        window.openProjectAssignmentModal = openProjectAssignmentModal;
+        window.closeProjectAssignmentModal = closeProjectAssignmentModal;
+        window.selectApplication = selectApplication;
+        window.clearProjectAssignment = clearProjectAssignment;
         
         // Ensure all global functions are available
         if (typeof clearForm === 'function') {

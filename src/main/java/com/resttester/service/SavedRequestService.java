@@ -14,12 +14,16 @@ import com.resttester.model.SavedRequest;
 import com.resttester.repository.ApplicationRepository;
 import com.resttester.repository.CollectionRepository;
 import com.resttester.repository.SavedRequestRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class SavedRequestService {
+    
+    private static final Logger logger = LoggerFactory.getLogger(SavedRequestService.class);
     
     private final SavedRequestRepository repository;
     private final CollectionRepository collectionRepository;
@@ -32,14 +36,19 @@ public class SavedRequestService {
     }
     
     public SavedRequest saveRequest(SavedRequestDto dto) {
+        logger.info("Saving request: name={}, method={}, url={}, collectionId={}, applicationId={}", 
+            dto.getName(), dto.getMethod(), dto.getUrl(), dto.getCollectionId(), dto.getApplicationId());
+        
         SavedRequest savedRequest;
         
         if (dto.getId() != null) {
             // Update existing
             savedRequest = repository.findById(dto.getId()).orElse(new SavedRequest());
+            logger.debug("Updating existing saved request with ID: {}", dto.getId());
         } else {
             // Create new
             savedRequest = new SavedRequest();
+            logger.debug("Creating new saved request");
         }
         
         savedRequest.setName(dto.getName());
@@ -50,19 +59,34 @@ public class SavedRequestService {
         
         if (dto.getCollectionId() != null) {
             Collection collection = collectionRepository.findById(dto.getCollectionId()).orElse(null);
-            savedRequest.setCollection(collection);
+            if (collection != null) {
+                savedRequest.setCollection(collection);
+                logger.debug("Assigned to collection: {}", collection.getName());
+            } else {
+                logger.warn("Collection with ID {} not found", dto.getCollectionId());
+                savedRequest.setCollection(null);
+            }
         } else {
             savedRequest.setCollection(null);
         }
         
         if (dto.getApplicationId() != null) {
             Application application = applicationRepository.findById(dto.getApplicationId()).orElse(null);
-            savedRequest.setApplication(application);
+            if (application != null) {
+                savedRequest.setApplication(application);
+                logger.info("Assigned to application: {} (Project: {})", application.getName(), 
+                    application.getProject() != null ? application.getProject().getName() : "Unknown");
+            } else {
+                logger.warn("Application with ID {} not found", dto.getApplicationId());
+                savedRequest.setApplication(null);
+            }
         } else {
             savedRequest.setApplication(null);
         }
         
-        return repository.save(savedRequest);
+        SavedRequest saved = repository.save(savedRequest);
+        logger.info("Saved request successfully with ID: {}", saved.getId());
+        return saved;
     }
     
     public List<SavedRequest> getAllSavedRequests() {
