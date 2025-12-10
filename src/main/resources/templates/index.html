@@ -29,8 +29,8 @@
         }
         
         .sidebar {
-            width: 300px;
-            background: #fafbfc;
+            width: 280px;
+            background: #ffffff;
             border-right: 1px solid #e5e7eb;
             padding: 0;
             overflow-y: auto;
@@ -41,23 +41,24 @@
             z-index: 100;
             display: flex;
             flex-direction: column;
+            box-shadow: 1px 0 3px rgba(0, 0, 0, 0.05);
         }
         
         .sidebar-header {
-            padding: 20px;
+            padding: 16px 20px;
             background: #ffffff;
-            border-bottom: 1px solid #e5e7eb;
+            border-bottom: 1px solid #f3f4f6;
             position: sticky;
             top: 0;
             z-index: 10;
         }
         
         .sidebar-header h2 {
-            color: #1a1a1a;
-            font-size: 16px;
-            margin-bottom: 4px;
-            font-weight: 600;
-            letter-spacing: -0.2px;
+            color: #111827;
+            font-size: 18px;
+            margin-bottom: 8px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
         }
         
         .sidebar-header p {
@@ -69,40 +70,42 @@
         
         .sidebar-content {
             flex: 1;
-            padding: 16px;
+            padding: 12px;
             overflow-y: auto;
+            background: #fafbfc;
         }
         
         .saved-request-item {
             padding: 10px 12px;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
             border: none;
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.15s;
             background: #ffffff;
-            border: 1px solid transparent;
+            border: 1px solid #f3f4f6;
             position: relative;
         }
         
         .saved-request-item:hover {
-            background: #ffffff;
+            background: #f9fafb;
             border-color: #e5e7eb;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transform: translateX(2px);
         }
         
         .saved-request-item:active {
-            transform: scale(0.98);
+            transform: translateX(2px) scale(0.98);
         }
         
         .saved-request-name {
             font-weight: 500;
-            color: #1a1a1a;
+            color: #111827;
             font-size: 13px;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             line-height: 1.4;
             display: -webkit-box;
-            -webkit-line-clamp: 2;
+            -webkit-line-clamp: 1;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
@@ -110,30 +113,30 @@
         .saved-request-method {
             display: inline-flex;
             align-items: center;
-            padding: 3px 8px;
+            padding: 2px 6px;
             border-radius: 4px;
-            font-size: 10px;
-            font-weight: 600;
+            font-size: 9px;
+            font-weight: 700;
             margin-right: 6px;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.5px;
             text-transform: uppercase;
-            min-width: 50px;
+            min-width: 42px;
             justify-content: center;
         }
         
-        .method-GET { background: #dcfce7; color: #16a34a; }
-        .method-POST { background: #dbeafe; color: #2563eb; }
-        .method-PUT { background: #fef3c7; color: #d97706; }
-        .method-DELETE { background: #fee2e2; color: #dc2626; }
-        .method-PATCH { background: #d1fae5; color: #059669; }
-        .method-HEAD { background: #f3f4f6; color: #6b7280; }
-        .method-OPTIONS { background: #f3e8ff; color: #9333ea; }
+        .method-GET { background: #dcfce7; color: #15803d; }
+        .method-POST { background: #dbeafe; color: #1e40af; }
+        .method-PUT { background: #fef3c7; color: #b45309; }
+        .method-DELETE { background: #fee2e2; color: #b91c1c; }
+        .method-PATCH { background: #d1fae5; color: #047857; }
+        .method-HEAD { background: #f3f4f6; color: #4b5563; }
+        .method-OPTIONS { background: #f3e8ff; color: #7e22ce; }
         
         .saved-request-url {
             color: #6b7280;
-            font-size: 11px;
+            font-size: 10px;
             word-break: break-all;
-            line-height: 1.5;
+            line-height: 1.4;
             display: -webkit-box;
             -webkit-line-clamp: 1;
             -webkit-box-orient: vertical;
@@ -142,44 +145,52 @@
         }
         
         .collection-item {
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
         
         .collection-header {
-            padding: 10px 12px;
+            padding: 12px 14px;
             background: #ffffff;
-            color: #1a1a1a;
-            border-radius: 6px;
+            color: #111827;
+            border-radius: 8px;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 10px;
-            transition: all 0.15s;
+            transition: all 0.2s;
             font-weight: 600;
-            font-size: 13px;
-            border: 1px solid transparent;
+            font-size: 14px;
+            border: 1px solid #e5e7eb;
             user-select: none;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
         }
         
         .collection-header:hover {
             background: #f9fafb;
-            border-color: #e5e7eb;
+            border-color: #d1d5db;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
         
         .collection-name {
             flex: 1;
-            color: #1a1a1a;
+            color: #111827;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
         .collection-toggle {
-            font-size: 10px;
+            font-size: 11px;
             color: #6b7280;
             transition: transform 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            background: #f3f4f6;
         }
         
         .collection-toggle.collapsed {
@@ -187,24 +198,85 @@
         }
         
         .collection-requests {
+            margin-top: 4px;
+            margin-left: 0;
+            padding-left: 0;
+            border-left: none;
+        }
+        
+        .saved-request-item.nested {
+            margin-left: 0;
+            margin-top: 2px;
+            position: relative;
+            cursor: pointer;
+            padding: 8px 10px;
+            background: #ffffff;
+            border: 1px solid #f3f4f6;
+        }
+        
+        .saved-request-item.nested:hover {
+            background: #f9fafb;
+            border-color: #e5e7eb;
+        }
+        
+        .saved-request-item.nested:hover div[style*="opacity: 0"] {
+            opacity: 1 !important;
+        }
+        
+        .saved-request-item.nested:hover .btn-add-to-collection {
+            opacity: 1;
+        }
+        
+        .application-item {
             margin-top: 6px;
             margin-left: 8px;
             padding-left: 12px;
             border-left: 2px solid #e5e7eb;
         }
         
-        .saved-request-item.nested {
-            margin-left: 0;
-            position: relative;
+        .application-header {
+            padding: 8px 10px;
+            background: #ffffff;
+            color: #374151;
+            border-radius: 6px;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.15s;
+            font-weight: 600;
+            font-size: 12px;
+            border: 1px solid #f3f4f6;
+            margin-bottom: 4px;
         }
         
-        .saved-request-item.nested:hover {
-            background: #f3f4f6;
+        .application-header:hover {
+            background: #f9fafb;
+            border-color: #e5e7eb;
         }
         
-        .saved-request-item.nested:hover .btn-add-to-collection {
-            opacity: 1;
+        .application-name {
+            flex: 1;
+            color: #374151;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        
+        .application-toggle {
+            font-size: 10px;
+            color: #9ca3af;
+            transition: transform 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 16px;
+        }
+        
+        .application-requests {
+            margin-top: 4px;
+            margin-left: 0;
+            padding-left: 0;
         }
         
         .btn-add-to-collection {
@@ -269,7 +341,7 @@
         
         .btn-add-new-request {
             width: 100%;
-            padding: 12px 16px;
+            padding: 10px 14px;
             background: #2563eb;
             color: white;
             border: none;
@@ -282,18 +354,39 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            box-shadow: 0 1px 2px rgba(37, 99, 235, 0.2);
+            box-shadow: 0 1px 2px rgba(37, 99, 235, 0.15);
         }
         
         .btn-add-new-request:hover {
             background: #1d4ed8;
-            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3);
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.25);
             transform: translateY(-1px);
         }
         
         .btn-add-new-request:active {
             background: #1e40af;
             transform: translateY(0);
+        }
+        
+        .sidebar-search {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 13px;
+            background: #ffffff;
+            color: #111827;
+            transition: all 0.15s;
+        }
+        
+        .sidebar-search:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        .sidebar-search::placeholder {
+            color: #9ca3af;
         }
         
         .btn-add-new-request span:first-child {
@@ -1328,14 +1421,14 @@
                     <span>+</span>
                     <span>New Request</span>
                 </button>
-                <button class="btn-add-new-api" onclick="openNewApiModal()" title="Create New API in Application" style="width: 100%; padding: 12px 16px; background: #10b981; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 1px 2px rgba(16, 185, 129, 0.2);">
+                <button class="btn-add-new-api" onclick="openNewApiModal()" title="Create New API in Application" style="width: 100%; padding: 10px 14px; background: #10b981; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 1px 2px rgba(16, 185, 129, 0.15);">
                     <span>+</span>
                     <span>New API</span>
                 </button>
             </div>
             
-            <div style="margin-bottom: 16px;">
-                <input type="text" id="sidebarSearch" class="sidebar-search" placeholder="Search projects, apps, APIs..." 
+            <div style="margin-bottom: 12px;">
+                <input type="text" id="sidebarSearch" class="sidebar-search" placeholder="🔍 Search projects, apps, APIs..." 
                        onkeyup="filterSidebarRequests()">
             </div>
         
@@ -1352,7 +1445,7 @@
             <div id="unassigned-requests-container" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
                 <div class="collection-item">
                     <div class="collection-header" data-project-id="unassigned" style="cursor: pointer;" onclick="toggleProject('unassigned')">
-                        <span class="collection-name">Unassigned Requests</span>
+                        <span class="collection-name">📦 Unassigned Requests</span>
                         <span class="collection-toggle" id="toggle-unassigned">▼</span>
                     </div>
                     <div class="collection-requests" id="project-unassigned" style="display: block;">
@@ -3587,7 +3680,7 @@
                             <div class="collection-header" 
                                  data-project-id="${project.id}">
                                 <div style="flex: 1; display: flex; align-items: center; cursor: pointer;" onclick="toggleProject(${project.id})">
-                                    <span class="collection-name">${escapeHtml(project.name)}</span>
+                                    <span class="collection-name">📁 ${escapeHtml(project.name)}</span>
                                     <span class="collection-toggle" id="toggle-project-${project.id}">▼</span>
                                 </div>
                                 <button onclick="event.stopPropagation(); event.preventDefault(); window.location.href='/projects?projectId=${project.id}'; return false;" 
@@ -3600,8 +3693,8 @@
                             </div>
                             <div class="collection-requests" id="project-${project.id}" style="display: block;">
                                 ${projectApps.length === 0 ? `
-                                    <div style="padding: 8px 12px; color: #9ca3af; font-size: 11px; font-style: italic;">
-                                        No applications in this project
+                                    <div style="padding: 10px 12px; color: #9ca3af; font-size: 11px; font-style: italic; background: #fafbfc; border-radius: 6px; margin-top: 4px;">
+                                        No applications yet
                                     </div>
                                 ` : projectApps.map(app => {
                                     const appRequests = allSavedRequests.filter(req => 
@@ -3613,36 +3706,38 @@
                                             <div class="application-header" 
                                                  data-application-id="${app.id}"
                                                  onclick="toggleApplication(${app.id})">
-                                                <span class="application-name">${escapeHtml(app.name)}${app.version ? ' (' + escapeHtml(app.version) + ')' : ''}</span>
+                                                <span class="application-name">📱 ${escapeHtml(app.name)}${app.version ? ' <span style="color: #9ca3af; font-weight: 400;">v' + escapeHtml(app.version) + '</span>' : ''}</span>
                                                 <span class="application-toggle" id="toggle-app-${app.id}">▼</span>
                                             </div>
                                             <div class="application-requests" id="app-${app.id}" style="display: block;">
                                                 ${appRequests.length === 0 ? `
-                                                    <div style="padding: 6px 12px; color: #9ca3af; font-size: 10px; font-style: italic;">
-                                                        No APIs in this application
+                                                    <div style="padding: 8px 10px; color: #9ca3af; font-size: 11px; font-style: italic; background: #fafbfc; border-radius: 4px; margin-top: 2px;">
+                                                        No APIs yet
                                                     </div>
                                                 ` : appRequests.map(req => `
                                                     <div class="saved-request-item nested" 
                                                          data-request-id="${req.id}"
                                                          onclick="if(!event.target.closest('button')){loadSavedRequestFromSidebar(${req.id});}">
-                                                        <div class="saved-request-name">${escapeHtml(req.name || 'Untitled')}</div>
-                                                        <div>
-                                                            <span class="saved-request-method method-${req.method}" style="margin-right: 6px;">${escapeHtml(req.method)}</span>
-                                                            <span class="saved-request-url">${escapeHtml(req.url || '')}</span>
+                                                        <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                                                            <span class="saved-request-method method-${req.method}">${escapeHtml(req.method)}</span>
+                                                            <div class="saved-request-name" style="flex: 1; margin: 0;">${escapeHtml(req.name || 'Untitled')}</div>
                                                         </div>
-                                                        <div style="position: absolute; top: 8px; right: 8px; display: flex; gap: 4px;">
+                                                        <div class="saved-request-url" style="font-size: 10px; margin-top: 2px;">${escapeHtml(req.url || '')}</div>
+                                                        <div style="position: absolute; top: 6px; right: 6px; display: flex; gap: 3px; opacity: 0; transition: opacity 0.15s;">
                                                             <button class="btn-duplicate" 
                                                                     data-request-id="${req.id}"
                                                                     title="Duplicate Request"
                                                                     onclick="event.stopPropagation(); duplicateRequest(${req.id});"
-                                                                    style="width: 20px; height: 20px; font-size: 11px; background: transparent; border: none; cursor: pointer; color: #2563eb; transition: all 0.15s;"
-                                                                    onmouseover="this.style.color='#1d4ed8'; this.style.transform='scale(1.1)'"
-                                                                    onmouseout="this.style.color='#2563eb'; this.style.transform='scale(1)'">📋</button>
+                                                                    style="width: 22px; height: 22px; font-size: 11px; background: #f3f4f6; border: none; cursor: pointer; color: #2563eb; border-radius: 4px; transition: all 0.15s; display: flex; align-items: center; justify-content: center;"
+                                                                    onmouseover="this.style.background='#dbeafe'; this.style.color='#1d4ed8'"
+                                                                    onmouseout="this.style.background='#f3f4f6'; this.style.color='#2563eb'">📋</button>
                                                             <button class="btn-delete-request" 
                                                                     data-request-id="${req.id}"
                                                                     title="Delete Request"
                                                                     onclick="event.stopPropagation(); deleteSavedRequest(${req.id});"
-                                                                    style="width: 20px; height: 20px; font-size: 11px; background: transparent; border: none; cursor: pointer; color: #dc2626;">🗑️</button>
+                                                                    style="width: 22px; height: 22px; font-size: 11px; background: #fee2e2; border: none; cursor: pointer; color: #dc2626; border-radius: 4px; transition: all 0.15s; display: flex; align-items: center; justify-content: center;"
+                                                                    onmouseover="this.style.background='#fecaca'"
+                                                                    onmouseout="this.style.background='#fee2e2'">🗑️</button>
                                                         </div>
                                                     </div>
                                                 `).join('')}
@@ -3667,24 +3762,26 @@
                                 <div class="saved-request-item nested" 
                                      data-request-id="${req.id}"
                                      onclick="if(!event.target.closest('button')){loadSavedRequestFromSidebar(${req.id});}">
-                                    <div class="saved-request-name">${escapeHtml(req.name || 'Untitled')}</div>
-                                    <div>
-                                        <span class="saved-request-method method-${req.method}" style="margin-right: 6px;">${escapeHtml(req.method)}</span>
-                                        <span class="saved-request-url">${escapeHtml(req.url || '')}</span>
+                                    <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                                        <span class="saved-request-method method-${req.method}">${escapeHtml(req.method)}</span>
+                                        <div class="saved-request-name" style="flex: 1; margin: 0;">${escapeHtml(req.name || 'Untitled')}</div>
                                     </div>
-                                    <div style="position: absolute; top: 8px; right: 8px; display: flex; gap: 4px;">
+                                    <div class="saved-request-url" style="font-size: 10px; margin-top: 2px;">${escapeHtml(req.url || '')}</div>
+                                    <div style="position: absolute; top: 6px; right: 6px; display: flex; gap: 3px; opacity: 0; transition: opacity 0.15s;">
                                         <button class="btn-duplicate" 
                                                 data-request-id="${req.id}"
                                                 title="Duplicate Request"
                                                 onclick="event.stopPropagation(); duplicateRequest(${req.id});"
-                                                style="width: 20px; height: 20px; font-size: 11px; background: transparent; border: none; cursor: pointer; color: #2563eb; transition: all 0.15s;"
-                                                onmouseover="this.style.color='#1d4ed8'; this.style.transform='scale(1.1)'"
-                                                onmouseout="this.style.color='#2563eb'; this.style.transform='scale(1)'">📋</button>
+                                                style="width: 22px; height: 22px; font-size: 11px; background: #f3f4f6; border: none; cursor: pointer; color: #2563eb; border-radius: 4px; transition: all 0.15s; display: flex; align-items: center; justify-content: center;"
+                                                onmouseover="this.style.background='#dbeafe'; this.style.color='#1d4ed8'"
+                                                onmouseout="this.style.background='#f3f4f6'; this.style.color='#2563eb'">📋</button>
                                         <button class="btn-delete-request" 
                                                 data-request-id="${req.id}"
                                                 title="Delete Request"
                                                 onclick="event.stopPropagation(); deleteSavedRequest(${req.id});"
-                                                style="width: 20px; height: 20px; font-size: 11px; background: transparent; border: none; cursor: pointer; color: #dc2626;">🗑️</button>
+                                                style="width: 22px; height: 22px; font-size: 11px; background: #fee2e2; border: none; cursor: pointer; color: #dc2626; border-radius: 4px; transition: all 0.15s; display: flex; align-items: center; justify-content: center;"
+                                                onmouseover="this.style.background='#fecaca'"
+                                                onmouseout="this.style.background='#fee2e2'">🗑️</button>
                                     </div>
                                 </div>
                             `).join('');
@@ -3705,9 +3802,11 @@
                 if (projectDiv.style.display === 'none') {
                     projectDiv.style.display = 'block';
                     toggle.classList.remove('collapsed');
+                    toggle.textContent = '▼';
                 } else {
                     projectDiv.style.display = 'none';
                     toggle.classList.add('collapsed');
+                    toggle.textContent = '▶';
                 }
             }
         }
@@ -3721,9 +3820,11 @@
                 if (appDiv.style.display === 'none') {
                     appDiv.style.display = 'block';
                     toggle.classList.remove('collapsed');
+                    toggle.textContent = '▼';
                 } else {
                     appDiv.style.display = 'none';
                     toggle.classList.add('collapsed');
+                    toggle.textContent = '▶';
                 }
             }
         }
