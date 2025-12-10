@@ -902,7 +902,7 @@
                 `;
             }
             
-            return apps.map(app => {
+            let html = apps.map(app => {
                 const apiCount = app.savedRequests ? app.savedRequests.length : 0;
                 return `
                     <div class="application-item">
@@ -926,6 +926,21 @@
                     </div>
                 `;
             }).join('');
+            
+            // Add "Create Application" button at the end
+            html += `
+                <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e5e7eb;">
+                    <button onclick="openApplicationModal(${projectId})" 
+                            style="width: 100%; padding: 10px 12px; background: #10b981; color: white; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 6px;"
+                            onmouseover="this.style.background='#059669'"
+                            onmouseout="this.style.background='#10b981'">
+                        <span>+</span>
+                        <span>Add Application</span>
+                    </button>
+                </div>
+            `;
+            
+            return html;
         }
         
         function renderEndpoints(requests) {
@@ -1017,9 +1032,18 @@
         }
         
         function closeApplicationModal() {
-            document.getElementById('applicationModal').classList.remove('active');
-            document.getElementById('applicationForm').reset();
+            const modal = document.getElementById('applicationModal');
+            const form = document.getElementById('applicationForm');
+            if (modal) modal.classList.remove('active');
+            if (form) {
+                form.reset();
+                delete form.dataset.applicationId;
+                document.getElementById('applicationProjectId').value = '';
+            }
         }
+        
+        window.openApplicationModal = openApplicationModal;
+        window.closeApplicationModal = closeApplicationModal;
         
         async function saveProject(event) {
             event.preventDefault();
@@ -1067,7 +1091,17 @@
             event.preventDefault();
             const form = event.target;
             const appId = form.dataset.applicationId;
-            const projectId = document.getElementById('applicationProjectId').value;
+            const projectIdInput = document.getElementById('applicationProjectId');
+            const projectId = projectIdInput ? projectIdInput.value : null;
+            
+            if (!projectId) {
+                if (typeof CustomDialog !== 'undefined') {
+                    await CustomDialog.showAlert('Error', 'Project ID is missing. Please try again.');
+                } else {
+                    alert('Project ID is missing. Please try again.');
+                }
+                return;
+            }
             
             const appData = {
                 name: document.getElementById('applicationName').value,
@@ -1088,6 +1122,7 @@
                 
                 if (response.ok) {
                     closeApplicationModal();
+                    // Reload projects to show the new application
                     await loadProjects();
                     if (typeof CustomDialog !== 'undefined') {
                         CustomDialog.showAlert('Success', appId ? 'Application updated successfully!' : 'Application created successfully!');
@@ -1095,7 +1130,8 @@
                         alert(appId ? 'Application updated successfully!' : 'Application created successfully!');
                     }
                 } else {
-                    throw new Error('Failed to save application');
+                    const errorText = await response.text();
+                    throw new Error(errorText || 'Failed to save application');
                 }
             } catch (error) {
                 console.error('Error saving application:', error);
