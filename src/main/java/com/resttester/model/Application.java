@@ -38,7 +38,7 @@ public class Application {
     private Project project;
     
     @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
+    @JsonIgnoreProperties({"application", "hibernateLazyInitializer", "handler"})
     private List<SavedRequest> savedRequests = new ArrayList<>();
     
     @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)

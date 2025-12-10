@@ -387,7 +387,7 @@
         }
         
         .endpoint-item {
-            padding: 8px;
+            padding: 10px 12px;
             background: #f9fafb;
             border-radius: 6px;
             margin-bottom: 6px;
@@ -395,6 +395,14 @@
             align-items: center;
             gap: 8px;
             font-size: 12px;
+            transition: all 0.15s;
+            cursor: pointer;
+        }
+        
+        .endpoint-item:hover {
+            background: #f3f4f6;
+            transform: translateX(2px);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
         
         .endpoint-method {
@@ -783,11 +791,13 @@
                             continue;
                         }
                         
-                        // Ensure savedRequests array exists for each app
+                        // Ensure savedRequests array exists for each app and log for debugging
                         projectApps.forEach(app => {
                             if (!app.savedRequests) {
                                 app.savedRequests = [];
                             }
+                            // Debug log
+                            console.log(`Application ${app.name} (ID: ${app.id}) has ${app.savedRequests ? app.savedRequests.length : 0} saved requests`);
                         });
                         
                         applications[project.id] = projectApps;
@@ -919,20 +929,30 @@
         }
         
         function renderEndpoints(requests) {
-            if (requests.length === 0) {
+            if (!requests || requests.length === 0) {
                 return '<div style="padding: 8px; color: #6b7280; font-size: 12px;">No endpoints yet</div>';
             }
             
             return requests.map(req => {
-                const methodClass = req.method.toLowerCase();
+                const methodClass = (req.method || 'GET').toLowerCase();
+                const method = req.method || 'GET';
+                const url = req.url || '';
+                const name = req.name || 'Untitled Request';
                 return `
-                    <div class="endpoint-item">
-                        <span class="endpoint-method ${methodClass}">${req.method}</span>
-                        <span>${escapeHtml(req.url)}</span>
-                        <span class="endpoint-status success">200 OK</span>
+                    <div class="endpoint-item" style="cursor: pointer;" onclick="window.location.href='/?requestId=${req.id}'" title="Click to open in main page">
+                        <span class="endpoint-method ${methodClass}">${escapeHtml(method)}</span>
+                        <span style="flex: 1; margin-left: 8px; font-weight: 500; color: #1a1a1a;">${escapeHtml(name)}</span>
+                        <span style="font-size: 11px; color: #6b7280; font-family: monospace; margin-right: 8px;">${escapeHtml(url)}</span>
                     </div>
                 `;
             }).join('');
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
         
         function toggleApplication(appId) {

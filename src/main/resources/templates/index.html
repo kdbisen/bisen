@@ -2948,17 +2948,68 @@
             }
         }
         
-        function duplicateRequest(requestId) {
-            // Load the saved request and populate the form
-            loadSavedRequestFromSidebar(requestId);
-            // Clear the saved request ID so it creates a new one
-            document.getElementById('savedRequestId').value = '';
-            // Change the name to indicate it's a duplicate
-            const nameInput = document.getElementById('name');
-            if (nameInput.value) {
-                nameInput.value = nameInput.value + ' (Copy)';
+        async function duplicateRequest(requestId) {
+            if (!requestId) return;
+            
+            try {
+                // Fetch the original request
+                const response = await fetch(`/api/saved/${requestId}`);
+                if (!response.ok) {
+                    throw new Error('Failed to load request');
+                }
+                
+                const originalRequest = await response.json();
+                
+                // Create a duplicate request with modified name
+                const duplicateName = originalRequest.name ? `${originalRequest.name} (Copy)` : 'Untitled Request (Copy)';
+                
+                // Prepare the duplicate request data
+                const duplicateData = {
+                    name: duplicateName,
+                    method: originalRequest.method || 'GET',
+                    url: originalRequest.url || '',
+                    headers: originalRequest.headers || '',
+                    body: originalRequest.body || '',
+                    applicationId: originalRequest.application ? originalRequest.application.id : null
+                };
+                
+                // Save the duplicate
+                const saveResponse = await fetch('/api/saved', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(duplicateData)
+                });
+                
+                if (saveResponse.ok) {
+                    const newRequest = await saveResponse.json();
+                    
+                    // Reload sidebar to show the new duplicate
+                    await loadProjectsAndApplications();
+                    await loadAllSavedRequests();
+                    
+                    // Optionally load the duplicate into the form
+                    await loadSavedRequestFromSidebar(newRequest.id);
+                    
+                    if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
+                        await CustomDialog.showAlert(`API request duplicated successfully!`, 'Success');
+                    } else {
+                        alert('API request duplicated successfully!');
+                    }
+                } else {
+                    const errorText = await saveResponse.text();
+                    throw new Error(errorText || 'Failed to create duplicate');
+                }
+            } catch (error) {
+                console.error('Error duplicating request:', error);
+                if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
+                    await CustomDialog.showAlert('Error duplicating request: ' + error.message, 'Error');
+                } else {
+                    alert('Error duplicating request: ' + error.message);
+                }
             }
         }
+        
+        window.duplicateRequest = duplicateRequest;
         
         function clearForm() {
             document.getElementById('requestForm').reset();
@@ -3584,7 +3635,9 @@
                                                                     data-request-id="${req.id}"
                                                                     title="Duplicate Request"
                                                                     onclick="event.stopPropagation(); duplicateRequest(${req.id});"
-                                                                    style="width: 20px; height: 20px; font-size: 11px; background: transparent; border: none; cursor: pointer; color: #6b7280;">⧉</button>
+                                                                    style="width: 20px; height: 20px; font-size: 11px; background: transparent; border: none; cursor: pointer; color: #2563eb; transition: all 0.15s;"
+                                                                    onmouseover="this.style.color='#1d4ed8'; this.style.transform='scale(1.1)'"
+                                                                    onmouseout="this.style.color='#2563eb'; this.style.transform='scale(1)'">📋</button>
                                                             <button class="btn-delete-request" 
                                                                     data-request-id="${req.id}"
                                                                     title="Delete Request"
@@ -3624,7 +3677,9 @@
                                                 data-request-id="${req.id}"
                                                 title="Duplicate Request"
                                                 onclick="event.stopPropagation(); duplicateRequest(${req.id});"
-                                                style="width: 20px; height: 20px; font-size: 11px; background: transparent; border: none; cursor: pointer; color: #6b7280;">⧉</button>
+                                                style="width: 20px; height: 20px; font-size: 11px; background: transparent; border: none; cursor: pointer; color: #2563eb; transition: all 0.15s;"
+                                                onmouseover="this.style.color='#1d4ed8'; this.style.transform='scale(1.1)'"
+                                                onmouseout="this.style.color='#2563eb'; this.style.transform='scale(1)'">📋</button>
                                         <button class="btn-delete-request" 
                                                 data-request-id="${req.id}"
                                                 title="Delete Request"
