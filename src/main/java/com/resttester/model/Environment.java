@@ -7,6 +7,7 @@
  */
 package com.resttester.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 @Entity
 @Table(name = "environments")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Environment {
     
     @Id
@@ -29,8 +31,10 @@ public class Environment {
     @Column(columnDefinition = "TEXT")
     private String variables; // JSON string of key-value pairs
     
-    @Column(nullable = false)
-    private Boolean isDefault = false;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "application_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "savedRequests", "project", "environments"})
+    private Application application;
     
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -82,12 +86,12 @@ public class Environment {
         this.variables = variables;
     }
     
-    public Boolean getIsDefault() {
-        return isDefault;
+    public Application getApplication() {
+        return application;
     }
     
-    public void setIsDefault(Boolean isDefault) {
-        this.isDefault = isDefault;
+    public void setApplication(Application application) {
+        this.application = application;
     }
     
     public LocalDateTime getCreatedAt() {

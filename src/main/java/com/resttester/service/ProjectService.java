@@ -32,6 +32,7 @@ public class ProjectService {
         Project project = new Project();
         project.setName(projectDto.getName());
         project.setDescription(projectDto.getDescription());
+        project.setUrl(projectDto.getUrl());
         logger.info("Created new project: {}", project.getName());
         return repository.save(project);
     }
@@ -49,6 +50,7 @@ public class ProjectService {
         return repository.findById(id).map(project -> {
             project.setName(projectDto.getName());
             project.setDescription(projectDto.getDescription());
+            project.setUrl(projectDto.getUrl());
             logger.info("Updated project: {}", project.getName());
             return repository.save(project);
         }).orElse(null);

@@ -372,7 +372,6 @@
             <a href="/" class="nav-menu-item">Home</a>
             <a href="/saved" class="nav-menu-item">Saved Requests</a>
             <a href="/history" class="nav-menu-item">History</a>
-            <a href="/environments" class="nav-menu-item">Environments</a>
             <a href="/import" class="nav-menu-item">Import Swagger</a>
             <a href="/guide" class="nav-menu-item active">Guide</a>
         </div>
@@ -650,8 +649,9 @@
                 <div class="step-number">1</div>
                 <div class="step-title">Access Environment Manager</div>
                 <div class="step-content">
-                    Click <strong>Environments</strong> in the top navigation menu, or click 
-                    <strong>Manage Environments</strong> in the Settings tab on the Home page.
+                    Navigate to the <strong>Projects</strong> page and select a project. For each application, 
+                    click the <strong>🌍 Manage Environments</strong> button to manage environments for that application.
+                    Environments are application-specific, so each application can have its own set of environments.
                 </div>
             </div>
             
@@ -706,26 +706,27 @@
                 <div class="step-number">1</div>
                 <div class="step-title">Edit Environment Variables</div>
                 <div class="step-content">
-                    On the Environments page, click the <strong>✏️ Edit</strong> button on any environment card. 
-                    You can add, modify, or remove variables. Click <strong>Save</strong> when done.
+                    From the Projects page, open the environment manager for an application. Click the <strong>✏️ Edit</strong> button 
+                    on any environment card. You can add, modify, or remove variables. Click <strong>Save</strong> when done.
                 </div>
             </div>
             
             <div class="step">
                 <div class="step-number">2</div>
-                <div class="step-title">Duplicate Environments</div>
+                <div class="step-title">Delete Environments</div>
                 <div class="step-content">
-                    Use the <strong>📋 Duplicate</strong> button to create a copy of an environment. 
-                    Great for creating similar environments with slight variations.
+                    Use the <strong>🗑️ Delete</strong> button to remove an environment. 
+                    Make sure no API requests are using the environment before deleting.
                 </div>
             </div>
             
             <div class="step">
                 <div class="step-number">3</div>
-                <div class="step-title">Set Default Environment</div>
+                <div class="step-title">Using Environments in API Requests</div>
                 <div class="step-content">
-                    Environments can be marked as default. The default environment's variables are automatically 
-                    available when no environment is selected.
+                    When you load a saved API request that is assigned to an application, you can select an environment 
+                    from the dropdown in the Settings tab. The selected environment's variables will be automatically 
+                    substituted in your request URL, headers, and body.
                 </div>
             </div>
             
@@ -743,8 +744,9 @@
                 <div class="step-number">1</div>
                 <div class="step-title">Select an Environment</div>
                 <div class="step-content">
-                    In the <strong>Settings</strong> tab, select an environment from the dropdown. 
-                    You can also use the environment selector in the top navigation bar.
+                    When a saved API request is assigned to an application, the <strong>Settings</strong> tab will show 
+                    an environment dropdown. Select an environment from the dropdown to use its variables. 
+                    The environment dropdown only appears when the request is assigned to an application that has environments.
                 </div>
             </div>
             

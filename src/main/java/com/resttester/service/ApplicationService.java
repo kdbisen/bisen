@@ -56,7 +56,7 @@ public class ApplicationService {
     }
     
     public List<Application> getApplicationsByProject(Long projectId) {
-        return repository.findByProjectIdOrderByCreatedAtDesc(projectId);
+        return repository.findByProjectIdOrderByNameAsc(projectId);
     }
     
     public Application getApplicationById(Long id) {

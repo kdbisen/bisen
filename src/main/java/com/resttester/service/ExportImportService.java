@@ -83,15 +83,21 @@ public class ExportImportService {
         int environmentsCreated = 0;
         
         // Import environments
+        // Note: isDefault field is deprecated - environments are now application-based
+        // Import functionality for environments is limited without applicationId
+        // Consider updating export format to include applicationId
         if (importData.getEnvironments() != null) {
             for (BisenExportDto.EnvironmentExportDto envExport : importData.getEnvironments()) {
-                Environment env = new Environment();
-                env.setName(envExport.getName());
-                env.setDescription(envExport.getDescription());
-                env.setVariables(envExport.getVariables());
-                env.setIsDefault(envExport.getIsDefault() != null && envExport.getIsDefault());
-                environmentRepository.save(env);
-                environmentsCreated++;
+                // Skip environments without applicationId - they cannot be imported in the new model
+                // TODO: Update export format to include applicationId for proper import
+                // For now, we'll skip these environments as they require an application
+                // Environment env = new Environment();
+                // env.setName(envExport.getName());
+                // env.setDescription(envExport.getDescription());
+                // env.setVariables(envExport.getVariables());
+                // Note: isDefault is deprecated and not used anymore
+                // environmentRepository.save(env);
+                // environmentsCreated++;
             }
         }
         
@@ -156,7 +162,9 @@ public class ExportImportService {
         export.setName(env.getName());
         export.setDescription(env.getDescription());
         export.setVariables(env.getVariables());
-        export.setIsDefault(env.getIsDefault());
+        // Note: isDefault is deprecated - environments are now application-based
+        // Set to false for backward compatibility with old export format
+        export.setIsDefault(false);
         return export;
     }
 }

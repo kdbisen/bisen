@@ -27,6 +27,9 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
     @EntityGraph(attributePaths = {"project"})
     List<Application> findAllByOrderByCreatedAtDesc();
     
+    // Note: Cannot fetch both savedRequests and environments simultaneously (MultipleBagFetchException)
+    // Fetch savedRequests here, environments will be loaded separately when needed
+    @EntityGraph(attributePaths = {"project", "savedRequests"})
     List<Application> findByProjectIdOrderByNameAsc(Long projectId);
 }
 

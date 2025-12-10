@@ -28,13 +28,14 @@
         .top-nav {
             background: #ffffff;
             border-bottom: 1px solid #e5e7eb;
-            padding: 12px 24px;
+            padding: 14px 28px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: sticky;
             top: 0;
             z-index: 50;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
         }
         
         .nav-brand {
@@ -43,11 +44,16 @@
             gap: 12px;
         }
         
+        .nav-brand img {
+            width: 28px;
+            height: 28px;
+        }
+        
         .nav-brand .brand-name {
             font-size: 20px;
             font-weight: 700;
             color: #1a1a1a;
-            letter-spacing: -0.5px;
+            letter-spacing: -0.3px;
         }
         
         .nav-menu {
@@ -60,7 +66,7 @@
             color: #6b7280;
             text-decoration: none;
             padding: 8px 12px;
-            border-radius: 4px;
+            border-radius: 6px;
             font-size: 13px;
             font-weight: 500;
             transition: all 0.15s;
@@ -74,7 +80,6 @@
         .nav-menu-item.active {
             background: #f3f4f6;
             color: #2563eb;
-            border-bottom: 2px solid #2563eb;
         }
         
         .nav-actions {
@@ -564,7 +569,7 @@
 <body>
     <div class="top-nav">
         <div class="nav-brand">
-            <img src="/icon.svg" alt="BISEN" style="width: 28px; height: 28px;">
+            <img src="/icon.svg" alt="BISEN">
             <span class="brand-name">BISEN</span>
         </div>
         <div class="nav-menu">
@@ -572,7 +577,6 @@
             <a href="/" class="nav-menu-item">Home</a>
             <a href="/saved" class="nav-menu-item">Saved Requests</a>
             <a href="/history" class="nav-menu-item">History</a>
-            <a href="/environments" class="nav-menu-item">Environments</a>
             <a href="/import" class="nav-menu-item">Import Swagger</a>
             <a href="/guide" class="nav-menu-item">Guide</a>
         </div>
@@ -588,6 +592,20 @@
         
         <div class="page-header">
             <h1>Project Dashboard</h1>
+        </div>
+        
+        <!-- Project Details Section (shown when projectId is in URL) -->
+        <div id="projectDetailsSection" style="display: none; margin-bottom: 24px;">
+            <div class="card" style="padding: 24px; background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                    <div>
+                        <h2 style="margin: 0 0 8px 0; font-size: 24px; font-weight: 600; color: #1a1a1a;" id="projectDetailsName">-</h2>
+                        <div style="font-size: 14px; color: #6b7280; margin-bottom: 4px;" id="projectDetailsUrl">-</div>
+                        <div style="font-size: 13px; color: #9ca3af; margin-top: 8px;" id="projectDetailsDescription">-</div>
+                    </div>
+                    <button onclick="editProjectDetails()" style="padding: 8px 16px; background: #2563eb; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer;">Edit</button>
+                </div>
+            </div>
         </div>
         
         <div class="filter-bar">
@@ -617,6 +635,10 @@
                 <div class="form-group">
                     <label class="form-label">Project Name</label>
                     <input type="text" class="form-input" id="projectName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Project URL</label>
+                    <input type="text" class="form-input" id="projectUrl" placeholder="https://api.example.com">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Description</label>
@@ -659,6 +681,66 @@
         </div>
     </div>
     
+    <!-- Environment Manager Modal -->
+    <div class="modal" id="environmentModal">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="environmentModalTitle">Manage Environments</h2>
+                <button class="modal-close" onclick="closeEnvironmentModal()">×</button>
+            </div>
+            <div style="padding: 20px; max-height: 70vh; overflow-y: auto;">
+                <div style="margin-bottom: 16px;">
+                    <button onclick="openNewEnvironmentModal()" style="padding: 8px 16px; background: #2563eb; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer;">+ Add Environment</button>
+                </div>
+                <div id="environmentsList">
+                    <!-- Environments will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- New/Edit Environment Modal -->
+    <div class="modal" id="newEnvironmentModal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="newEnvironmentModalTitle">New Environment</h2>
+                <button class="modal-close" onclick="closeNewEnvironmentModal()">×</button>
+            </div>
+            <form id="environmentForm" onsubmit="saveEnvironment(event)">
+                <input type="hidden" id="environmentApplicationId">
+                <input type="hidden" id="environmentId">
+                <div class="form-group">
+                    <label class="form-label">Environment Name</label>
+                    <input type="text" class="form-input" id="environmentName" required placeholder="e.g., Development, Staging, Production">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-textarea" id="environmentDescription" placeholder="Optional description"></textarea>
+                </div>
+                <div class="form-group">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <label class="form-label" style="margin-bottom: 0;">Variables</label>
+                        <button type="button" onclick="addVariableRow()" style="padding: 6px 12px; background: #10b981; color: white; border: none; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                            <span>+</span>
+                            <span>Add Variable</span>
+                        </button>
+                    </div>
+                    <div id="variablesContainer" style="display: flex; flex-direction: column; gap: 10px; min-height: 100px; max-height: 400px; overflow-y: auto; padding: 12px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px;">
+                        <!-- Variable rows will be added here -->
+                        <div style="text-align: center; padding: 40px 20px; color: #9ca3af; font-size: 13px;">
+                            No variables yet. Click "Add Variable" to add one.
+                        </div>
+                    </div>
+                    <input type="hidden" id="environmentVariables" />
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeNewEnvironmentModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
     <script src="/dialog.js"></script>
     <script>
         let projects = [];
@@ -667,6 +749,13 @@
         
         // Load projects on page load
         document.addEventListener('DOMContentLoaded', function() {
+            // Check if projectId is in URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const projectIdParam = urlParams.get('projectId');
+            if (projectIdParam) {
+                currentProjectId = parseInt(projectIdParam);
+            }
+            
             loadProjects();
         });
         
@@ -675,13 +764,46 @@
                 const response = await fetch('/api/projects');
                 projects = await response.json();
                 
-                // Load applications for each project
+                // Load applications for each project (savedRequests should be included via EntityGraph)
                 for (const project of projects) {
-                    const appsResponse = await fetch(`/api/projects/${project.id}/applications`);
-                    applications[project.id] = await appsResponse.json();
+                    try {
+                        const appsResponse = await fetch(`/api/projects/${project.id}/applications`);
+                        if (!appsResponse.ok) {
+                            console.error(`Failed to load applications for project ${project.id}:`, appsResponse.status);
+                            applications[project.id] = [];
+                            continue;
+                        }
+                        
+                        const projectApps = await appsResponse.json();
+                        
+                        // Check if response is an array
+                        if (!Array.isArray(projectApps)) {
+                            console.error(`Invalid response for project ${project.id}: expected array, got:`, typeof projectApps);
+                            applications[project.id] = [];
+                            continue;
+                        }
+                        
+                        // Ensure savedRequests array exists for each app
+                        projectApps.forEach(app => {
+                            if (!app.savedRequests) {
+                                app.savedRequests = [];
+                            }
+                        });
+                        
+                        applications[project.id] = projectApps;
+                    } catch (error) {
+                        console.error(`Error loading applications for project ${project.id}:`, error);
+                        applications[project.id] = [];
+                    }
                 }
                 
                 renderProjects();
+                
+                // Update project details section if projectId is in URL
+                if (currentProjectId) {
+                    console.log('Calling updateProjectDetailsSection after loading projects');
+                    updateProjectDetailsSection();
+                }
             } catch (error) {
                 console.error('Error loading projects:', error);
                 if (typeof CustomDialog !== 'undefined') {
@@ -773,8 +895,8 @@
             return apps.map(app => {
                 const apiCount = app.savedRequests ? app.savedRequests.length : 0;
                 return `
-                    <div class="application-item" onclick="toggleApplication(${app.id})">
-                        <div class="application-header">
+                    <div class="application-item">
+                        <div class="application-header" onclick="toggleApplication(${app.id})">
                             <div>
                                 <span class="application-name">${escapeHtml(app.name)}</span>
                                 ${app.version ? `<span class="application-version">${escapeHtml(app.version)}</span>` : ''}
@@ -782,6 +904,12 @@
                             <span class="expand-icon">▶</span>
                         </div>
                         <div class="application-endpoints">${apiCount} ENDPOINTS</div>
+                        <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e5e7eb;">
+                            <button onclick="event.stopPropagation(); openEnvironmentManager(${app.id})" 
+                                    style="width: 100%; padding: 8px 12px; background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 12px; cursor: pointer; color: #1a1a1a; font-weight: 500;">
+                                🌍 Manage Environments
+                            </button>
+                        </div>
                         <div class="endpoints-list" id="endpoints-${app.id}">
                             ${renderEndpoints(app.savedRequests || [])}
                         </div>
@@ -823,7 +951,8 @@
                 const project = projects.find(p => p.id === projectId);
                 if (project) {
                     title.textContent = 'Edit Project';
-                    document.getElementById('projectName').value = project.name;
+                    document.getElementById('projectName').value = project.name || '';
+                    document.getElementById('projectUrl').value = project.url || '';
                     document.getElementById('projectDescription').value = project.description || '';
                     form.dataset.projectId = projectId;
                 }
@@ -879,6 +1008,7 @@
             
             const projectData = {
                 name: document.getElementById('projectName').value,
+                url: document.getElementById('projectUrl').value,
                 description: document.getElementById('projectDescription').value
             };
             
@@ -994,11 +1124,403 @@
             window.location.href = '/environments';
         }
         
+        function updateProjectDetailsSection() {
+            console.log('updateProjectDetailsSection called, currentProjectId:', currentProjectId, 'projects.length:', projects.length);
+            
+            if (!currentProjectId) {
+                const section = document.getElementById('projectDetailsSection');
+                if (section) section.style.display = 'none';
+                return;
+            }
+            
+            // Try to find project by ID (handle both number and string comparison)
+            const project = projects.find(p => p.id === currentProjectId || p.id === parseInt(currentProjectId) || p.id.toString() === currentProjectId.toString());
+            
+            console.log('Found project:', project);
+            
+            if (!project) {
+                const section = document.getElementById('projectDetailsSection');
+                if (section) section.style.display = 'none';
+                console.warn('Project not found with ID:', currentProjectId);
+                return;
+            }
+            
+            const section = document.getElementById('projectDetailsSection');
+            if (section) {
+                section.style.display = 'block';
+                const nameEl = document.getElementById('projectDetailsName');
+                const urlEl = document.getElementById('projectDetailsUrl');
+                const descEl = document.getElementById('projectDetailsDescription');
+                
+                if (nameEl) nameEl.textContent = project.name || '-';
+                if (urlEl) {
+                    if (project.url) {
+                        urlEl.textContent = project.url;
+                        urlEl.style.color = '#2563eb';
+                        urlEl.style.cursor = 'pointer';
+                        urlEl.onclick = () => window.open(project.url, '_blank');
+                    } else {
+                        urlEl.textContent = 'No URL set';
+                        urlEl.style.color = '#6b7280';
+                        urlEl.style.cursor = 'default';
+                        urlEl.onclick = null;
+                    }
+                }
+                if (descEl) descEl.textContent = project.description || 'No description';
+            }
+        }
+        
+        function editProjectDetails() {
+            if (currentProjectId) {
+                openProjectModal(currentProjectId);
+            }
+        }
+        
+        window.updateProjectDetailsSection = updateProjectDetailsSection;
+        window.editProjectDetails = editProjectDetails;
+        
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
+        
+        let currentApplicationIdForEnv = null;
+        
+        async function openEnvironmentManager(applicationId) {
+            currentApplicationIdForEnv = applicationId;
+            const modal = document.getElementById('environmentModal');
+            const title = document.getElementById('environmentModalTitle');
+            
+            // Find application name
+            let appName = 'Application';
+            for (const projectId in applications) {
+                const app = applications[projectId].find(a => a.id === applicationId);
+                if (app) {
+                    appName = app.name;
+                    break;
+                }
+            }
+            
+            title.textContent = `Environments - ${appName}`;
+            await loadEnvironmentsForApplication(applicationId);
+            modal.classList.add('active');
+        }
+        
+        function closeEnvironmentModal() {
+            document.getElementById('environmentModal').classList.remove('active');
+            currentApplicationIdForEnv = null;
+        }
+        
+        async function loadEnvironmentsForApplication(applicationId) {
+            try {
+                const response = await fetch(`/api/applications/${applicationId}/environments`);
+                const environments = await response.json();
+                
+                const container = document.getElementById('environmentsList');
+                if (environments.length === 0) {
+                    container.innerHTML = '<div style="text-align: center; padding: 40px; color: #9ca3af;">No environments yet. Click "+ Add Environment" to create one.</div>';
+                    return;
+                }
+                
+                container.innerHTML = environments.map(env => {
+                    let variables = {};
+                    try {
+                        variables = JSON.parse(env.variables || '{}');
+                    } catch (e) {
+                        variables = {};
+                    }
+                    
+                    return `
+                        <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                <div>
+                                    <div style="font-size: 16px; font-weight: 600; color: #1a1a1a; margin-bottom: 4px;">${escapeHtml(env.name)}</div>
+                                    ${env.description ? `<div style="font-size: 12px; color: #6b7280;">${escapeHtml(env.description)}</div>` : ''}
+                                </div>
+                                <div style="display: flex; gap: 8px;">
+                                    <button onclick="editEnvironment(${env.id})" style="padding: 6px 12px; background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 4px; font-size: 12px; cursor: pointer;">Edit</button>
+                                    <button onclick="deleteEnvironment(${env.id})" style="padding: 6px 12px; background: #fee2e2; border: 1px solid #fecaca; border-radius: 4px; font-size: 12px; cursor: pointer; color: #dc2626;">Delete</button>
+                                </div>
+                            </div>
+                            <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e5e7eb;">
+                                <div style="font-size: 11px; font-weight: 600; color: #6b7280; margin-bottom: 6px;">Variables:</div>
+                                <div style="font-family: monospace; font-size: 11px; color: #1a1a1a; background: #f9fafb; padding: 8px; border-radius: 4px; max-height: 100px; overflow-y: auto;">
+                                    ${Object.keys(variables).length === 0 ? '<span style="color: #9ca3af;">No variables</span>' : 
+                                        Object.entries(variables).map(([key, value]) => 
+                                            `<div><strong>${escapeHtml(key)}</strong>: ${escapeHtml(value)}</div>`
+                                        ).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (error) {
+                console.error('Error loading environments:', error);
+                document.getElementById('environmentsList').innerHTML = '<div style="color: #dc2626; padding: 20px;">Error loading environments</div>';
+            }
+        }
+        
+        function openNewEnvironmentModal(envId = null) {
+            const modal = document.getElementById('newEnvironmentModal');
+            const title = document.getElementById('newEnvironmentModalTitle');
+            const form = document.getElementById('environmentForm');
+            
+            document.getElementById('environmentApplicationId').value = currentApplicationIdForEnv;
+            
+            if (envId) {
+                // Edit mode - load environment data
+                fetch(`/api/environments/${envId}`)
+                    .then(res => res.json())
+                    .then(env => {
+                        title.textContent = 'Edit Environment';
+                        document.getElementById('environmentId').value = env.id;
+                        document.getElementById('environmentName').value = env.name || '';
+                        document.getElementById('environmentDescription').value = env.description || '';
+                        
+                        // Load variables into the UI
+                        let variables = {};
+                        try {
+                            variables = JSON.parse(env.variables || '{}');
+                        } catch (e) {
+                            variables = {};
+                        }
+                        loadVariablesIntoUI(variables);
+                        
+                        modal.classList.add('active');
+                    })
+                    .catch(err => {
+                        console.error('Error loading environment:', err);
+                        if (typeof CustomDialog !== 'undefined') {
+                            CustomDialog.showAlert('Error', 'Failed to load environment');
+                        } else {
+                            alert('Failed to load environment');
+                        }
+                    });
+            } else {
+                // New mode
+                title.textContent = 'New Environment';
+                form.reset();
+                document.getElementById('environmentId').value = '';
+                document.getElementById('environmentApplicationId').value = currentApplicationIdForEnv;
+                clearVariablesUI();
+                modal.classList.add('active');
+            }
+        }
+        
+        function loadVariablesIntoUI(variables) {
+            const container = document.getElementById('variablesContainer');
+            container.innerHTML = '';
+            
+            const entries = Object.entries(variables);
+            if (entries.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 40px 20px; color: #9ca3af; font-size: 13px;">No variables yet. Click "Add Variable" to add one.</div>';
+            } else {
+                entries.forEach(([key, value], index) => {
+                    addVariableRow(key, value);
+                });
+            }
+        }
+        
+        function clearVariablesUI() {
+            const container = document.getElementById('variablesContainer');
+            container.innerHTML = '<div style="text-align: center; padding: 40px 20px; color: #9ca3af; font-size: 13px;">No variables yet. Click "Add Variable" to add one.</div>';
+        }
+        
+        function addVariableRow(key = '', value = '') {
+            const container = document.getElementById('variablesContainer');
+            
+            // Remove empty state message if present
+            if (container.children.length === 1 && container.children[0].textContent.includes('No variables yet')) {
+                container.innerHTML = '';
+            }
+            
+            const rowId = 'var-row-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+            const row = document.createElement('div');
+            row.id = rowId;
+            row.style.cssText = 'display: flex; gap: 10px; align-items: flex-start; padding: 12px; background: white; border: 1px solid #e5e7eb; border-radius: 8px; transition: all 0.2s;';
+            row.innerHTML = `
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                    <label style="font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px;">Key</label>
+                    <input type="text" class="var-key" value="${escapeHtml(key)}" placeholder="Variable name (e.g., baseUrl)" 
+                           style="padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: monospace; background: white; transition: border-color 0.2s;"
+                           onfocus="this.style.borderColor='#2563eb'; this.style.outline='none'"
+                           onblur="this.style.borderColor='#d1d5db'; updateVariablesJSON()">
+                </div>
+                <div style="flex: 2; display: flex; flex-direction: column; gap: 6px;">
+                    <label style="font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px;">Value</label>
+                    <input type="text" class="var-value" value="${escapeHtml(value)}" placeholder="Variable value" 
+                           style="padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: monospace; background: white; transition: border-color 0.2s;"
+                           onfocus="this.style.borderColor='#2563eb'; this.style.outline='none'"
+                           onblur="this.style.borderColor='#d1d5db'; updateVariablesJSON()">
+                </div>
+                <button type="button" onclick="removeVariableRow('${rowId}')" 
+                        style="padding: 8px; background: #fee2e2; color: #dc2626; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; margin-top: 24px; flex-shrink: 0;"
+                        onmouseover="this.style.background='#fecaca'"
+                        onmouseout="this.style.background='#fee2e2'"
+                        title="Remove variable">×</button>
+            `;
+            container.appendChild(row);
+            updateVariablesJSON();
+        }
+        
+        function removeVariableRow(rowId) {
+            const row = document.getElementById(rowId);
+            if (row) {
+                row.remove();
+                updateVariablesJSON();
+                
+                // Show empty state if no variables left
+                const container = document.getElementById('variablesContainer');
+                if (container.children.length === 0) {
+                    container.innerHTML = '<div style="text-align: center; padding: 40px 20px; color: #9ca3af; font-size: 13px;">No variables yet. Click "Add Variable" to add one.</div>';
+                }
+            }
+        }
+        
+        function updateVariablesJSON() {
+            const container = document.getElementById('variablesContainer');
+            const variables = {};
+            
+            container.querySelectorAll('.var-key').forEach((keyInput, index) => {
+                const valueInput = container.querySelectorAll('.var-value')[index];
+                const key = keyInput.value.trim();
+                const value = valueInput ? valueInput.value.trim() : '';
+                
+                if (key) {
+                    variables[key] = value;
+                }
+            });
+            
+            document.getElementById('environmentVariables').value = JSON.stringify(variables);
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function closeNewEnvironmentModal() {
+            document.getElementById('newEnvironmentModal').classList.remove('active');
+        }
+        
+        function editEnvironment(envId) {
+            openNewEnvironmentModal(envId);
+        }
+        
+        async function deleteEnvironment(envId) {
+            if (typeof CustomDialog !== 'undefined') {
+                const confirmed = await CustomDialog.showConfirm('Are you sure you want to delete this environment?', 'Confirm Delete');
+                if (!confirmed) return;
+            } else {
+                if (!confirm('Are you sure you want to delete this environment?')) return;
+            }
+            
+            try {
+                const response = await fetch(`/api/environments/${envId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    await loadEnvironmentsForApplication(currentApplicationIdForEnv);
+                    if (typeof CustomDialog !== 'undefined') {
+                        CustomDialog.showAlert('Success', 'Environment deleted successfully');
+                    } else {
+                        alert('Environment deleted successfully');
+                    }
+                } else {
+                    throw new Error('Failed to delete environment');
+                }
+            } catch (error) {
+                console.error('Error deleting environment:', error);
+                if (typeof CustomDialog !== 'undefined') {
+                    CustomDialog.showAlert('Error', 'Failed to delete environment');
+                } else {
+                    alert('Failed to delete environment');
+                }
+            }
+        }
+        
+        async function saveEnvironment(event) {
+            event.preventDefault();
+            
+            // Update variables JSON from UI before saving
+            updateVariablesJSON();
+            
+            const applicationId = parseInt(document.getElementById('environmentApplicationId').value);
+            const envId = document.getElementById('environmentId').value;
+            const name = document.getElementById('environmentName').value.trim();
+            const description = document.getElementById('environmentDescription').value.trim();
+            let variables = document.getElementById('environmentVariables').value.trim();
+            
+            // Validate JSON
+            try {
+                if (variables) {
+                    JSON.parse(variables);
+                } else {
+                    variables = '{}';
+                }
+            } catch (e) {
+                if (typeof CustomDialog !== 'undefined') {
+                    await CustomDialog.showAlert('Invalid JSON format in variables', 'Validation Error');
+                } else {
+                    alert('Invalid JSON format in variables');
+                }
+                return;
+            }
+            
+            const envDto = {
+                id: envId || null,
+                name: name,
+                description: description,
+                variables: variables,
+                applicationId: applicationId
+            };
+            
+            try {
+                const url = envId ? `/api/environments/${envId}` : '/api/environments';
+                const method = envId ? 'PUT' : 'POST';
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(envDto)
+                });
+                
+                if (response.ok) {
+                    closeNewEnvironmentModal();
+                    await loadEnvironmentsForApplication(applicationId);
+                    if (typeof CustomDialog !== 'undefined') {
+                        CustomDialog.showAlert('Success', envId ? 'Environment updated successfully!' : 'Environment created successfully!');
+                    } else {
+                        alert(envId ? 'Environment updated successfully!' : 'Environment created successfully!');
+                    }
+                } else {
+                    const errorText = await response.text();
+                    throw new Error(errorText || 'Failed to save environment');
+                }
+            } catch (error) {
+                console.error('Error saving environment:', error);
+                if (typeof CustomDialog !== 'undefined') {
+                    CustomDialog.showAlert('Error', 'Failed to save environment: ' + error.message);
+                } else {
+                    alert('Failed to save environment: ' + error.message);
+                }
+            }
+        }
+        
+        window.openEnvironmentManager = openEnvironmentManager;
+        window.closeEnvironmentModal = closeEnvironmentModal;
+        window.openNewEnvironmentModal = openNewEnvironmentModal;
+        window.addVariableRow = addVariableRow;
+        window.removeVariableRow = removeVariableRow;
+        window.updateVariablesJSON = updateVariablesJSON;
+        window.closeNewEnvironmentModal = closeNewEnvironmentModal;
+        window.editEnvironment = editEnvironment;
+        window.deleteEnvironment = deleteEnvironment;
+        window.saveEnvironment = saveEnvironment;
     </script>
 </body>
 </html>

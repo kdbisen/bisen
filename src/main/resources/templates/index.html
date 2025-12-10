@@ -301,6 +301,40 @@
             font-weight: 300;
         }
         
+        .btn-add-new-api {
+            width: 100%;
+            padding: 12px 16px;
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 1px 2px rgba(16, 185, 129, 0.2);
+        }
+        
+        .btn-add-new-api:hover {
+            background: #059669;
+            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+            transform: translateY(-1px);
+        }
+        
+        .btn-add-new-api:active {
+            background: #047857;
+            transform: translateY(0);
+        }
+        
+        .btn-add-new-api span:first-child {
+            font-size: 18px;
+            font-weight: 300;
+        }
+        
         .main-content {
             flex: 1;
             margin-left: 300px;
@@ -1289,10 +1323,14 @@
         </div>
         
         <div class="sidebar-content">
-            <div style="margin-bottom: 16px;">
+            <div style="margin-bottom: 16px; display: flex; flex-direction: column; gap: 8px;">
                 <button class="btn-add-new-request" onclick="clearForm()" title="Create New Request">
                     <span>+</span>
                     <span>New Request</span>
+                </button>
+                <button class="btn-add-new-api" onclick="openNewApiModal()" title="Create New API in Application" style="width: 100%; padding: 12px 16px; background: #10b981; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 1px 2px rgba(16, 185, 129, 0.2);">
+                    <span>+</span>
+                    <span>New API</span>
                 </button>
             </div>
             
@@ -1336,7 +1374,6 @@
                 <a href="/" class="nav-menu-item active">Home</a>
                 <a href="/saved" class="nav-menu-item">Saved Requests</a>
                 <a href="/history" class="nav-menu-item">History</a>
-                <a href="/environments" class="nav-menu-item">Environments</a>
                 <a href="/import" class="nav-menu-item">Import Swagger</a>
                 <a href="/guide" class="nav-menu-item">Guide</a>
             </div>
@@ -1527,10 +1564,10 @@
                             <span style="font-size: 11px; color: #8a8a8a; margin-left: 8px;">Default: 30000ms (30s)</span>
                         </div>
                         
-                        <div class="form-group">
+                        <div class="form-group" id="environmentGroup" style="display: none;">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                                 <label style="margin-bottom: 0;">Environment</label>
-                                <button type="button" onclick="openEnvironmentManager()" style="padding: 4px 12px; font-size: 11px; background: #2563eb; color: white; border: none; border-radius: 4px; cursor: pointer;">Manage Environments</button>
+                                <span style="font-size: 11px; color: #6b7280;" id="environmentAppInfo"></span>
                             </div>
                             <select id="environmentSelect" onchange="loadEnvironmentVariables()" class="method-select" style="margin-bottom: 12px;">
                                 <option value="">No Environment</option>
@@ -1661,19 +1698,19 @@
         </div>
     </div>
     
-    <!-- Environment Manager Modal - Improved UI -->
-    <div id="envManagerModal" onclick="if(event.target.id === 'envManagerModal') closeEnvironmentManager()" 
+    <!-- New API Modal -->
+    <div id="newApiModal" onclick="if(event.target.id === 'newApiModal') closeNewApiModal()" 
          style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(2px);">
         <div onclick="event.stopPropagation()" 
-             style="background: white; border-radius: 12px; width: 90%; max-width: 900px; max-height: 85vh; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3); display: flex; flex-direction: column;">
+             style="background: white; border-radius: 12px; width: 90%; max-width: 600px; max-height: 85vh; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3); display: flex; flex-direction: column;">
             
             <!-- Modal Header -->
-            <div style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; padding: 20px 24px; display: flex; justify-content: space-between; align-items: center;">
+            <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 20px 24px; display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <h2 style="margin: 0; font-size: 22px; font-weight: 600;">Environment Manager</h2>
-                    <p style="margin: 4px 0 0 0; font-size: 13px; opacity: 0.9;">Create and manage environments with variables</p>
+                    <h2 style="margin: 0; font-size: 22px; font-weight: 600;">Create New API</h2>
+                    <p style="margin: 4px 0 0 0; font-size: 13px; opacity: 0.9;">Select project, application, and enter API details</p>
                 </div>
-                <button onclick="closeEnvironmentManager()" 
+                <button onclick="closeNewApiModal()" 
                         style="background: rgba(255,255,255,0.2); border: none; color: white; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; transition: background 0.2s;"
                         onmouseover="this.style.background='rgba(255,255,255,0.3)'"
                         onmouseout="this.style.background='rgba(255,255,255,0.2)'">×</button>
@@ -1681,21 +1718,62 @@
             
             <!-- Modal Body -->
             <div style="flex: 1; overflow-y: auto; padding: 24px; background: #f8f9fa;">
-                <!-- Add Environment Button -->
-                <div style="margin-bottom: 20px;">
-                    <button onclick="addNewEnvironment()" 
-                            style="padding: 10px 20px; background: #2563eb; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 8px; transition: background 0.2s;"
-                            onmouseover="this.style.background='#1d4ed8'"
-                            onmouseout="this.style.background='#2563eb'">
-                        <span style="font-size: 18px;">+</span>
-                        <span>Add New Environment</span>
-                    </button>
-                </div>
-                
-                <!-- Environments List -->
-                <div id="environmentsList" style="display: flex; flex-direction: column; gap: 20px;">
-                    <!-- Environments will be loaded here -->
-                </div>
+                <form id="newApiForm" onsubmit="saveNewApi(event); return false;">
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        <div>
+                            <label style="display: block; font-size: 13px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">Select Project</label>
+                            <select id="newApiProjectId" onchange="updateNewApiApplications()" required
+                                    style="width: 100%; padding: 10px 12px; background: white; border: 1.5px solid #e5e7eb; border-radius: 8px; font-size: 14px; color: #1a1a1a;">
+                                <option value="">-- Select Project --</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label style="display: block; font-size: 13px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">Select Application</label>
+                            <select id="newApiApplicationId" required
+                                    style="width: 100%; padding: 10px 12px; background: white; border: 1.5px solid #e5e7eb; border-radius: 8px; font-size: 14px; color: #1a1a1a;">
+                                <option value="">-- Select Application --</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label style="display: block; font-size: 13px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">API Name</label>
+                            <input type="text" id="newApiName" placeholder="e.g., Get User Profile" required
+                                   style="width: 100%; padding: 10px 12px; background: white; border: 1.5px solid #e5e7eb; border-radius: 8px; font-size: 14px; color: #1a1a1a;">
+                        </div>
+                        
+                        <div>
+                            <label style="display: block; font-size: 13px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">HTTP Method</label>
+                            <select id="newApiMethod" required
+                                    style="width: 100%; padding: 10px 12px; background: white; border: 1.5px solid #e5e7eb; border-radius: 8px; font-size: 14px; color: #1a1a1a;">
+                                <option value="GET">GET</option>
+                                <option value="POST">POST</option>
+                                <option value="PUT">PUT</option>
+                                <option value="DELETE">DELETE</option>
+                                <option value="PATCH">PATCH</option>
+                                <option value="HEAD">HEAD</option>
+                                <option value="OPTIONS">OPTIONS</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label style="display: block; font-size: 13px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">URL</label>
+                            <input type="text" id="newApiUrl" placeholder="https://api.example.com/users" required
+                                   style="width: 100%; padding: 10px 12px; background: white; border: 1.5px solid #e5e7eb; border-radius: 8px; font-size: 14px; color: #1a1a1a;">
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 12px; margin-top: 24px; justify-content: flex-end;">
+                        <button type="button" onclick="closeNewApiModal()" 
+                                style="padding: 10px 20px; background: #f3f4f6; color: #1a1a1a; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer;">
+                            Cancel
+                        </button>
+                        <button type="submit" 
+                                style="padding: 10px 20px; background: #10b981; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer;">
+                            Create API
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -1819,6 +1897,9 @@
                                 if (noAssignment) noAssignment.style.display = 'none';
                                 if (assignmentInfo) assignmentInfo.style.display = 'block';
                             }
+                            
+                            // Load environments for this application
+                            await loadEnvironmentsForApplication(savedRequest.application.id);
                         }
                     } else {
                         const applicationSelect = document.getElementById('applicationId');
@@ -2426,377 +2507,81 @@
         let environments = [];
         let currentEnvironmentId = null;
         
-        // Environment Manager Functions
-        function openEnvironmentManager() {
-            const modal = document.getElementById('envManagerModal');
-            if (modal) {
-                modal.style.display = 'flex';
-                loadEnvironmentsForManager();
-            }
-        }
+        // Note: Environment management is now done from the Projects page
+        // Environments are application-specific and managed per application
+        // All old global environment manager functions have been removed
         
-        function closeEnvironmentManager() {
-            const modal = document.getElementById('envManagerModal');
-            if (modal) {
-                modal.style.display = 'none';
-            }
-        }
-        
-        // Close modal when clicking outside
-        document.addEventListener('DOMContentLoaded', function() {
-            const modal = document.getElementById('envManagerModal');
-            if (modal) {
-                modal.addEventListener('click', function(e) {
-                    if (e.target.id === 'envManagerModal') {
-                        closeEnvironmentManager();
-                    }
-                });
-            }
-        });
-        
-        async function loadEnvironmentsForManager() {
-            try {
-                const response = await fetch('/api/environments');
-                if (response.ok) {
-                    environments = await response.json();
-                    renderEnvironmentsList();
-                }
-            } catch (e) {
-                console.error('Error loading environments:', e);
-            }
-        }
-        
-        function renderEnvironmentsList() {
-            const container = document.getElementById('environmentsList');
-            if (!container) return;
-            
-            if (environments.length === 0) {
-                container.innerHTML = `
-                    <div style="text-align: center; padding: 60px 20px; background: white; border-radius: 12px; border: 2px dashed #e5e7eb;">
-                        <div style="font-size: 48px; margin-bottom: 16px;">🌍</div>
-                        <p style="color: #6b7280; font-size: 16px; margin: 0 0 8px 0; font-weight: 500;">No environments yet</p>
-                        <p style="color: #9ca3af; font-size: 14px; margin: 0;">Click "Add New Environment" to create your first environment</p>
-                    </div>
-                `;
+        async function loadEnvironmentsForApplication(applicationId) {
+            // Validate applicationId
+            if (!applicationId || isNaN(applicationId) || applicationId <= 0) {
+                // Hide environment group if no application
+                const envGroup = document.getElementById('environmentGroup');
+                if (envGroup) envGroup.style.display = 'none';
                 return;
             }
             
-            container.innerHTML = environments.map(env => {
-                const vars = env.variables ? (typeof env.variables === 'string' ? JSON.parse(env.variables) : env.variables) : {};
-                const varEntries = Object.entries(vars);
-                
-                return `
-                    <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-                        <!-- Environment Header -->
-                        <div style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%); padding: 16px 20px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center;">
-                            <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
-                                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 16px;">
-                                    ${(env.name || 'Env')[0].toUpperCase()}
-                                </div>
-                                <div style="flex: 1;">
-                                    <input type="text" id="env-name-${env.id}" value="${escapeHtml(env.name || '')}" 
-                                           placeholder="Environment Name"
-                                           style="padding: 8px 12px; border: 2px solid #e5e7eb; border-radius: 6px; font-size: 16px; font-weight: 600; width: 100%; max-width: 300px; transition: border-color 0.2s;"
-                                           onfocus="this.style.borderColor='#2563eb'; this.style.outline='none'"
-                                           onblur="this.style.borderColor='#e5e7eb'; updateEnvironmentName(${env.id})"
-                                           onkeypress="if(event.key==='Enter'){this.blur()}">
-                                    <div style="font-size: 12px; color: #6b7280; margin-top: 4px;">
-                                        ${varEntries.length} variable${varEntries.length !== 1 ? 's' : ''}
-                                    </div>
-                                </div>
-                            </div>
-                            <div style="display: flex; gap: 8px;">
-                                <button onclick="saveEnvironment(${env.id})" 
-                                        style="padding: 8px 16px; background: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 6px; transition: background 0.2s;"
-                                        onmouseover="this.style.background='#059669'"
-                                        onmouseout="this.style.background='#10b981'">
-                                    <span>✓</span>
-                                    <span>Save</span>
-                                </button>
-                                <button onclick="deleteEnvironment(${env.id})" 
-                                        style="padding: 8px 16px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 6px; transition: background 0.2s;"
-                                        onmouseover="this.style.background='#dc2626'"
-                                        onmouseout="this.style.background='#ef4444'">
-                                    <span>🗑</span>
-                                    <span>Delete</span>
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <!-- Variables Section -->
-                        <div style="padding: 20px;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                                <div style="font-size: 14px; font-weight: 600; color: #1a1a1a;">Variables</div>
-                                <button onclick="addEnvVar(${env.id})" 
-                                        style="padding: 6px 12px; background: #f3f4f6; color: #2563eb; border: 1px solid #e5e7eb; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 500; display: flex; align-items: center; gap: 6px; transition: all 0.2s;"
-                                        onmouseover="this.style.background='#e5e7eb'; this.style.borderColor='#2563eb'"
-                                        onmouseout="this.style.background='#f3f4f6'; this.style.borderColor='#e5e7eb'">
-                                    <span>+</span>
-                                    <span>Add Variable</span>
-                                </button>
-                            </div>
-                            
-                            <div id="env-vars-${env.id}">
-                                ${varEntries.length === 0 ? `
-                                    <div style="text-align: center; padding: 40px; background: #f9fafb; border-radius: 8px; border: 1px dashed #e5e7eb;">
-                                        <div style="font-size: 32px; margin-bottom: 8px;">📝</div>
-                                        <p style="color: #6b7280; font-size: 13px; margin: 0;">No variables yet. Click "Add Variable" to add one.</p>
-                                    </div>
-                                ` : `
-                                    <div style="display: flex; flex-direction: column; gap: 10px;">
-                                        ${varEntries.map(([key, value], idx) => `
-                                            <div style="display: flex; gap: 10px; align-items: center; padding: 12px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; transition: all 0.2s;"
-                                                 onmouseover="this.style.background='#f3f4f6'; this.style.borderColor='#d1d5db'"
-                                                 onmouseout="this.style.background='#f9fafb'; this.style.borderColor='#e5e7eb'">
-                                                <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
-                                                    <label style="font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px;">Key</label>
-                                                    <input type="text" value="${escapeHtml(key)}" placeholder="Variable name" 
-                                                           style="padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: 'SF Mono', monospace; background: white; transition: border-color 0.2s;"
-                                                           onfocus="this.style.borderColor='#2563eb'; this.style.outline='none'"
-                                                           onblur="this.style.borderColor='#d1d5db'; updateEnvVar(${env.id}, ${idx}, 'key', this.value)">
-                                                </div>
-                                                <div style="flex: 2; display: flex; flex-direction: column; gap: 6px;">
-                                                    <label style="font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px;">Value</label>
-                                                    <input type="text" value="${escapeHtml(value)}" placeholder="Variable value" 
-                                                           style="padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: 'SF Mono', monospace; background: white; transition: border-color 0.2s;"
-                                                           onfocus="this.style.borderColor='#2563eb'; this.style.outline='none'"
-                                                           onblur="this.style.borderColor='#d1d5db'; updateEnvVar(${env.id}, ${idx}, 'value', this.value)">
-                                                </div>
-                                                <button onclick="removeEnvVar(${env.id}, ${idx})" 
-                                                        style="padding: 8px; background: #fee2e2; color: #dc2626; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; margin-top: 20px;"
-                                                        onmouseover="this.style.background='#fecaca'"
-                                                        onmouseout="this.style.background='#fee2e2'"
-                                                        title="Remove variable">×</button>
-                                            </div>
-                                        `).join('')}
-                                    </div>
-                                `}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-        
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-        
-        async function addNewEnvironment() {
-            // Use custom dialog for better UX
-            if (typeof CustomDialog !== 'undefined' && CustomDialog.showPrompt) {
-                const name = await CustomDialog.showPrompt('Enter environment name:', 'New Environment', 'Environment Name');
-                if (!name || !name.trim()) return;
-                await createEnvironment(name.trim());
-            } else {
-                const name = prompt('Enter environment name:');
-                if (!name || !name.trim()) return;
-                await createEnvironment(name.trim());
-            }
-        }
-        
-        async function createEnvironment(name) {
             try {
-                const response = await fetch('/api/environments', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name: name, variables: '{}' })
-                });
-                
-                if (response.ok) {
-                    await loadEnvironmentsForManager();
-                    await loadEnvironments();
-                    // Show success message
-                    if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
-                        await CustomDialog.showAlert(`Environment "${name}" created successfully!`, 'Success');
-                    }
-                } else {
-                    throw new Error('Failed to create environment');
-                }
-            } catch (e) {
-                console.error('Error adding environment:', e);
-                if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
-                    await CustomDialog.showAlert('Error adding environment: ' + e.message, 'Error');
-                } else {
-                    alert('Error adding environment');
-                }
-            }
-        }
-        
-        async function updateEnvironmentName(envId) {
-            const nameInput = document.getElementById('env-name-' + envId);
-            if (!nameInput) return;
-            
-            const env = environments.find(e => e.id === envId);
-            if (!env) return;
-            
-            env.name = nameInput.value;
-        }
-        
-        function updateEnvVar(envId, varIdx, type, value) {
-            const env = environments.find(e => e.id === envId);
-            if (!env) return;
-            
-            const vars = env.variables ? (typeof env.variables === 'string' ? JSON.parse(env.variables) : env.variables) : {};
-            const entries = Object.entries(vars);
-            
-            if (varIdx >= 0 && varIdx < entries.length) {
-                if (type === 'key') {
-                    const oldKey = entries[varIdx][0];
-                    const oldValue = entries[varIdx][1];
-                    if (oldKey !== value) {
-                        delete vars[oldKey];
-                        if (value && value.trim()) {
-                            vars[value.trim()] = oldValue;
-                        }
-                    }
-                } else {
-                    const key = entries[varIdx][0];
-                    if (key) {
-                        vars[key] = value;
-                    }
-                }
-                env.variables = JSON.stringify(vars);
-            }
-        }
-        
-        function addEnvVar(envId) {
-            const env = environments.find(e => e.id === envId);
-            if (!env) return;
-            
-            const vars = env.variables ? (typeof env.variables === 'string' ? JSON.parse(env.variables) : env.variables) : {};
-            vars[''] = '';
-            env.variables = JSON.stringify(vars);
-            renderEnvironmentsList();
-        }
-        
-        function removeEnvVar(envId, varIdx) {
-            const env = environments.find(e => e.id === envId);
-            if (!env) return;
-            
-            const vars = env.variables ? (typeof env.variables === 'string' ? JSON.parse(env.variables) : env.variables) : {};
-            const entries = Object.entries(vars);
-            
-            if (varIdx >= 0 && varIdx < entries.length) {
-                const key = entries[varIdx][0];
-                delete vars[key];
-                env.variables = JSON.stringify(vars);
-                renderEnvironmentsList();
-            }
-        }
-        
-        async function saveEnvironment(envId) {
-            const env = environments.find(e => e.id === envId);
-            if (!env) return;
-            
-            try {
-                const response = await fetch('/api/environments/' + envId, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        name: env.name,
-                        variables: env.variables
-                    })
-                });
-                
-                if (response.ok) {
-                    await loadEnvironmentsForManager();
-                    await loadEnvironments();
-                    if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
-                        await CustomDialog.showAlert('Environment saved successfully!', 'Success');
-                    } else {
-                        alert('Environment saved successfully!');
-                    }
-                }
-            } catch (e) {
-                console.error('Error saving environment:', e);
-                alert('Error saving environment');
-            }
-        }
-        
-        async function deleteEnvironment(envId) {
-            const env = environments.find(e => e.id === envId);
-            const envName = env ? env.name : 'this environment';
-            
-            let confirmed = false;
-            if (typeof CustomDialog !== 'undefined' && CustomDialog.showConfirm) {
-                confirmed = await CustomDialog.showConfirm(
-                    `Are you sure you want to delete "${envName}"? This action cannot be undone.`,
-                    'Delete Environment'
-                );
-            } else {
-                confirmed = confirm(`Are you sure you want to delete "${envName}"?`);
-            }
-            
-            if (!confirmed) return;
-            
-            try {
-                const response = await fetch('/api/environments/' + envId, {
-                    method: 'DELETE'
-                });
-                
-                if (response.ok) {
-                    await loadEnvironmentsForManager();
-                    await loadEnvironments();
-                    if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
-                        await CustomDialog.showAlert(`Environment "${envName}" deleted successfully.`, 'Success');
-                    }
-                } else {
-                    throw new Error('Failed to delete environment');
-                }
-            } catch (e) {
-                console.error('Error deleting environment:', e);
-                if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
-                    await CustomDialog.showAlert('Error deleting environment: ' + e.message, 'Error');
-                } else {
-                    alert('Error deleting environment');
-                }
-            }
-        }
-        
-        async function loadEnvironments() {
-            try {
-                const response = await fetch('/api/environments');
+                const response = await fetch(`/api/applications/${applicationId}/environments`);
                 if (response.ok) {
                     environments = await response.json();
                     const select = document.getElementById('environmentSelect');
-                    const topSelect = document.getElementById('topEnvSelect');
+                    const envGroup = document.getElementById('environmentGroup');
+                    const envAppInfo = document.getElementById('environmentAppInfo');
+                    
+                    // Show environment group
+                    if (envGroup) envGroup.style.display = 'block';
+                    
+                    // Find application name for info display
+                    let appName = 'Application';
+                    // Ensure applications is an array before using find
+                    if (Array.isArray(applications)) {
+                        const app = applications.find(a => a && a.id && (a.id === applicationId || a.id === parseInt(applicationId)));
+                        if (app && app.name) {
+                            appName = app.name;
+                        }
+                    }
+                    if (envAppInfo) {
+                        envAppInfo.textContent = `for ${appName}`;
+                    }
                     
                     if (select) {
                         select.innerHTML = '<option value="">No Environment</option>';
                         environments.forEach(env => {
                             const option = document.createElement('option');
                             option.value = env.id;
-                            option.textContent = env.name + (env.isDefault ? ' (Default)' : '');
-                            if (env.isDefault) {
-                                option.selected = true;
-                                currentEnvironmentId = env.id;
-                            }
+                            option.textContent = env.name;
                             select.appendChild(option);
                         });
-                        if (currentEnvironmentId) {
+                        
+                        // Select first environment by default if available
+                        if (environments.length > 0 && !currentEnvironmentId) {
+                            select.value = environments[0].id;
+                            currentEnvironmentId = environments[0].id;
+                            loadEnvironmentVariables();
+                        } else if (currentEnvironmentId) {
+                            select.value = currentEnvironmentId;
                             loadEnvironmentVariables();
                         }
-                    }
-                    
-                    if (topSelect) {
-                        topSelect.innerHTML = '<option value="">No Environment</option>';
-                        environments.forEach(env => {
-                            const option = document.createElement('option');
-                            option.value = env.id;
-                            option.textContent = env.name;
-                            if (env.id === currentEnvironmentId) {
-                                option.selected = true;
-                            }
-                            topSelect.appendChild(option);
-                        });
                     }
                 }
             } catch (error) {
                 console.error('Error loading environments:', error);
+                const envGroup = document.getElementById('environmentGroup');
+                if (envGroup) envGroup.style.display = 'none';
+            }
+        }
+        
+        async function loadEnvironments() {
+            // This function is kept for backward compatibility but now uses application-based loading
+            const applicationIdEl = document.getElementById('applicationId');
+            const applicationId = applicationIdEl ? applicationIdEl.value : null;
+            
+            if (applicationId) {
+                await loadEnvironmentsForApplication(parseInt(applicationId));
+            } else {
+                // Hide environment group if no application assigned
+                const envGroup = document.getElementById('environmentGroup');
+                if (envGroup) envGroup.style.display = 'none';
             }
         }
         
@@ -3041,161 +2826,6 @@
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
-        }
-        
-        async function openEnvironmentManager() {
-            const modal = document.createElement('div');
-            modal.className = 'custom-dialog-overlay';
-            modal.innerHTML = `
-                <div class="custom-dialog" style="max-width: 700px; max-height: 90vh; overflow-y: auto;">
-                    <div class="custom-dialog-header">
-                        <h3>Environment Management</h3>
-                        <button class="custom-dialog-close" onclick="this.closest('.custom-dialog-overlay').remove()">&times;</button>
-                    </div>
-                    <div class="custom-dialog-body">
-                        <div style="margin-bottom: 20px;">
-                            <button onclick="createNewEnvironment()" style="padding: 8px 16px; background: #1a1a1a; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px;">+ New Environment</button>
-                        </div>
-                        <div id="environmentsList"></div>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(modal);
-            await loadEnvironmentsForManager();
-        }
-        
-        async function loadEnvironmentsForManager() {
-            try {
-                const response = await fetch('/api/environments');
-                if (response.ok) {
-                    const envs = await response.json();
-                    const listDiv = document.getElementById('environmentsList');
-                    if (!listDiv) return;
-                    listDiv.innerHTML = '';
-                    
-                    envs.forEach(env => {
-                        const envDiv = document.createElement('div');
-                        envDiv.style.cssText = 'padding: 12px; border: 1px solid #e5e5e5; border-radius: 4px; margin-bottom: 12px;';
-                        envDiv.innerHTML = `
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                                <div>
-                                    <strong>${escapeHtml(env.name)}</strong>
-                                    ${env.isDefault ? '<span style="color: #388e3c; font-size: 11px; margin-left: 8px;">(Default)</span>' : ''}
-                                </div>
-                                <div style="display: flex; gap: 8px;">
-                                    ${!env.isDefault ? `<button onclick="setDefaultEnvironment(${env.id})" style="padding: 4px 8px; font-size: 11px; background: #f5f5f5; border: 1px solid #e5e5e5; border-radius: 4px; cursor: pointer;">Set Default</button>` : ''}
-                                    <button onclick="editEnvironment(${env.id})" style="padding: 4px 8px; font-size: 11px; background: #f5f5f5; border: 1px solid #e5e5e5; border-radius: 4px; cursor: pointer;">Edit</button>
-                                    <button onclick="deleteEnvironment(${env.id})" style="padding: 4px 8px; font-size: 11px; background: #ffebee; border: 1px solid #d32f2f; color: #d32f2f; border-radius: 4px; cursor: pointer;">Delete</button>
-                                </div>
-                            </div>
-                            ${env.description ? `<div style="font-size: 12px; color: #8a8a8a; margin-bottom: 8px;">${escapeHtml(env.description)}</div>` : ''}
-                            <div style="font-size: 11px; color: #8a8a8a; font-family: monospace; background: #fafafa; padding: 8px; border-radius: 4px; max-height: 100px; overflow-y: auto;">${escapeHtml(env.variables || '{}')}</div>
-                        `;
-                        listDiv.appendChild(envDiv);
-                    });
-                }
-            } catch (error) {
-                console.error('Error loading environments:', error);
-            }
-        }
-        
-        async function createNewEnvironment() {
-            const name = await CustomDialog.showPrompt('Environment Name:', '', 'New Environment');
-            if (!name) return;
-            
-            const description = await CustomDialog.showPrompt('Description (optional):', '', 'Environment Description');
-            
-            const variables = await CustomDialog.showPrompt('Variables (JSON):', '{}', 'Environment Variables');
-            if (variables === null) return;
-            
-            try {
-                const response = await fetch('/api/environments', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        name: name,
-                        description: description || '',
-                        variables: variables || '{}',
-                        isDefault: false
-                    })
-                });
-                
-                if (response.ok) {
-                    await loadEnvironmentsForManager();
-                    await loadEnvironments();
-                } else {
-                    await CustomDialog.showAlert('Error creating environment', 'Error');
-                }
-            } catch (error) {
-                await CustomDialog.showAlert('Error: ' + error.message, 'Error');
-            }
-        }
-        
-        async function editEnvironment(id) {
-            try {
-                const response = await fetch('/api/environments/' + id);
-                if (response.ok) {
-                    const env = await response.json();
-                    const name = await CustomDialog.showPrompt('Environment Name:', env.name, 'Edit Environment');
-                    if (name === null) return;
-                    
-                    const description = await CustomDialog.showPrompt('Description:', env.description || '', 'Environment Description');
-                    
-                    const variables = await CustomDialog.showPrompt('Variables (JSON):', env.variables || '{}', 'Environment Variables');
-                    if (variables === null) return;
-                    
-                    const updateResponse = await fetch('/api/environments/' + id, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            name: name,
-                            description: description || '',
-                            variables: variables || '{}',
-                            isDefault: env.isDefault
-                        })
-                    });
-                    
-                    if (updateResponse.ok) {
-                        await loadEnvironmentsForManager();
-                        await loadEnvironments();
-                    } else {
-                        await CustomDialog.showAlert('Error updating environment', 'Error');
-                    }
-                }
-            } catch (error) {
-                await CustomDialog.showAlert('Error: ' + error.message, 'Error');
-            }
-        }
-        
-        async function deleteEnvironment(id) {
-            const confirmed = await CustomDialog.showConfirm('Are you sure you want to delete this environment?', 'Delete Environment');
-            if (!confirmed) return;
-            
-            try {
-                const response = await fetch('/api/environments/' + id, { method: 'DELETE' });
-                if (response.ok) {
-                    await loadEnvironmentsForManager();
-                    await loadEnvironments();
-                } else {
-                    await CustomDialog.showAlert('Error deleting environment', 'Error');
-                }
-            } catch (error) {
-                await CustomDialog.showAlert('Error: ' + error.message, 'Error');
-            }
-        }
-        
-        async function setDefaultEnvironment(id) {
-            try {
-                const response = await fetch('/api/environments/' + id + '/set-default', { method: 'POST' });
-                if (response.ok) {
-                    await loadEnvironmentsForManager();
-                    await loadEnvironments();
-                } else {
-                    await CustomDialog.showAlert('Error setting default environment', 'Error');
-                }
-            } catch (error) {
-                await CustomDialog.showAlert('Error: ' + error.message, 'Error');
-            }
         }
         
         async function exportAll() {
@@ -3534,8 +3164,10 @@
             const headers = getHeaders();
             const body = bodyEl ? (bodyEl.value || '') : '';
             const applicationIdEl = document.getElementById('applicationId');
-            const applicationId = applicationIdEl ? applicationIdEl.value : '';
+            const applicationId = applicationIdEl ? applicationIdEl.value.trim() : '';
             const savedRequestId = savedRequestIdEl ? savedRequestIdEl.value : '';
+            
+            console.log('Application ID from form:', applicationId);
             
             let requestName = name;
             if (!requestName) {
@@ -3554,11 +3186,13 @@
                 headers: headers,
                 body: body,
                 collectionId: null, // Collections are deprecated, use applications instead
-                applicationId: applicationId ? parseInt(applicationId) : null
+                applicationId: applicationId && applicationId !== '' ? parseInt(applicationId) : null
             };
             
+            console.log('Saving request with data:', savedRequestDto);
+            console.log('Application ID in DTO:', savedRequestDto.applicationId);
+            
             try {
-                console.log('Saving request with data:', savedRequestDto);
                 
                 const response = await fetch('/api/saved', {
                     method: 'POST',
@@ -3571,15 +3205,20 @@
                 if (response.ok) {
                     const savedRequest = await response.json();
                     console.log('Saved request response:', savedRequest);
+                    console.log('Application in response:', savedRequest.application);
                     document.getElementById('savedRequestId').value = savedRequest.id;
                     
                     // Update title after saving
                     updateRequestTitle(requestName, savedRequest);
                     
                     let successMessage = 'Request saved successfully!';
-                    if (applicationId) {
+                    if (savedRequest.application) {
+                        const app = savedRequest.application;
+                        const projectName = app.project ? app.project.name : 'Unknown Project';
+                        successMessage = `Request saved successfully and assigned to ${projectName} > ${app.name}!`;
+                    } else if (applicationId && applicationId !== '') {
                         const selectedApp = applications.find(app => app.id === parseInt(applicationId));
-                        if (selectedApp) {
+                        if (selectedApp && selectedApp.project) {
                             successMessage = `Request saved successfully and assigned to ${selectedApp.project.name} > ${selectedApp.name}!`;
                         }
                     }
@@ -3591,6 +3230,7 @@
                     }
                     
                     // Reload sidebar to show updated hierarchy
+                    await loadProjectsAndApplications();
                     await loadAllSavedRequests();
                 } else {
                     const errorText = await response.text();
@@ -3849,6 +3489,15 @@
                 if (response.ok) {
                     allSavedRequests = await response.json();
                     console.log('Loaded saved requests:', allSavedRequests.length);
+                    
+                    // Update applications array with savedRequests from the loaded requests
+                    // This ensures applications show the correct API count
+                    applications.forEach(app => {
+                        app.savedRequests = allSavedRequests.filter(req => 
+                            req.application && req.application.id === app.id
+                        );
+                    });
+                    
                     renderSidebarHierarchy();
                 } else {
                     console.error('Failed to load saved requests:', response.status);
@@ -3885,10 +3534,18 @@
                     html += `
                         <div class="collection-item" data-project-id="${project.id}">
                             <div class="collection-header" 
-                                 data-project-id="${project.id}"
-                                 onclick="toggleProject(${project.id})">
-                                <span class="collection-name">${escapeHtml(project.name)}</span>
-                                <span class="collection-toggle" id="toggle-project-${project.id}">▼</span>
+                                 data-project-id="${project.id}">
+                                <div style="flex: 1; display: flex; align-items: center; cursor: pointer;" onclick="toggleProject(${project.id})">
+                                    <span class="collection-name">${escapeHtml(project.name)}</span>
+                                    <span class="collection-toggle" id="toggle-project-${project.id}">▼</span>
+                                </div>
+                                <button onclick="event.stopPropagation(); event.preventDefault(); window.location.href='/projects?projectId=${project.id}'; return false;" 
+                                        title="Project Settings"
+                                        style="background: transparent; border: none; cursor: pointer; color: #6b7280; font-size: 14px; padding: 4px 8px; border-radius: 4px; transition: all 0.15s; z-index: 10; position: relative;"
+                                        onmouseover="this.style.background='#f3f4f6'; this.style.color='#2563eb';"
+                                        onmouseout="this.style.background='transparent'; this.style.color='#6b7280';">
+                                    ⚙️
+                                </button>
                             </div>
                             <div class="collection-requests" id="project-${project.id}" style="display: block;">
                                 ${projectApps.length === 0 ? `
@@ -3928,6 +3585,11 @@
                                                                     title="Duplicate Request"
                                                                     onclick="event.stopPropagation(); duplicateRequest(${req.id});"
                                                                     style="width: 20px; height: 20px; font-size: 11px; background: transparent; border: none; cursor: pointer; color: #6b7280;">⧉</button>
+                                                            <button class="btn-delete-request" 
+                                                                    data-request-id="${req.id}"
+                                                                    title="Delete Request"
+                                                                    onclick="event.stopPropagation(); deleteSavedRequest(${req.id});"
+                                                                    style="width: 20px; height: 20px; font-size: 11px; background: transparent; border: none; cursor: pointer; color: #dc2626;">🗑️</button>
                                                         </div>
                                                     </div>
                                                 `).join('')}
@@ -3963,6 +3625,11 @@
                                                 title="Duplicate Request"
                                                 onclick="event.stopPropagation(); duplicateRequest(${req.id});"
                                                 style="width: 20px; height: 20px; font-size: 11px; background: transparent; border: none; cursor: pointer; color: #6b7280;">⧉</button>
+                                        <button class="btn-delete-request" 
+                                                data-request-id="${req.id}"
+                                                title="Delete Request"
+                                                onclick="event.stopPropagation(); deleteSavedRequest(${req.id});"
+                                                style="width: 20px; height: 20px; font-size: 11px; background: transparent; border: none; cursor: pointer; color: #dc2626;">🗑️</button>
                                     </div>
                                 </div>
                             `).join('');
@@ -4040,21 +3707,59 @@
             console.log(`Populated application select with ${applications.length} applications`);
         }
         
-        function updateApplicationInfo() {
+        async function updateApplicationInfo() {
             const select = document.getElementById('applicationId');
             const infoDiv = document.getElementById('applicationInfo');
             const projectNameSpan = document.getElementById('applicationProjectName');
             const appNameSpan = document.getElementById('applicationName');
             
-            if (!select || !infoDiv) return;
+            if (!select) return;
+            
+            // Check if there are any options and if a valid option is selected
+            if (select.selectedIndex < 0 || select.options.length === 0) {
+                if (infoDiv) infoDiv.style.display = 'none';
+                const envGroup = document.getElementById('environmentGroup');
+                if (envGroup) envGroup.style.display = 'none';
+                return;
+            }
             
             const selectedOption = select.options[select.selectedIndex];
-            if (selectedOption && selectedOption.value) {
-                infoDiv.style.display = 'block';
-                if (projectNameSpan) projectNameSpan.textContent = selectedOption.dataset.projectName || '';
-                if (appNameSpan) appNameSpan.textContent = selectedOption.dataset.appName || '';
-            } else {
-                infoDiv.style.display = 'none';
+            if (!selectedOption) {
+                if (infoDiv) infoDiv.style.display = 'none';
+                const envGroup = document.getElementById('environmentGroup');
+                if (envGroup) envGroup.style.display = 'none';
+                return;
+            }
+            
+            const applicationId = selectedOption.value;
+            if (!applicationId || applicationId === '' || applicationId === '0') {
+                if (infoDiv) infoDiv.style.display = 'none';
+                const envGroup = document.getElementById('environmentGroup');
+                if (envGroup) envGroup.style.display = 'none';
+                return;
+            }
+            
+            const parsedId = parseInt(applicationId);
+            if (isNaN(parsedId) || parsedId <= 0) {
+                if (infoDiv) infoDiv.style.display = 'none';
+                const envGroup = document.getElementById('environmentGroup');
+                if (envGroup) envGroup.style.display = 'none';
+                return;
+            }
+            
+            // Show application info
+            if (infoDiv) infoDiv.style.display = 'block';
+            if (projectNameSpan) projectNameSpan.textContent = selectedOption.dataset.projectName || '';
+            if (appNameSpan) appNameSpan.textContent = selectedOption.dataset.appName || '';
+            
+            // Load environments for selected application
+            try {
+                await loadEnvironmentsForApplication(parsedId);
+            } catch (error) {
+                console.error('Error loading environments for application:', error);
+                // Hide environment group on error
+                const envGroup = document.getElementById('environmentGroup');
+                if (envGroup) envGroup.style.display = 'none';
             }
         }
         
@@ -4132,7 +3837,7 @@
             container.innerHTML = html;
         }
         
-        function selectApplication(applicationId, projectName, appName, appVersion) {
+        async function selectApplication(applicationId, projectName, appName, appVersion) {
             const hiddenInput = document.getElementById('applicationId');
             if (hiddenInput) {
                 hiddenInput.value = applicationId;
@@ -4153,8 +3858,205 @@
                 assignedApplicationVersion.textContent = appVersion ? ` (${appVersion})` : '';
             }
             
+            // Load environments for this application
+            await loadEnvironmentsForApplication(parseInt(applicationId));
+            
             closeProjectAssignmentModal();
         }
+        
+        // New API Modal Functions
+        async function openNewApiModal() {
+            const modal = document.getElementById('newApiModal');
+            if (!modal) {
+                console.error('New API modal not found');
+                return;
+            }
+            
+            // Ensure projects and applications are loaded
+            if (projects.length === 0) {
+                await loadProjectsAndApplications();
+            }
+            
+            // Populate project dropdown
+            const projectSelect = document.getElementById('newApiProjectId');
+            if (projectSelect) {
+                projectSelect.innerHTML = '<option value="">-- Select Project --</option>';
+                projects.forEach(project => {
+                    const option = document.createElement('option');
+                    option.value = project.id;
+                    option.textContent = project.name;
+                    projectSelect.appendChild(option);
+                });
+            }
+            
+            // Clear application dropdown
+            const appSelect = document.getElementById('newApiApplicationId');
+            if (appSelect) {
+                appSelect.innerHTML = '<option value="">-- Select Application --</option>';
+            }
+            
+            // Reset form
+            const form = document.getElementById('newApiForm');
+            if (form) {
+                form.reset();
+            }
+            
+            modal.style.display = 'flex';
+        }
+        
+        function closeNewApiModal() {
+            const modal = document.getElementById('newApiModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+        
+        function updateNewApiApplications() {
+            const projectSelect = document.getElementById('newApiProjectId');
+            const appSelect = document.getElementById('newApiApplicationId');
+            
+            if (!projectSelect || !appSelect) return;
+            
+            const projectId = parseInt(projectSelect.value);
+            appSelect.innerHTML = '<option value="">-- Select Application --</option>';
+            
+            if (projectId) {
+                const projectApps = applications.filter(app => app.project && app.project.id === projectId);
+                projectApps.forEach(app => {
+                    const option = document.createElement('option');
+                    option.value = app.id;
+                    option.textContent = `${app.name}${app.version ? ' (' + app.version + ')' : ''}`;
+                    appSelect.appendChild(option);
+                });
+            }
+        }
+        
+        async function saveNewApi(event) {
+            event.preventDefault();
+            
+            const projectId = document.getElementById('newApiProjectId').value;
+            const applicationId = document.getElementById('newApiApplicationId').value;
+            const name = document.getElementById('newApiName').value.trim();
+            const method = document.getElementById('newApiMethod').value;
+            const url = document.getElementById('newApiUrl').value.trim();
+            
+            if (!projectId || !applicationId || !name || !method || !url) {
+                if (typeof CustomDialog !== 'undefined') {
+                    await CustomDialog.showAlert('Please fill in all fields', 'Validation Error');
+                } else {
+                    alert('Please fill in all fields');
+                }
+                return;
+            }
+            
+            const savedRequestDto = {
+                name: name,
+                method: method,
+                url: url,
+                headers: '',
+                body: '',
+                collectionId: null,
+                applicationId: parseInt(applicationId)
+            };
+            
+            try {
+                const response = await fetch('/api/saved', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(savedRequestDto)
+                });
+                
+                if (response.ok) {
+                    const savedRequest = await response.json();
+                    closeNewApiModal();
+                    
+                    // Reload sidebar - need to reload projects/applications first to get updated data
+                    await loadProjectsAndApplications();
+                    await loadAllSavedRequests();
+                    
+                    // Load the new request in the main form
+                    await loadSavedRequestFromSidebar(savedRequest.id);
+                    
+                    if (typeof CustomDialog !== 'undefined') {
+                        await CustomDialog.showAlert('API created successfully!', 'Success');
+                    } else {
+                        alert('API created successfully!');
+                    }
+                } else {
+                    const errorText = await response.text();
+                    throw new Error(errorText || 'Failed to create API');
+                }
+            } catch (error) {
+                console.error('Error creating API:', error);
+                if (typeof CustomDialog !== 'undefined') {
+                    await CustomDialog.showAlert('Error creating API: ' + error.message, 'Error');
+                } else {
+                    alert('Error creating API: ' + error.message);
+                }
+            }
+        }
+        
+        window.openNewApiModal = openNewApiModal;
+        window.closeNewApiModal = closeNewApiModal;
+        window.updateNewApiApplications = updateNewApiApplications;
+        window.saveNewApi = saveNewApi;
+        
+        // Delete saved request function
+        async function deleteSavedRequest(requestId) {
+            if (!requestId) return;
+            
+            let confirmed = false;
+            if (typeof CustomDialog !== 'undefined' && CustomDialog.showConfirm) {
+                confirmed = await CustomDialog.showConfirm(
+                    'Are you sure you want to delete this API request? This action cannot be undone.',
+                    'Confirm Delete'
+                );
+            } else {
+                confirmed = confirm('Are you sure you want to delete this API request? This action cannot be undone.');
+            }
+            
+            if (!confirmed) return;
+            
+            try {
+                const response = await fetch(`/api/saved/${requestId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    // Remove from local array
+                    allSavedRequests = allSavedRequests.filter(req => req.id !== requestId);
+                    
+                    // Reload sidebar
+                    await loadProjectsAndApplications();
+                    await loadAllSavedRequests();
+                    
+                    // If the deleted request was currently loaded, clear the form
+                    const currentRequestId = document.getElementById('savedRequestId')?.value;
+                    if (currentRequestId && parseInt(currentRequestId) === requestId) {
+                        clearForm();
+                    }
+                    
+                    if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
+                        await CustomDialog.showAlert('API request deleted successfully', 'Success');
+                    } else {
+                        alert('API request deleted successfully');
+                    }
+                } else {
+                    throw new Error('Failed to delete request');
+                }
+            } catch (error) {
+                console.error('Error deleting request:', error);
+                if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
+                    await CustomDialog.showAlert('Error deleting request: ' + error.message, 'Error');
+                } else {
+                    alert('Error deleting request: ' + error.message);
+                }
+            }
+        }
+        
+        window.deleteSavedRequest = deleteSavedRequest;
         
         function clearProjectAssignment() {
             const hiddenInput = document.getElementById('applicationId');
@@ -4167,6 +4069,18 @@
             
             if (noAssignment) noAssignment.style.display = 'block';
             if (assignmentInfo) assignmentInfo.style.display = 'none';
+            
+            // Hide environment group
+            const envGroup = document.getElementById('environmentGroup');
+            if (envGroup) envGroup.style.display = 'none';
+            
+            // Clear environment select
+            const envSelect = document.getElementById('environmentSelect');
+            if (envSelect) {
+                envSelect.innerHTML = '<option value="">No Environment</option>';
+                envSelect.value = '';
+            }
+            currentEnvironmentId = null;
         }
         
         window.openProjectAssignmentModal = openProjectAssignmentModal;

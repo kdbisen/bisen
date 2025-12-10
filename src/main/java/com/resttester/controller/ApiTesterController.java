@@ -111,13 +111,6 @@ public class ApiTesterController {
         return "guide";
     }
     
-    @GetMapping("/environments")
-    public String environments(Model model) {
-        List<Environment> environments = environmentService.getAllEnvironments();
-        model.addAttribute("environments", environments);
-        return "environments";
-    }
-    
     @GetMapping("/history/{id}")
     @ResponseBody
     public ResponseEntity<ApiRequest> getRequest(@PathVariable Long id) {
@@ -159,6 +152,7 @@ public class ApiTesterController {
     public ResponseEntity<SavedRequest> getSavedRequest(@PathVariable Long id) {
         SavedRequest savedRequest = savedRequestService.getSavedRequestById(id);
         if (savedRequest != null) {
+            // The application and its environments will be loaded via EntityGraph in the repository
             return ResponseEntity.ok(savedRequest);
         }
         return ResponseEntity.notFound().build();
@@ -234,11 +228,11 @@ public class ApiTesterController {
         }
     }
     
-    // Environment endpoints
-    @GetMapping("/api/environments")
+    // Environment endpoints (application-based)
+    @GetMapping("/api/applications/{applicationId}/environments")
     @ResponseBody
-    public ResponseEntity<List<Environment>> getAllEnvironments() {
-        return ResponseEntity.ok(environmentService.getAllEnvironments());
+    public ResponseEntity<List<Environment>> getEnvironmentsByApplication(@PathVariable Long applicationId) {
+        return ResponseEntity.ok(environmentService.getEnvironmentsByApplication(applicationId));
     }
     
     @GetMapping("/api/environments/{id}")
@@ -253,19 +247,30 @@ public class ApiTesterController {
     
     @PostMapping("/api/environments")
     @ResponseBody
-    public ResponseEntity<Environment> createEnvironment(@RequestBody EnvironmentDto dto) {
-        Environment env = environmentService.createEnvironment(dto);
-        return ResponseEntity.ok(env);
+    public ResponseEntity<?> createEnvironment(@RequestBody EnvironmentDto dto) {
+        try {
+            if (dto.getApplicationId() == null) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Application ID is required"));
+            }
+            Environment env = environmentService.createEnvironment(dto);
+            return ResponseEntity.ok(env);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
     
     @PutMapping("/api/environments/{id}")
     @ResponseBody
-    public ResponseEntity<Environment> updateEnvironment(@PathVariable Long id, @RequestBody EnvironmentDto dto) {
-        Environment env = environmentService.updateEnvironment(id, dto);
-        if (env != null) {
-            return ResponseEntity.ok(env);
+    public ResponseEntity<?> updateEnvironment(@PathVariable Long id, @RequestBody EnvironmentDto dto) {
+        try {
+            Environment env = environmentService.updateEnvironment(id, dto);
+            if (env != null) {
+                return ResponseEntity.ok(env);
+            }
+            return ResponseEntity.notFound().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
-        return ResponseEntity.notFound().build();
     }
     
     @DeleteMapping("/api/environments/{id}")
@@ -273,16 +278,6 @@ public class ApiTesterController {
     public ResponseEntity<Void> deleteEnvironment(@PathVariable Long id) {
         environmentService.deleteEnvironment(id);
         return ResponseEntity.ok().build();
-    }
-    
-    @PostMapping("/api/environments/{id}/set-default")
-    @ResponseBody
-    public ResponseEntity<Environment> setDefaultEnvironment(@PathVariable Long id) {
-        Environment env = environmentService.setDefaultEnvironment(id);
-        if (env != null) {
-            return ResponseEntity.ok(env);
-        }
-        return ResponseEntity.notFound().build();
     }
     
     // Export/Import endpoints

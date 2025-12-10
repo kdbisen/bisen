@@ -29,6 +29,9 @@ public class Project {
     @Column(columnDefinition = "TEXT")
     private String description;
     
+    @Column(length = 2000)
+    private String url;
+    
     @Column(nullable = false)
     private LocalDateTime createdAt;
     
@@ -72,6 +75,14 @@ public class Project {
     
     public void setDescription(String description) {
         this.description = description;
+    }
+    
+    public String getUrl() {
+        return url;
+    }
+    
+    public void setUrl(String url) {
+        this.url = url;
     }
     
     public LocalDateTime getCreatedAt() {

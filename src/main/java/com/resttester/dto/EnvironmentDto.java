@@ -12,7 +12,7 @@ public class EnvironmentDto {
     private String name;
     private String description;
     private String variables; // JSON string
-    private Boolean isDefault;
+    private Long applicationId; // Required - environments are now per-application
     
     public Long getId() {
         return id;
@@ -46,12 +46,12 @@ public class EnvironmentDto {
         this.variables = variables;
     }
     
-    public Boolean getIsDefault() {
-        return isDefault;
+    public Long getApplicationId() {
+        return applicationId;
     }
     
-    public void setIsDefault(Boolean isDefault) {
-        this.isDefault = isDefault;
+    public void setApplicationId(Long applicationId) {
+        this.applicationId = applicationId;
     }
 }
 

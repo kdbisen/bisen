@@ -34,12 +34,16 @@ public class Application {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", nullable = false)
-    @JsonIgnore
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "applications"})
     private Project project;
     
     @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<SavedRequest> savedRequests = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Environment> environments = new ArrayList<>();
     
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -104,6 +108,14 @@ public class Application {
     
     public void setSavedRequests(List<SavedRequest> savedRequests) {
         this.savedRequests = savedRequests;
+    }
+    
+    public List<Environment> getEnvironments() {
+        return environments;
+    }
+    
+    public void setEnvironments(List<Environment> environments) {
+        this.environments = environments;
     }
     
     public LocalDateTime getCreatedAt() {
