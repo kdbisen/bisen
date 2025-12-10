@@ -7,19 +7,19 @@
  */
 package com.resttester.controller;
 
-import com.resttester.dto.CollectionDto;
+// Collections are deprecated - removed CollectionDto and Collection imports
 import com.resttester.dto.RequestDto;
 import com.resttester.dto.ResponseDto;
 import com.resttester.dto.SavedRequestDto;
 import com.resttester.model.ApiRequest;
-import com.resttester.model.Collection;
 import com.resttester.model.SavedRequest;
 import com.resttester.dto.BisenExportDto;
 import com.resttester.dto.EnvironmentDto;
 import com.resttester.model.Environment;
 import com.resttester.service.ApiRequestService;
 import com.resttester.service.ApplicationService;
-import com.resttester.service.CollectionService;
+// Collections are deprecated - CollectionService removed
+// import com.resttester.service.CollectionService;
 import com.resttester.service.EnvironmentService;
 import com.resttester.service.ExportImportService;
 import com.resttester.service.ProjectService;
@@ -46,8 +46,9 @@ public class ApiTesterController {
     @Autowired
     private ApiRequestService apiRequestService;
     
-    @Autowired
-    private CollectionService collectionService;
+    // Collections are deprecated - CollectionService removed
+    // @Autowired
+    // private CollectionService collectionService;
     
     @Autowired
     private SavedRequestService savedRequestService;
@@ -134,62 +135,15 @@ public class ApiTesterController {
         return ResponseEntity.ok().build();
     }
     
-    // Collection endpoints
-    @GetMapping("/collections")
-    public String collections(Model model) {
-        List<Collection> collections = collectionService.getAllCollections();
-        model.addAttribute("collections", collections);
-        return "collections";
-    }
-    
-    @GetMapping("/collections/{id}")
-    public String collectionDetail(@PathVariable Long id, Model model) {
-        Collection collection = collectionService.getCollectionById(id);
-        if (collection == null) {
-            return "redirect:/collections";
-        }
-        List<ApiRequest> requests = apiRequestService.getRequestsByCollection(id);
-        model.addAttribute("collection", collection);
-        model.addAttribute("requests", requests);
-        return "collection-detail";
-    }
-    
-    @PostMapping("/api/collections")
-    @ResponseBody
-    public ResponseEntity<Collection> createCollection(@RequestBody CollectionDto collectionDto) {
-        Collection collection = collectionService.createCollection(collectionDto);
-        return ResponseEntity.ok(collection);
-    }
-    
-    @PutMapping("/api/collections/{id}")
-    @ResponseBody
-    public ResponseEntity<Collection> updateCollection(@PathVariable Long id, @RequestBody CollectionDto collectionDto) {
-        Collection collection = collectionService.updateCollection(id, collectionDto);
-        if (collection != null) {
-            return ResponseEntity.ok(collection);
-        }
-        return ResponseEntity.notFound().build();
-    }
-    
-    @DeleteMapping("/api/collections/{id}")
-    @ResponseBody
-    public ResponseEntity<Void> deleteCollection(@PathVariable Long id) {
-        collectionService.deleteCollection(id);
-        return ResponseEntity.ok().build();
-    }
-    
-    @GetMapping("/api/collections")
-    @ResponseBody
-    public ResponseEntity<List<Collection>> getAllCollections() {
-        return ResponseEntity.ok(collectionService.getAllCollections());
-    }
+    // Collections are deprecated - endpoints removed
+    // Use Projects and Applications instead
     
     // Saved Request endpoints
     @GetMapping("/saved")
     public String savedRequests(Model model) {
         List<SavedRequest> savedRequests = savedRequestService.getAllSavedRequests();
         model.addAttribute("savedRequests", savedRequests);
-        model.addAttribute("collections", collectionService.getAllCollections());
+        // Collections are deprecated - removed from model
         return "saved-requests";
     }
     

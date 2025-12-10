@@ -29,114 +29,157 @@
         }
         
         .sidebar {
-            width: 280px;
-            background: #ffffff;
+            width: 300px;
+            background: #fafbfc;
             border-right: 1px solid #e5e7eb;
-            padding: 20px;
+            padding: 0;
             overflow-y: auto;
             position: fixed;
             height: 100vh;
             left: 0;
             top: 0;
             z-index: 100;
+            display: flex;
+            flex-direction: column;
         }
         
         .sidebar-header {
-            margin-bottom: 20px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid #e5e5e5;
+            padding: 20px;
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
         
         .sidebar-header h2 {
             color: #1a1a1a;
-            font-size: 14px;
+            font-size: 16px;
             margin-bottom: 4px;
             font-weight: 600;
-            letter-spacing: 0.3px;
-            text-transform: uppercase;
+            letter-spacing: -0.2px;
         }
         
         .sidebar-header p {
             color: #6b7280;
             font-size: 12px;
             font-weight: 400;
+            margin: 0;
+        }
+        
+        .sidebar-content {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
         }
         
         .saved-request-item {
-            padding: 12px;
-            margin-bottom: 6px;
+            padding: 10px 12px;
+            margin-bottom: 4px;
             border: none;
             border-radius: 6px;
             cursor: pointer;
-            transition: background 0.15s;
-            background: transparent;
+            transition: all 0.15s;
+            background: #ffffff;
+            border: 1px solid transparent;
+            position: relative;
         }
         
         .saved-request-item:hover {
-            background: #f3f4f6;
+            background: #ffffff;
+            border-color: #e5e7eb;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        
+        .saved-request-item:active {
+            transform: scale(0.98);
         }
         
         .saved-request-name {
             font-weight: 500;
             color: #1a1a1a;
             font-size: 13px;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
         
         .saved-request-method {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 3px;
-            font-size: 11px;
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 10px;
             font-weight: 600;
-            margin-right: 8px;
-            letter-spacing: 0.2px;
+            margin-right: 6px;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+            min-width: 50px;
+            justify-content: center;
         }
         
-        .method-GET { background: #e8f5e9; color: #388e3c; }
-        .method-POST { background: #e3f2fd; color: #1976d2; }
-        .method-PUT { background: #fff3e0; color: #f57c00; }
-        .method-DELETE { background: #ffebee; color: #d32f2f; }
-        .method-PATCH { background: #e0f2f1; color: #00796b; }
-        .method-HEAD { background: #f5f5f5; color: #757575; }
-        .method-OPTIONS { background: #f3e5f5; color: #7b1fa2; }
+        .method-GET { background: #dcfce7; color: #16a34a; }
+        .method-POST { background: #dbeafe; color: #2563eb; }
+        .method-PUT { background: #fef3c7; color: #d97706; }
+        .method-DELETE { background: #fee2e2; color: #dc2626; }
+        .method-PATCH { background: #d1fae5; color: #059669; }
+        .method-HEAD { background: #f3f4f6; color: #6b7280; }
+        .method-OPTIONS { background: #f3e8ff; color: #9333ea; }
         
         .saved-request-url {
-            color: #8a8a8a;
-            font-size: 12px;
+            color: #6b7280;
+            font-size: 11px;
             word-break: break-all;
-            line-height: 1.4;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
         }
         
         .collection-item {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
         
         .collection-header {
             padding: 10px 12px;
-            background: transparent;
+            background: #ffffff;
             color: #1a1a1a;
             border-radius: 6px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
-            transition: background 0.15s;
-            font-weight: 500;
+            gap: 10px;
+            transition: all 0.15s;
+            font-weight: 600;
             font-size: 13px;
+            border: 1px solid transparent;
+            user-select: none;
         }
         
         .collection-header:hover {
-            background: #f3f4f6;
+            background: #f9fafb;
+            border-color: #e5e7eb;
         }
         
         .collection-name {
             flex: 1;
+            color: #1a1a1a;
         }
         
         .collection-toggle {
-            font-size: 0.8em;
+            font-size: 10px;
+            color: #6b7280;
             transition: transform 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
         }
         
         .collection-toggle.collapsed {
@@ -144,10 +187,10 @@
         }
         
         .collection-requests {
-            margin-top: 4px;
-            margin-left: 20px;
-            padding-left: 0;
-            border-left: 1px solid #e5e5e5;
+            margin-top: 6px;
+            margin-left: 8px;
+            padding-left: 12px;
+            border-left: 2px solid #e5e7eb;
         }
         
         .saved-request-item.nested {
@@ -226,34 +269,43 @@
         
         .btn-add-new-request {
             width: 100%;
-            padding: 10px 16px;
+            padding: 12px 16px;
             background: #2563eb;
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 13px;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
-            transition: background 0.15s;
+            transition: all 0.15s;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 8px;
+            box-shadow: 0 1px 2px rgba(37, 99, 235, 0.2);
         }
         
         .btn-add-new-request:hover {
             background: #1d4ed8;
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3);
+            transform: translateY(-1px);
         }
         
         .btn-add-new-request:active {
             background: #1e40af;
+            transform: translateY(0);
+        }
+        
+        .btn-add-new-request span:first-child {
+            font-size: 18px;
+            font-weight: 300;
         }
         
         .main-content {
             flex: 1;
-            margin-left: 280px;
+            margin-left: 300px;
             padding: 0;
-            background: #f8f9fa;
+            background: #f5f6f7;
             display: flex;
             flex-direction: column;
             height: 100vh;
@@ -262,13 +314,14 @@
         .top-nav {
             background: #ffffff;
             border-bottom: 1px solid #e5e7eb;
-            padding: 12px 24px;
+            padding: 14px 28px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: sticky;
             top: 0;
             z-index: 50;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
         }
         
         .nav-brand {
@@ -410,38 +463,43 @@
         
         .card {
             background: #ffffff;
-            border-radius: 0;
+            border-radius: 12px;
             border: 1px solid #e5e7eb;
             padding: 0;
-            margin: 0;
+            margin: 24px;
             flex: 1;
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
         
         .request-header {
-            padding: 20px 24px;
+            padding: 24px 28px;
             border-bottom: 1px solid #e5e7eb;
+            background: linear-gradient(to bottom, #ffffff, #fafbfc);
         }
         
         .request-title {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 600;
-            color: #1a1a1a;
-            margin-bottom: 8px;
+            color: #111827;
+            margin-bottom: 6px;
+            letter-spacing: -0.3px;
         }
         
         .request-breadcrumb {
-            font-size: 12px;
+            font-size: 13px;
             color: #6b7280;
+            font-weight: 400;
         }
         
         .request-builder {
-            padding: 24px;
+            padding: 28px;
             flex: 1;
             overflow-y: auto;
-            padding-bottom: 40px; /* Space for status bar */
+            padding-bottom: 40px;
+            background: #ffffff;
         }
         
         .method-url-bar {
@@ -452,29 +510,48 @@
         }
         
         .method-select {
-            width: 120px;
-            padding: 10px 12px;
+            width: 130px;
+            padding: 11px 14px;
             background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 6px;
-            color: #1a1a1a;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 8px;
+            color: #111827;
             font-size: 13px;
-            font-weight: 500;
+            font-weight: 600;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .method-select:hover {
+            border-color: #d1d5db;
+        }
+        
+        .method-select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
         
         .url-input {
             flex: 1;
-            padding: 10px 16px;
+            padding: 11px 16px;
             background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 6px;
-            color: #1a1a1a;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 8px;
+            color: #111827;
             font-size: 13px;
+            transition: all 0.2s;
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+        }
+        
+        .url-input:hover {
+            border-color: #d1d5db;
         }
         
         .url-input:focus {
             outline: none;
             border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
         
         .action-buttons {
@@ -483,64 +560,87 @@
         }
         
         .btn-send {
-            padding: 10px 20px;
-            background: #2563eb;
+            padding: 11px 24px;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 13px;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
         }
         
         .btn-send:hover {
-            background: #1d4ed8;
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+            box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+            transform: translateY(-1px);
+        }
+        
+        .btn-send:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(37, 99, 235, 0.2);
         }
         
         .btn-save {
-            padding: 10px 16px;
+            padding: 11px 20px;
             background: #ffffff;
-            color: #1a1a1a;
-            border: 1px solid #e5e7eb;
-            border-radius: 6px;
+            color: #374151;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 8px;
             font-size: 13px;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
+            transition: all 0.2s;
         }
         
         .btn-save:hover {
             background: #f9fafb;
+            border-color: #d1d5db;
+            color: #111827;
+        }
+        
+        .btn-save:active {
+            background: #f3f4f6;
         }
         
         .request-tabs {
             display: flex;
-            gap: 4px;
-            border-bottom: 1px solid #e5e7eb;
-            margin-bottom: 20px;
+            gap: 2px;
+            border-bottom: 2px solid #e5e7eb;
+            margin-bottom: 24px;
+            background: #f9fafb;
+            padding: 4px;
+            border-radius: 8px 8px 0 0;
         }
         
         .request-tab {
-            padding: 12px 16px;
+            padding: 10px 18px;
             background: transparent;
             border: none;
             color: #6b7280;
             font-size: 13px;
             font-weight: 500;
             cursor: pointer;
-            border-bottom: 2px solid transparent;
-            transition: all 0.15s;
+            border-radius: 6px;
+            transition: all 0.2s;
+            position: relative;
         }
         
         .request-tab:hover {
-            color: #1a1a1a;
+            color: #374151;
+            background: #f3f4f6;
         }
         
         .request-tab.active {
             color: #2563eb;
-            border-bottom-color: #2563eb;
+            background: #ffffff;
+            font-weight: 600;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         }
         
         .tab-content {
@@ -557,10 +657,11 @@
         
         label {
             display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #1a1a1a;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #374151;
             font-size: 13px;
+            letter-spacing: -0.1px;
         }
         
         .method-url-row {
@@ -571,19 +672,24 @@
         
         select, input[type="text"], textarea, input[type="number"] {
             width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #e5e7eb;
-            border-radius: 6px;
+            padding: 10px 14px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 8px;
             font-size: 13px;
-            transition: border-color 0.15s;
+            transition: all 0.2s;
             font-family: inherit;
             background: #ffffff;
-            color: #1a1a1a;
+            color: #111827;
+        }
+        
+        select:hover, input:hover, textarea:hover {
+            border-color: #d1d5db;
         }
         
         select:focus, input:focus, textarea:focus {
             outline: none;
             border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
         
         select {
@@ -606,41 +712,59 @@
         }
         
         .headers-container {
-            border: 1px solid #e5e7eb;
-            border-radius: 6px;
-            padding: 12px;
-            background: #f9fafb;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 16px;
+            background: #fafbfc;
         }
         
         .params-table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
             margin-top: 12px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #ffffff;
         }
         
         .params-table th {
             text-align: left;
-            padding: 10px;
-            font-size: 12px;
+            padding: 12px 14px;
+            font-size: 11px;
             font-weight: 600;
             color: #6b7280;
-            border-bottom: 1px solid #e5e7eb;
+            background: #f9fafb;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1.5px solid #e5e7eb;
         }
         
         .params-table td {
-            padding: 10px;
-            border-bottom: 1px solid #e5e7eb;
+            padding: 12px 14px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .params-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .params-table tr:hover {
+            background: #fafbfc;
         }
         
         .params-table input {
             width: 100%;
             background: #ffffff;
             border: 1px solid #e5e7eb;
-            color: #1a1a1a;
+            color: #111827;
+            border-radius: 6px;
         }
         
-        .params-table tr:last-child td {
-            border-bottom: none;
+        .params-table input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
         }
         
         .header-row {
@@ -661,38 +785,47 @@
         }
         
         .btn-remove-header {
-            padding: 6px 10px;
+            padding: 6px 12px;
             background: transparent;
-            color: #8a8a8a;
-            border: none;
-            border-radius: 4px;
+            color: #9ca3af;
+            border: 1px solid transparent;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 12px;
             font-weight: 500;
-            transition: color 0.15s;
+            transition: all 0.2s;
         }
         
         .btn-remove-header:hover {
-            color: #1a1a1a;
-            background: #f5f5f5;
+            color: #dc2626;
+            background: #fef2f2;
+            border-color: #fee2e2;
         }
         
         .btn-add-header {
-            padding: 8px 12px;
-            background: transparent;
-            color: #1a1a1a;
-            border: 1px solid #e5e5e5;
-            border-radius: 4px;
+            padding: 9px 14px;
+            background: #ffffff;
+            color: #374151;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 12px;
-            font-weight: 500;
-            margin-top: 8px;
-            transition: all 0.15s;
+            font-weight: 600;
+            margin-top: 12px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
         
         .btn-add-header:hover {
-            background: #f5f5f5;
-            border-color: #1a1a1a;
+            background: #f9fafb;
+            border-color: #d1d5db;
+            color: #111827;
+        }
+        
+        .btn-add-header:active {
+            background: #f3f4f6;
         }
         
         .button-group {
@@ -754,10 +887,10 @@
             margin-top: 24px;
             animation: fadeIn 0.3s ease-in;
             background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1.5px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
         }
         
         @keyframes fadeIn {
@@ -769,8 +902,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
             border-bottom: 2px solid #e5e7eb;
         }
         
@@ -788,59 +921,77 @@
         }
         
         .btn-copy-response {
-            padding: 6px 12px;
-            background: transparent;
-            color: #1a1a1a;
-            border: 1px solid #e5e5e5;
-            border-radius: 4px;
+            padding: 8px 16px;
+            background: #ffffff;
+            color: #374151;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 12px;
-            font-weight: 500;
-            transition: all 0.15s;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
         
         .btn-copy-response:hover {
-            background: #f5f5f5;
-            border-color: #1a1a1a;
+            background: #f9fafb;
+            border-color: #d1d5db;
+            color: #111827;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .btn-copy-response:active {
+            transform: translateY(0);
         }
         
         .status-badge {
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-weight: 500;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-weight: 600;
             font-size: 12px;
+            letter-spacing: 0.3px;
+            display: inline-flex;
+            align-items: center;
         }
         
         .status-2xx {
-            background: #e8f5e9;
-            color: #388e3c;
+            background: #dcfce7;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
         }
         
         .status-4xx {
-            background: #ffebee;
-            color: #d32f2f;
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
         }
         
         .status-5xx {
-            background: #ffebee;
-            color: #d32f2f;
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
         }
         
         .status-0 {
-            background: #fff3e0;
-            color: #f57c00;
+            background: #fef3c7;
+            color: #d97706;
+            border: 1px solid #fde68a;
         }
         
         .response-time {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            background: #f3f4f6;
-            border-radius: 6px;
-            color: #374151;
+            gap: 8px;
+            padding: 8px 14px;
+            background: #eff6ff;
+            border: 1px solid #dbeafe;
+            border-radius: 8px;
+            color: #1e40af;
             font-size: 13px;
-            font-weight: 500;
+            font-weight: 600;
             font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
         }
         
@@ -853,13 +1004,14 @@
         .response-size {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            background: #f3f4f6;
-            border-radius: 6px;
-            color: #374151;
+            gap: 8px;
+            padding: 8px 14px;
+            background: #f0fdf4;
+            border: 1px solid #dcfce7;
+            border-radius: 8px;
+            color: #166534;
             font-size: 13px;
-            font-weight: 500;
+            font-weight: 600;
         }
         
         .response-tabs {
@@ -1133,40 +1285,41 @@
     <div class="sidebar">
         <div class="sidebar-header">
             <h2>Projects & APIs</h2>
-            <p>Click to load</p>
+            <p>Organize and manage your API requests</p>
         </div>
         
-        <div style="margin-bottom: 16px;">
-            <button class="btn-add-new-request" onclick="clearForm()" title="Create New Request">
-                <span>+</span>
-                <span>New Request</span>
-            </button>
-        </div>
-        
-        <div style="margin-bottom: 12px;">
-            <input type="text" id="sidebarSearch" placeholder="Filter projects..." 
-                   style="width: 100%; padding: 8px 12px; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 12px; color: #1a1a1a;"
-                   onkeyup="filterSidebarRequests()">
-        </div>
-        
-        <!-- Projects with nested applications and APIs -->
-        <div id="projects-container">
-            <!-- Projects will be loaded dynamically via JavaScript -->
-            <div class="empty-sidebar" id="empty-projects-state">
-                <p>No projects yet</p>
-                <p style="font-size: 0.8em; margin-top: 5px;">Create a project from the Projects page</p>
+        <div class="sidebar-content">
+            <div style="margin-bottom: 16px;">
+                <button class="btn-add-new-request" onclick="clearForm()" title="Create New Request">
+                    <span>+</span>
+                    <span>New Request</span>
+                </button>
             </div>
-        </div>
+            
+            <div style="margin-bottom: 16px;">
+                <input type="text" id="sidebarSearch" class="sidebar-search" placeholder="Search projects, apps, APIs..." 
+                       onkeyup="filterSidebarRequests()">
+            </div>
         
-        <!-- Unassigned Requests -->
-        <div id="unassigned-requests-container" style="display: none;">
-            <div class="collection-item">
-                <div class="collection-header" data-project-id="unassigned" style="cursor: pointer;" onclick="toggleProject('unassigned')">
-                    <span class="collection-name">Unassigned Requests</span>
-                    <span class="collection-toggle" id="toggle-unassigned">▼</span>
+            <!-- Projects with nested applications and APIs -->
+            <div id="projects-container">
+                <!-- Projects will be loaded dynamically via JavaScript -->
+                <div class="empty-sidebar" id="empty-projects-state">
+                    <p>No projects yet</p>
+                    <p>Create a project from the Projects page</p>
                 </div>
-                <div class="collection-requests" id="project-unassigned" style="display: block;">
-                    <!-- Unassigned requests will be loaded here -->
+            </div>
+            
+            <!-- Unassigned Requests -->
+            <div id="unassigned-requests-container" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+                <div class="collection-item">
+                    <div class="collection-header" data-project-id="unassigned" style="cursor: pointer;" onclick="toggleProject('unassigned')">
+                        <span class="collection-name">Unassigned Requests</span>
+                        <span class="collection-toggle" id="toggle-unassigned">▼</span>
+                    </div>
+                    <div class="collection-requests" id="project-unassigned" style="display: block;">
+                        <!-- Unassigned requests will be loaded here -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -3077,7 +3230,7 @@
                 const data = JSON.parse(text);
                 
                 const confirmed = await CustomDialog.showConfirm(
-                    'This will import all collections, requests, and environments. Continue?',
+                    'This will import all projects, applications, requests, and environments. Continue?',
                     'Import BISEN Format'
                 );
                 
@@ -3095,7 +3248,7 @@
                 if (response.ok) {
                     const result = await response.json();
                     await CustomDialog.showAlert(
-                        `Import successful! Created ${result.collectionsCreated || 0} collections, ${result.requestsCreated || 0} requests, and ${result.environmentsCreated || 0} environments.`,
+                        `Import successful! Created ${result.requestsCreated || 0} requests and ${result.environmentsCreated || 0} environments.`,
                         'Import Success'
                     );
                     location.reload();

@@ -289,7 +289,6 @@
                 <a href="/projects" class="nav-menu-item">Projects</a>
                 <a href="/" class="nav-menu-item">Home</a>
                 <a href="/saved" class="nav-menu-item">Saved Requests</a>
-                <a href="/collections" class="nav-menu-item">Collections</a>
                 <a href="/history" class="nav-menu-item">History</a>
                 <a href="/environments" class="nav-menu-item">Environments</a>
                 <a href="/import" class="nav-menu-item active">Import Swagger</a>
@@ -299,7 +298,7 @@
         
         <div class="header">
             <h1>Import Swagger/OpenAPI</h1>
-            <p>Import API specifications and create collections automatically</p>
+            <p>Import API specifications and create projects and applications automatically</p>
         </div>
         
         <div class="card">
@@ -441,11 +440,8 @@
                     resultMessage.className = 'result-message success';
                     resultMessage.innerHTML = `
                         <h3>Import Successful!</h3>
-                        <p>Created ${result.collectionsCreated || 0} collection(s) and ${result.requestsCreated || 0} request(s).</p>
-                        <ul>
-                            <li th:each="collection : ${result.collections}" th:text="${collection}"></li>
-                        </ul>
-                        <p style="margin-top: 12px;"><a href="/collections" style="color: #388e3c; text-decoration: underline;">View Collections</a></p>
+                        <p>Created ${result.requestsCreated || 0} request(s).</p>
+                        <p style="margin-top: 12px;"><a href="/projects" style="color: #388e3c; text-decoration: underline;">View Projects</a></p>
                     `;
                     
                     setTimeout(() => {

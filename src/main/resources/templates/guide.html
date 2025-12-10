@@ -371,7 +371,6 @@
             <a href="/projects" class="nav-menu-item">Projects</a>
             <a href="/" class="nav-menu-item">Home</a>
             <a href="/saved" class="nav-menu-item">Saved Requests</a>
-            <a href="/collections" class="nav-menu-item">Collections</a>
             <a href="/history" class="nav-menu-item">History</a>
             <a href="/environments" class="nav-menu-item">Environments</a>
             <a href="/import" class="nav-menu-item">Import Swagger</a>
@@ -394,7 +393,7 @@
             <ul class="toc-list">
                 <li><a href="#getting-started">Getting Started</a></li>
                 <li><a href="#making-requests">Making API Requests</a></li>
-                <li><a href="#collections">Collections</a></li>
+                <li><a href="#projects">Projects & Applications</a></li>
                 <li><a href="#saved-requests">Saved Requests</a></li>
                 <li><a href="#environments">Environments & Variables</a>
                     <ul class="toc-list toc-sub">
@@ -435,8 +434,8 @@
                 <div class="step-content">
                     The interface consists of:
                     <ul style="margin-top: 8px; margin-left: 20px;">
-                        <li><strong>Left Sidebar:</strong> Collections and saved requests</li>
-                        <li><strong>Top Navigation:</strong> Access to different sections (Home, History, Collections, Environments, etc.)</li>
+                        <li><strong>Left Sidebar:</strong> Projects, applications, and API requests</li>
+                        <li><strong>Top Navigation:</strong> Access to different sections (Projects, Home, History, Environments, etc.)</li>
                         <li><strong>Request Builder:</strong> Main area to configure and send API requests</li>
                         <li><strong>Response Section:</strong> View API responses below the request builder</li>
                     </ul>
@@ -525,31 +524,40 @@
             </div>
         </div>
         
-        <!-- Collections -->
-        <div class="guide-section" id="collections">
+        <!-- Projects & Applications -->
+        <div class="guide-section" id="projects">
             <div class="section-title">
                 <span class="section-icon">📁</span>
-                <span>Collections</span>
+                <span>Projects & Applications</span>
             </div>
             <div class="section-description">
-                Organize your API requests into collections for better management.
+                Organize your API requests into projects and applications for better management.
             </div>
             
             <div class="step">
                 <div class="step-number">1</div>
-                <div class="step-title">Create a Collection</div>
+                <div class="step-title">Create a Project</div>
                 <div class="step-content">
-                    Go to the <strong>Collections</strong> page and click <strong>Create Collection</strong>. 
-                    Give it a name and optional description (e.g., "User Management APIs").
+                    Go to the <strong>Projects</strong> page and click <strong>+ New Project</strong>. 
+                    Give it a name and optional description (e.g., "E-commerce Platform").
                 </div>
             </div>
             
             <div class="step">
                 <div class="step-number">2</div>
-                <div class="step-title">Add Requests to Collection</div>
+                <div class="step-title">Add Applications to Project</div>
                 <div class="step-content">
-                    When saving a request, select the collection from the dropdown in the <strong>Settings</strong> tab. 
-                    You can also add existing saved requests to collections using the <strong>+</strong> button on saved requests.
+                    Within a project, click <strong>+ New Application</strong> to create an application. 
+                    Applications can have a name, version, and description (e.g., "User Service v1.0").
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-title">Assign Requests to Applications</div>
+                <div class="step-content">
+                    When saving a request, use the <strong>+ Assign</strong> button in the <strong>Settings</strong> tab to assign it to a project and application. 
+                    This helps organize your APIs hierarchically.
                 </div>
             </div>
             
