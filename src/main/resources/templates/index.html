@@ -34,31 +34,41 @@
             border-right: 1px solid #e5e7eb;
             padding: 0;
             overflow-y: auto;
+            overflow-x: hidden;
             position: fixed;
-            height: 100vh;
+            height: calc(100vh - 60px);
             left: 0;
-            top: 0;
+            top: 60px;
             z-index: 100;
             display: flex;
             flex-direction: column;
-            box-shadow: 1px 0 3px rgba(0, 0, 0, 0.05);
         }
         
         .sidebar-header {
-            padding: 16px 20px;
+            padding: 20px 18px;
             background: #ffffff;
             border-bottom: 1px solid #f3f4f6;
             position: sticky;
             top: 0;
             z-index: 10;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
         }
         
         .sidebar-header h2 {
             color: #111827;
             font-size: 18px;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-weight: 700;
             letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .sidebar-header h2::before {
+            content: '📁';
+            font-size: 20px;
         }
         
         .sidebar-header p {
@@ -75,27 +85,42 @@
             background: #fafbfc;
         }
         
+        .sidebar-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .sidebar-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .sidebar-content::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 3px;
+        }
+        
+        .sidebar-content::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+        
         .saved-request-item {
             padding: 10px 12px;
             margin-bottom: 3px;
             border: none;
             border-radius: 6px;
             cursor: pointer;
-            transition: all 0.15s;
+            transition: all 0.15s ease;
             background: #ffffff;
-            border: 1px solid #f3f4f6;
+            border: 1px solid transparent;
             position: relative;
         }
         
         .saved-request-item:hover {
             background: #f9fafb;
             border-color: #e5e7eb;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            transform: translateX(2px);
         }
         
         .saved-request-item:active {
-            transform: translateX(2px) scale(0.98);
+            transform: scale(0.98);
         }
         
         .saved-request-name {
@@ -149,26 +174,25 @@
         }
         
         .collection-header {
-            padding: 12px 14px;
+            padding: 10px 12px;
             background: #ffffff;
             color: #111827;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 10px;
-            transition: all 0.2s;
+            transition: all 0.15s ease;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
             border: 1px solid #e5e7eb;
             user-select: none;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+            margin-bottom: 4px;
         }
         
         .collection-header:hover {
             background: #f9fafb;
             border-color: #d1d5db;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
         
         .collection-name {
@@ -183,14 +207,19 @@
         .collection-toggle {
             font-size: 11px;
             color: #6b7280;
-            transition: transform 0.2s;
+            transition: transform 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
             width: 20px;
             height: 20px;
             border-radius: 4px;
-            background: #f3f4f6;
+            background: transparent;
+            font-weight: 600;
+        }
+        
+        .collection-header:hover .collection-toggle {
+            color: #111827;
         }
         
         .collection-toggle.collapsed {
@@ -205,18 +234,20 @@
         }
         
         .saved-request-item.nested {
-            margin-left: 0;
-            margin-top: 2px;
+            margin-left: 8px;
+            margin-top: 3px;
             position: relative;
             cursor: pointer;
-            padding: 8px 10px;
+            padding: 10px 12px;
             background: #ffffff;
-            border: 1px solid #f3f4f6;
+            border: 1px solid #e5e7eb;
+            border-left: 3px solid #667eea;
         }
         
         .saved-request-item.nested:hover {
-            background: #f9fafb;
-            border-color: #e5e7eb;
+            background: linear-gradient(to right, #f0f4ff 0%, #ffffff 100%);
+            border-color: #667eea;
+            border-left-width: 4px;
         }
         
         .saved-request-item.nested:hover div[style*="opacity: 0"] {
@@ -345,16 +376,15 @@
             background: #2563eb;
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.15s;
+            transition: all 0.15s ease;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            box-shadow: 0 1px 2px rgba(37, 99, 235, 0.15);
         }
         
         .btn-add-new-request:hover {
@@ -370,19 +400,21 @@
         
         .sidebar-search {
             width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
             font-size: 13px;
             background: #ffffff;
             color: #111827;
-            transition: all 0.15s;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
         
         .sidebar-search:focus {
             outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1), 0 2px 8px rgba(0, 0, 0, 0.08);
+            transform: translateY(-1px);
         }
         
         .sidebar-search::placeholder {
@@ -428,16 +460,6 @@
             font-weight: 300;
         }
         
-        .main-content {
-            flex: 1;
-            margin-left: 300px;
-            padding: 0;
-            background: #f5f6f7;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-        
         .top-nav {
             background: #ffffff;
             border-bottom: 1px solid #e5e7eb;
@@ -445,10 +467,24 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: sticky;
+            position: fixed;
             top: 0;
-            z-index: 50;
+            left: 0;
+            right: 0;
+            z-index: 200;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+            height: 60px;
+        }
+        
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            margin-top: 60px;
+            padding: 0;
+            background: #f5f6f7;
+            display: flex;
+            flex-direction: column;
+            min-height: calc(100vh - 60px);
         }
         
         .nav-brand {
@@ -457,9 +493,15 @@
             gap: 12px;
         }
         
+        .nav-brand-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
         .nav-brand img {
-            width: 28px;
-            height: 28px;
+            width: 120px;
+            height: auto;
         }
         
         .nav-brand .brand-name {
@@ -467,6 +509,16 @@
             font-weight: 700;
             color: #1a1a1a;
             letter-spacing: -0.3px;
+            line-height: 1.2;
+        }
+        
+        .nav-brand .brand-subtitle {
+            font-size: 10px;
+            font-weight: 400;
+            color: #6b7280;
+            letter-spacing: 0.3px;
+            text-transform: lowercase;
+            line-height: 1;
         }
         
         .nav-menu {
@@ -521,15 +573,6 @@
             color: #1a1a1a;
         }
         
-        .env-selector {
-            padding: 6px 12px;
-            background: #f9fafb;
-            border: 1px solid #e5e7eb;
-            border-radius: 6px;
-            color: #1a1a1a;
-            font-size: 12px;
-            cursor: pointer;
-        }
         
         .banner {
             background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
@@ -653,6 +696,30 @@
         }
         
         .method-select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        .environment-select {
+            padding: 11px 14px;
+            background: #ffffff;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 8px;
+            color: #111827;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 160px;
+            max-width: 200px;
+        }
+        
+        .environment-select:hover {
+            border-color: #d1d5db;
+        }
+        
+        .environment-select:focus {
             outline: none;
             border-color: #2563eb;
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
@@ -1395,6 +1462,13 @@
             color: #8a8a8a;
         }
         
+        /* Responsive layout for Request Name and Environment */
+        @media (max-width: 768px) {
+            #requestNameEnvironmentGroup > div[style*="grid-template-columns"] {
+                grid-template-columns: 1fr !important;
+            }
+        }
+        
         .empty-sidebar p {
             font-size: 13px;
             line-height: 1.6;
@@ -1408,6 +1482,23 @@
     </style>
 </head>
 <body>
+    <div class="top-nav">
+        <div class="nav-brand">
+            <img src="/icon.svg" alt="BISEN">
+            <div class="nav-brand-content">
+                <span class="brand-subtitle">simple api tester Beta1.0</span>
+            </div>
+        </div>
+        <div class="nav-menu">
+            <a href="/projects" class="nav-menu-item">Projects</a>
+            <a href="/" class="nav-menu-item active">Home</a>
+            <a href="/saved" class="nav-menu-item">Saved Requests</a>
+            <a href="/history" class="nav-menu-item">History</a>
+            <a href="/import" class="nav-menu-item">Import Swagger</a>
+            <a href="/guide" class="nav-menu-item">Guide</a>
+        </div>
+    </div>
+    
     <div class="sidebar">
         <div class="sidebar-header">
             <h2>Projects & APIs</h2>
@@ -1415,13 +1506,13 @@
         </div>
         
         <div class="sidebar-content">
-            <div style="margin-bottom: 16px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px;">
                 <button class="btn-add-new-request" onclick="clearForm()" title="Create New Request">
-                    <span>+</span>
+                    <span style="font-size: 16px; font-weight: 700;">+</span>
                     <span>New Request</span>
                 </button>
-                <button class="btn-add-new-api" onclick="openNewApiModal()" title="Create New API in Application" style="width: 100%; padding: 10px 14px; background: #10b981; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 1px 2px rgba(16, 185, 129, 0.15);">
-                    <span>+</span>
+                <button class="btn-add-new-api" onclick="openNewApiModal()" title="Create New API in Application" style="width: 100%; padding: 12px 16px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); letter-spacing: 0.3px;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(16, 185, 129, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(16, 185, 129, 0.3)'">
+                    <span style="font-size: 16px; font-weight: 700;">+</span>
                     <span>New API</span>
                 </button>
             </div>
@@ -1456,27 +1547,6 @@
     </div>
     
     <div class="main-content">
-        <div class="top-nav">
-            <div class="nav-brand">
-                <img src="/icon.svg" alt="BISEN" style="width: 28px; height: 28px;">
-                <span class="brand-name">BISEN</span>
-            </div>
-            <div class="nav-menu">
-                <a href="/projects" class="nav-menu-item">Projects</a>
-                <a href="/" class="nav-menu-item active">Home</a>
-                <a href="/saved" class="nav-menu-item">Saved Requests</a>
-                <a href="/history" class="nav-menu-item">History</a>
-                <a href="/import" class="nav-menu-item">Import Swagger</a>
-                <a href="/guide" class="nav-menu-item">Guide</a>
-            </div>
-            <div class="nav-actions">
-                <button class="nav-icon-btn" title="Settings">⚙️</button>
-                <select class="env-selector" id="topEnvSelect" onchange="switchTopEnvironment()">
-                    <option value="">No Environment</option>
-                </select>
-                <button class="nav-icon-btn" title="Profile">👤</button>
-            </div>
-        </div>
         
         <div class="card">
             <div class="request-header">
@@ -1493,6 +1563,11 @@
                             <option th:each="method : ${methods}" th:value="${method}" th:text="${method}"></option>
                         </select>
                         <input type="text" id="url" class="url-input" placeholder="https://api.example.com/users" required>
+                        <div id="topEnvironmentGroup" style="display: none;">
+                            <select id="topEnvironmentSelect" onchange="switchTopEnvironment()" class="environment-select">
+                                <option value="">No Environment</option>
+                            </select>
+                        </div>
                         <div class="action-buttons">
                             <button type="submit" class="btn-send">
                                 <span>Send</span>
@@ -1616,9 +1691,24 @@
                     </div>
                     
                     <div class="tab-content" id="tab-settings">
-                        <div class="form-group">
-                            <label>Request Name (Optional)</label>
-                            <input type="text" id="name" placeholder="e.g., Get User Profile">
+                        <div class="form-group" id="requestNameEnvironmentGroup">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: end;">
+                                <div>
+                                    <label>Request Name (Optional)</label>
+                                    <input type="text" id="name" placeholder="e.g., Get User Profile">
+                                </div>
+                                <div id="environmentGroup" style="display: none;">
+                                    <label>Environment <span style="font-size: 11px; color: #6b7280; font-weight: normal;" id="environmentAppInfo"></span></label>
+                                    <select id="environmentSelect" onchange="loadEnvironmentVariables()" class="method-select">
+                                        <option value="">No Environment</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- Environment variables display below (when environment is selected) -->
+                            <div id="environmentVariables" style="margin-top: 12px; padding: 12px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; display: none; width: 100%;">
+                                <div style="font-size: 12px; font-weight: 600; margin-bottom: 8px; color: #1a1a1a;">Environment Variables:</div>
+                                <div id="environmentVariablesList" style="font-family: monospace; font-size: 11px; color: #6b7280;"></div>
+                            </div>
                         </div>
                         
                         <div class="form-group">
@@ -1654,20 +1744,6 @@
                             <label>Request Timeout (ms)</label>
                             <input type="number" id="timeout" placeholder="30000" value="30000" min="1000" max="300000" style="width: 200px;">
                             <span style="font-size: 11px; color: #8a8a8a; margin-left: 8px;">Default: 30000ms (30s)</span>
-                        </div>
-                        
-                        <div class="form-group" id="environmentGroup" style="display: none;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                                <label style="margin-bottom: 0;">Environment</label>
-                                <span style="font-size: 11px; color: #6b7280;" id="environmentAppInfo"></span>
-                            </div>
-                            <select id="environmentSelect" onchange="loadEnvironmentVariables()" class="method-select" style="margin-bottom: 12px;">
-                                <option value="">No Environment</option>
-                            </select>
-                            <div id="environmentVariables" style="margin-top: 12px; padding: 12px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; display: none;">
-                                <div style="font-size: 12px; font-weight: 600; margin-bottom: 8px; color: #1a1a1a;">Environment Variables:</div>
-                                <div id="environmentVariablesList" style="font-family: monospace; font-size: 11px; color: #6b7280;"></div>
-                            </div>
                         </div>
                         
                         <div class="form-group">
@@ -2338,7 +2414,7 @@
                 }
             }
             
-            const environmentId = document.getElementById('environmentSelect')?.value || null;
+            const environmentId = document.getElementById('environmentSelect')?.value || document.getElementById('topEnvironmentSelect')?.value || null;
             const variables = document.getElementById('variables')?.value || '';
             
             const requestDto = {
@@ -2606,9 +2682,11 @@
         async function loadEnvironmentsForApplication(applicationId) {
             // Validate applicationId
             if (!applicationId || isNaN(applicationId) || applicationId <= 0) {
-                // Hide environment group if no application
+                // Hide environment groups if no application
                 const envGroup = document.getElementById('environmentGroup');
+                const topEnvGroup = document.getElementById('topEnvironmentGroup');
                 if (envGroup) envGroup.style.display = 'none';
+                if (topEnvGroup) topEnvGroup.style.display = 'none';
                 return;
             }
             
@@ -2617,11 +2695,14 @@
                 if (response.ok) {
                     environments = await response.json();
                     const select = document.getElementById('environmentSelect');
+                    const topSelect = document.getElementById('topEnvironmentSelect');
                     const envGroup = document.getElementById('environmentGroup');
+                    const topEnvGroup = document.getElementById('topEnvironmentGroup');
                     const envAppInfo = document.getElementById('environmentAppInfo');
                     
-                    // Show environment group
+                    // Show environment groups
                     if (envGroup) envGroup.style.display = 'block';
+                    if (topEnvGroup) topEnvGroup.style.display = 'block';
                     
                     // Find application name for info display
                     let appName = 'Application';
@@ -2636,31 +2717,58 @@
                         envAppInfo.textContent = `for ${appName}`;
                     }
                     
-                    if (select) {
-                        select.innerHTML = '<option value="">No Environment</option>';
-                        environments.forEach(env => {
-                            const option = document.createElement('option');
-                            option.value = env.id;
-                            option.textContent = env.name;
-                            select.appendChild(option);
-                        });
-                        
-                        // Select first environment by default if available
-                        if (environments.length > 0 && !currentEnvironmentId) {
-                            select.value = environments[0].id;
-                            currentEnvironmentId = environments[0].id;
-                            loadEnvironmentVariables();
-                        } else if (currentEnvironmentId) {
-                            select.value = currentEnvironmentId;
-                            loadEnvironmentVariables();
+                    // Populate both dropdowns
+                    const populateDropdown = (dropdown) => {
+                        if (dropdown) {
+                            dropdown.innerHTML = '<option value="">No Environment</option>';
+                            environments.forEach(env => {
+                                const option = document.createElement('option');
+                                option.value = env.id;
+                                option.textContent = env.name;
+                                dropdown.appendChild(option);
+                            });
                         }
+                    };
+                    
+                    populateDropdown(select);
+                    populateDropdown(topSelect);
+                    
+                    // Select first environment by default if available
+                    if (environments.length > 0 && !currentEnvironmentId) {
+                        const selectedId = environments[0].id;
+                        if (select) select.value = selectedId;
+                        if (topSelect) topSelect.value = selectedId;
+                        currentEnvironmentId = selectedId;
+                        loadEnvironmentVariables();
+                    } else if (currentEnvironmentId) {
+                        if (select) select.value = currentEnvironmentId;
+                        if (topSelect) topSelect.value = currentEnvironmentId;
+                        loadEnvironmentVariables();
                     }
                 }
             } catch (error) {
                 console.error('Error loading environments:', error);
                 const envGroup = document.getElementById('environmentGroup');
+                const topEnvGroup = document.getElementById('topEnvironmentGroup');
                 if (envGroup) envGroup.style.display = 'none';
+                if (topEnvGroup) topEnvGroup.style.display = 'none';
             }
+        }
+        
+        function switchTopEnvironment() {
+            const topSelect = document.getElementById('topEnvironmentSelect');
+            const settingsSelect = document.getElementById('environmentSelect');
+            const envId = topSelect ? topSelect.value : null;
+            
+            currentEnvironmentId = envId;
+            
+            // Sync with settings tab dropdown
+            if (settingsSelect) {
+                settingsSelect.value = envId || '';
+            }
+            
+            // Load environment variables
+            loadEnvironmentVariables();
         }
         
         async function loadEnvironments() {
@@ -2671,36 +2779,38 @@
             if (applicationId) {
                 await loadEnvironmentsForApplication(parseInt(applicationId));
             } else {
-                // Hide environment group if no application assigned
+                // Hide environment groups if no application assigned
                 const envGroup = document.getElementById('environmentGroup');
+                const topEnvGroup = document.getElementById('topEnvironmentGroup');
                 if (envGroup) envGroup.style.display = 'none';
+                if (topEnvGroup) topEnvGroup.style.display = 'none';
             }
         }
         
-        function switchTopEnvironment() {
-            const topSelect = document.getElementById('topEnvSelect');
-            const envSelect = document.getElementById('environmentSelect');
-            if (topSelect && envSelect) {
-                envSelect.value = topSelect.value;
-                loadEnvironmentVariables();
-            }
-        }
         
         async function loadEnvironmentVariables() {
+            // Get environment ID from either dropdown
             const envSelect = document.getElementById('environmentSelect');
-            const envId = envSelect ? envSelect.value : null;
+            const topEnvSelect = document.getElementById('topEnvironmentSelect');
+            const envId = (envSelect && envSelect.value) || (topEnvSelect && topEnvSelect.value) || currentEnvironmentId;
+            
             const varsContainer = document.getElementById('environmentVariables');
             const varsList = document.getElementById('environmentVariablesList');
             currentEnvironmentId = envId;
             
-            // Update top selector too
-            const topSelect = document.getElementById('topEnvSelect');
-            if (topSelect) {
-                topSelect.value = envId || '';
+            // Sync both dropdowns
+            if (envSelect && topEnvSelect) {
+                envSelect.value = envId || '';
+                topEnvSelect.value = envId || '';
             }
             
             if (!envId || envId === '') {
-                if (varsContainer) varsContainer.style.display = 'none';
+                if (varsContainer) {
+                    varsContainer.style.display = 'none';
+                }
+                if (varsList) {
+                    varsList.innerHTML = '';
+                }
                 return;
             }
             
@@ -3112,7 +3222,10 @@
             document.getElementById('timeout').value = '30000';
             document.getElementById('variablesContainer').style.display = 'none';
             document.getElementById('variables').value = '';
-            document.getElementById('environmentSelect').value = '';
+            const envSelect = document.getElementById('environmentSelect');
+            if (envSelect) envSelect.value = '';
+            const envVars = document.getElementById('environmentVariables');
+            if (envVars) envVars.style.display = 'none';
             // Collections are deprecated - no need to clear
             document.getElementById('applicationId').value = '';
             updateBodyType();
@@ -4229,12 +4342,14 @@
             const envGroup = document.getElementById('environmentGroup');
             if (envGroup) envGroup.style.display = 'none';
             
-            // Clear environment select
+            // Clear environment select and hide variables
             const envSelect = document.getElementById('environmentSelect');
             if (envSelect) {
                 envSelect.innerHTML = '<option value="">No Environment</option>';
                 envSelect.value = '';
             }
+            const envVars = document.getElementById('environmentVariables');
+            if (envVars) envVars.style.display = 'none';
             currentEnvironmentId = null;
         }
         

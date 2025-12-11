@@ -14,6 +14,8 @@ import com.resttester.repository.ApplicationRepository;
 import com.resttester.repository.ProjectRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +34,7 @@ public class ApplicationService {
     }
     
     @Transactional
+    @CacheEvict(value = {"applications", "projects"}, allEntries = true)
     public Application createApplication(ApplicationDto applicationDto) {
         Application application = new Application();
         application.setName(applicationDto.getName());
@@ -51,19 +54,23 @@ public class ApplicationService {
         return repository.save(application);
     }
     
+    @Cacheable(value = "applications", key = "'all'")
     public List<Application> getAllApplications() {
         return repository.findAllByOrderByCreatedAtDesc();
     }
     
+    @Cacheable(value = "applications", key = "'project-' + #projectId")
     public List<Application> getApplicationsByProject(Long projectId) {
         return repository.findByProjectIdOrderByNameAsc(projectId);
     }
     
+    @Cacheable(value = "applications", key = "#id")
     public Application getApplicationById(Long id) {
         return repository.findById(id).orElse(null);
     }
     
     @Transactional
+    @CacheEvict(value = {"applications", "projects"}, allEntries = true)
     public Application updateApplication(Long id, ApplicationDto applicationDto) {
         return repository.findById(id).map(application -> {
             application.setName(applicationDto.getName());
@@ -83,6 +90,7 @@ public class ApplicationService {
     }
     
     @Transactional
+    @CacheEvict(value = {"applications", "projects"}, allEntries = true)
     public void deleteApplication(Long id) {
         repository.deleteById(id);
         logger.info("Deleted application with ID: {}", id);

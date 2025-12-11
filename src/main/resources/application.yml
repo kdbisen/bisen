@@ -17,6 +17,13 @@ spring:
     url: jdbc:sqlite:${user.home}/.bisen-api-tester/bisen-api-tester.db
     driver-class-name: org.sqlite.JDBC
     # SQLite doesn't require username/password for file-based databases
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      leak-detection-threshold: 60000
   
   jpa:
     database-platform: org.hibernate.community.dialect.SQLiteDialect

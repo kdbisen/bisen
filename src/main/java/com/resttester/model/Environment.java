@@ -14,7 +14,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Entity
-@Table(name = "environments")
+@Table(name = "environments", indexes = {
+    @Index(name = "idx_environment_application_id", columnList = "application_id")
+})
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Environment {
     

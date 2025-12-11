@@ -56,6 +56,8 @@ public class SavedRequestService {
         savedRequest.setUrl(dto.getUrl());
         savedRequest.setHeaders(dto.getHeaders());
         savedRequest.setBody(dto.getBody());
+        savedRequest.setPreRequestScript(dto.getPreRequestScript());
+        savedRequest.setPostRequestScript(dto.getPostRequestScript());
         
         if (dto.getCollectionId() != null) {
             Collection collection = collectionRepository.findById(dto.getCollectionId()).orElse(null);

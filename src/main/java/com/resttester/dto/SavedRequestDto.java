@@ -14,6 +14,8 @@ public class SavedRequestDto {
     private String url;
     private String headers;
     private String body;
+    private String preRequestScript;
+    private String postRequestScript;
     private Long collectionId;
     private Long applicationId;
     
@@ -79,6 +81,22 @@ public class SavedRequestDto {
     
     public void setApplicationId(Long applicationId) {
         this.applicationId = applicationId;
+    }
+    
+    public String getPreRequestScript() {
+        return preRequestScript;
+    }
+    
+    public void setPreRequestScript(String preRequestScript) {
+        this.preRequestScript = preRequestScript;
+    }
+    
+    public String getPostRequestScript() {
+        return postRequestScript;
+    }
+    
+    public void setPostRequestScript(String postRequestScript) {
+        this.postRequestScript = postRequestScript;
     }
 }
 

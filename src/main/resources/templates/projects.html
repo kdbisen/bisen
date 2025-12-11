@@ -44,9 +44,15 @@
             gap: 12px;
         }
         
+        .nav-brand-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
         .nav-brand img {
-            width: 28px;
-            height: 28px;
+            width: 120px;
+            height: auto;
         }
         
         .nav-brand .brand-name {
@@ -54,6 +60,16 @@
             font-weight: 700;
             color: #1a1a1a;
             letter-spacing: -0.3px;
+            line-height: 1.2;
+        }
+        
+        .nav-brand .brand-subtitle {
+            font-size: 10px;
+            font-weight: 400;
+            color: #6b7280;
+            letter-spacing: 0.3px;
+            text-transform: lowercase;
+            line-height: 1;
         }
         
         .nav-menu {
@@ -578,8 +594,10 @@
 <body>
     <div class="top-nav">
         <div class="nav-brand">
-            <img src="/icon.svg" alt="BISEN" style="width: 28px; height: 28px;">
-            <span class="brand-name">BISEN</span>
+            <img src="/icon.svg" alt="BISEN">
+            <div class="nav-brand-content">
+                <span class="brand-subtitle">simple api tester Beta1.0</span>
+            </div>
         </div>
         <div class="nav-menu">
             <a href="/projects" class="nav-menu-item active">Projects</a>

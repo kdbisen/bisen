@@ -13,7 +13,12 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "api_requests")
+@Table(name = "api_requests", indexes = {
+    @Index(name = "idx_api_request_created_at", columnList = "created_at"),
+    @Index(name = "idx_api_request_method", columnList = "method"),
+    @Index(name = "idx_api_request_collection_id", columnList = "collection_id"),
+    @Index(name = "idx_api_request_status_code", columnList = "status_code")
+})
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class ApiRequest {
     

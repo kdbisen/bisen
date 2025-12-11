@@ -32,8 +32,10 @@ public class RateLimitingFilter implements Filter {
     // Rate limit: 100 requests per minute per IP
     private static final int MAX_REQUESTS_PER_MINUTE = 100;
     private static final long TIME_WINDOW_MS = 60 * 1000; // 1 minute
+    private static final long CLEANUP_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
 
     private final ConcurrentHashMap<String, RequestCounter> requestCounters = new ConcurrentHashMap<>();
+    private volatile long lastCleanup = System.currentTimeMillis();
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -45,12 +47,18 @@ public class RateLimitingFilter implements Filter {
         // Only rate limit API endpoints
         String path = httpRequest.getRequestURI();
         if (path.startsWith("/api/")) {
+            long now = System.currentTimeMillis();
+            
+            // Periodic cleanup of expired entries to prevent memory leak
+            if (now - lastCleanup > CLEANUP_INTERVAL_MS) {
+                cleanupExpiredEntries(now);
+                lastCleanup = now;
+            }
+            
             String clientIp = getClientIp(httpRequest);
             RequestCounter counter = requestCounters.computeIfAbsent(clientIp, k -> new RequestCounter());
 
             synchronized (counter) {
-                long now = System.currentTimeMillis();
-                
                 // Reset counter if time window has passed
                 if (now - counter.getLastReset() > TIME_WINDOW_MS) {
                     counter.reset(now);
@@ -70,6 +78,19 @@ public class RateLimitingFilter implements Filter {
         }
 
         chain.doFilter(request, response);
+    }
+
+    /**
+     * Clean up expired entries from the rate limiting map to prevent memory leaks
+     */
+    private void cleanupExpiredEntries(long now) {
+        requestCounters.entrySet().removeIf(entry -> {
+            RequestCounter counter = entry.getValue();
+            synchronized (counter) {
+                // Remove entries that haven't been accessed in 2 time windows (2 minutes)
+                return (now - counter.getLastReset()) > (TIME_WINDOW_MS * 2);
+            }
+        });
     }
 
     private String getClientIp(HttpServletRequest request) {

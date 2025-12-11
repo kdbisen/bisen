@@ -25,6 +25,8 @@ import com.resttester.service.ExportImportService;
 import com.resttester.service.ProjectService;
 import com.resttester.service.SavedRequestService;
 import com.resttester.service.SwaggerImportService;
+import com.resttester.service.ApiMonitorService;
+import com.resttester.model.ApiMonitor;
 import com.resttester.dto.ProjectDto;
 import com.resttester.dto.ApplicationDto;
 import com.resttester.model.Project;
@@ -67,6 +69,9 @@ public class ApiTesterController {
     
     @Autowired
     private ApplicationService applicationService;
+    
+    @Autowired
+    private ApiMonitorService apiMonitorService;
     
     @Autowired
     private ObjectMapper objectMapper;
@@ -388,6 +393,53 @@ public class ApiTesterController {
     public ResponseEntity<Void> deleteApplication(@PathVariable Long id) {
         applicationService.deleteApplication(id);
         return ResponseEntity.ok().build();
+    }
+    
+    // API Monitor endpoints
+    @GetMapping("/api/monitors")
+    @ResponseBody
+    public ResponseEntity<List<ApiMonitor>> getAllMonitors() {
+        return ResponseEntity.ok(apiMonitorService.getAllMonitors());
+    }
+    
+    @GetMapping("/api/monitors/{id}")
+    @ResponseBody
+    public ResponseEntity<ApiMonitor> getMonitor(@PathVariable Long id) {
+        ApiMonitor monitor = apiMonitorService.getMonitorById(id);
+        if (monitor != null) {
+            return ResponseEntity.ok(monitor);
+        }
+        return ResponseEntity.notFound().build();
+    }
+    
+    @PostMapping("/api/monitors")
+    @ResponseBody
+    public ResponseEntity<ApiMonitor> createMonitor(@RequestBody ApiMonitor monitor) {
+        ApiMonitor created = apiMonitorService.createMonitor(monitor);
+        return ResponseEntity.ok(created);
+    }
+    
+    @PutMapping("/api/monitors/{id}")
+    @ResponseBody
+    public ResponseEntity<ApiMonitor> updateMonitor(@PathVariable Long id, @RequestBody ApiMonitor monitor) {
+        ApiMonitor updated = apiMonitorService.updateMonitor(id, monitor);
+        if (updated != null) {
+            return ResponseEntity.ok(updated);
+        }
+        return ResponseEntity.notFound().build();
+    }
+    
+    @DeleteMapping("/api/monitors/{id}")
+    @ResponseBody
+    public ResponseEntity<Void> deleteMonitor(@PathVariable Long id) {
+        apiMonitorService.deleteMonitor(id);
+        return ResponseEntity.ok().build();
+    }
+    
+    @GetMapping("/api/monitors/status/{status}")
+    @ResponseBody
+    public ResponseEntity<List<ApiMonitor>> getMonitorsByStatus(@PathVariable String status) {
+        return ResponseEntity.ok(apiMonitorService.getMonitorsByStatus(status));
     }
 }
 

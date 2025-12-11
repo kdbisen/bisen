@@ -15,7 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "projects")
+@Table(name = "projects", indexes = {
+    @Index(name = "idx_project_created_at", columnList = "created_at")
+})
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Project {
     

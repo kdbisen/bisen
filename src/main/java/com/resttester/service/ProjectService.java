@@ -12,6 +12,8 @@ import com.resttester.model.Project;
 import com.resttester.repository.ProjectRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +30,7 @@ public class ProjectService {
     }
     
     @Transactional
+    @CacheEvict(value = "projects", allEntries = true)
     public Project createProject(ProjectDto projectDto) {
         Project project = new Project();
         project.setName(projectDto.getName());
@@ -37,15 +40,18 @@ public class ProjectService {
         return repository.save(project);
     }
     
+    @Cacheable(value = "projects", key = "'all'")
     public List<Project> getAllProjects() {
         return repository.findAllByOrderByCreatedAtDesc();
     }
     
+    @Cacheable(value = "projects", key = "#id")
     public Project getProjectById(Long id) {
         return repository.findById(id).orElse(null);
     }
     
     @Transactional
+    @CacheEvict(value = "projects", allEntries = true)
     public Project updateProject(Long id, ProjectDto projectDto) {
         return repository.findById(id).map(project -> {
             project.setName(projectDto.getName());
@@ -57,6 +63,7 @@ public class ProjectService {
     }
     
     @Transactional
+    @CacheEvict(value = "projects", allEntries = true)
     public void deleteProject(Long id) {
         repository.deleteById(id);
         logger.info("Deleted project with ID: {}", id);

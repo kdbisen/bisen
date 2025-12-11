@@ -13,7 +13,10 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "saved_requests")
+@Table(name = "saved_requests", indexes = {
+    @Index(name = "idx_saved_request_application_id", columnList = "application_id"),
+    @Index(name = "idx_saved_request_created_at", columnList = "created_at")
+})
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class SavedRequest {
     
@@ -35,6 +38,12 @@ public class SavedRequest {
     
     @Column(columnDefinition = "TEXT")
     private String body;
+    
+    @Column(columnDefinition = "TEXT")
+    private String preRequestScript; // JavaScript code to run before request
+    
+    @Column(columnDefinition = "TEXT")
+    private String postRequestScript; // JavaScript code to run after request
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "collection_id")
@@ -141,6 +150,22 @@ public class SavedRequest {
     
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+    
+    public String getPreRequestScript() {
+        return preRequestScript;
+    }
+    
+    public void setPreRequestScript(String preRequestScript) {
+        this.preRequestScript = preRequestScript;
+    }
+    
+    public String getPostRequestScript() {
+        return postRequestScript;
+    }
+    
+    public void setPostRequestScript(String postRequestScript) {
+        this.postRequestScript = postRequestScript;
     }
 }
 
