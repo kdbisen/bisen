@@ -1195,7 +1195,15 @@
         }
         
         function manageEnvironment(projectId) {
-            // TODO: Implement environment management for project
+            // Environments are managed at the application level, not project level
+            if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
+                CustomDialog.showAlert(
+                    'Environments are managed at the application level. Please navigate to an application within this project to manage its environments.',
+                    'Information'
+                );
+            } else {
+                alert('Environments are managed at the application level. Please navigate to an application within this project to manage its environments.');
+            }
             window.location.href = '/environments';
         }
         

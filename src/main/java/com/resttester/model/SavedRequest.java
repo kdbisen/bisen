@@ -52,7 +52,7 @@ public class SavedRequest {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "application_id")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "savedRequests", "project"})
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "savedRequests"})
     private Application application;
     
     @Column(nullable = false)

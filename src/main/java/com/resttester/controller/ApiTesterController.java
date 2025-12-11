@@ -37,13 +37,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Controller
 public class ApiTesterController {
+    
+    private static final Logger logger = LoggerFactory.getLogger(ApiTesterController.class);
     
     @Autowired
     private ApiRequestService apiRequestService;
@@ -116,6 +121,13 @@ public class ApiTesterController {
         return "guide";
     }
     
+    @GetMapping("/api/history")
+    @ResponseBody
+    public ResponseEntity<List<ApiRequest>> getAllHistory() {
+        List<ApiRequest> requests = apiRequestService.getAllRequests();
+        return ResponseEntity.ok(requests);
+    }
+    
     @GetMapping("/history/{id}")
     @ResponseBody
     public ResponseEntity<ApiRequest> getRequest(@PathVariable Long id) {
@@ -165,9 +177,16 @@ public class ApiTesterController {
     
     @DeleteMapping("/api/saved/{id}")
     @ResponseBody
-    public ResponseEntity<Void> deleteSavedRequest(@PathVariable Long id) {
-        savedRequestService.deleteSavedRequest(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> deleteSavedRequest(@PathVariable Long id) {
+        try {
+            savedRequestService.deleteSavedRequest(id);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            logger.error("Error deleting saved request with ID: {}", id, e);
+            return ResponseEntity.status(500).body(Map.of("error", "Failed to delete request: " + e.getMessage()));
+        }
     }
     
     @GetMapping("/api/saved")

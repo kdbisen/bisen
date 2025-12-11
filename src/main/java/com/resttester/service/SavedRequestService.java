@@ -100,7 +100,12 @@ public class SavedRequestService {
     }
     
     public void deleteSavedRequest(Long id) {
+        // Check if request exists before deleting
+        if (!repository.existsById(id)) {
+            throw new IllegalArgumentException("Saved request with ID " + id + " not found");
+        }
         repository.deleteById(id);
+        logger.info("Deleted saved request with ID: {}", id);
     }
     
     public List<SavedRequest> getSavedRequestsByCollection(Long collectionId) {

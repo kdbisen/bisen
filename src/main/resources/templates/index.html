@@ -78,6 +78,64 @@
             margin: 0;
         }
         
+        .sidebar-select-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .sidebar-select-controls input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            accent-color: #2563eb;
+        }
+        
+        .sidebar-select-controls label {
+            font-size: 12px;
+            color: #6b7280;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .btn-delete-selected {
+            padding: 6px 12px;
+            background: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+            margin-left: auto;
+            display: none;
+        }
+        
+        .btn-delete-selected:hover {
+            background: #b91c1c;
+        }
+        
+        .btn-delete-selected:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+        }
+        
+        .btn-delete-selected.show {
+            display: block;
+        }
+        
+        .api-checkbox {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            accent-color: #2563eb;
+            margin-right: 8px;
+        }
+        
         .sidebar-content {
             flex: 1;
             padding: 12px;
@@ -256,6 +314,29 @@
         
         .saved-request-item.nested:hover .btn-add-to-collection {
             opacity: 1;
+        }
+        
+        .saved-request-item.active {
+            background: linear-gradient(to right, #dbeafe 0%, #eff6ff 100%);
+            border-color: #2563eb;
+            border-left-width: 4px;
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.1);
+        }
+        
+        .application-item.active .application-header {
+            background: #eff6ff;
+            border-color: #2563eb;
+            color: #1e40af;
+        }
+        
+        .collection-item.active .collection-header {
+            background: #eff6ff;
+            border-color: #2563eb;
+        }
+        
+        .collection-item.active .collection-name {
+            color: #1e40af;
+            font-weight: 700;
         }
         
         .application-item {
@@ -1113,7 +1194,7 @@
             gap: 12px;
         }
         
-        .btn-copy-response {
+        .btn-copy-response, .btn-download {
             padding: 8px 16px;
             background: #ffffff;
             color: #374151;
@@ -1128,7 +1209,7 @@
             gap: 6px;
         }
         
-        .btn-copy-response:hover {
+        .btn-copy-response:hover, .btn-download:hover {
             background: #f9fafb;
             border-color: #d1d5db;
             color: #111827;
@@ -1136,7 +1217,7 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
         
-        .btn-copy-response:active {
+        .btn-copy-response:active, .btn-download:active {
             transform: translateY(0);
         }
         
@@ -1479,6 +1560,170 @@
             color: #1a1a1a;
             margin-bottom: 6px;
         }
+        
+        /* History Panel Styles */
+        .history-panel {
+            margin-top: 24px;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        
+        .history-panel-header {
+            padding: 16px 20px;
+            background: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .history-panel-header h3 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .btn-close-history {
+            background: transparent;
+            border: none;
+            color: #6b7280;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: all 0.15s;
+        }
+        
+        .btn-close-history:hover {
+            background: #f3f4f6;
+            color: #1a1a1a;
+        }
+        
+        .history-panel-content {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 16px;
+            position: relative;
+        }
+        
+        .history-loading {
+            text-align: center;
+            padding: 40px 20px;
+            color: #9ca3af;
+        }
+        
+        .history-loading-spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid #e5e7eb;
+            border-top-color: #2563eb;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 12px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .history-item {
+            padding: 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+        
+        .history-item:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+            transform: translateX(2px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .history-item:active {
+            transform: translateX(0);
+        }
+        
+        .history-item-info {
+            flex: 1;
+        }
+        
+        .history-item-method {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+        
+        .history-item-url {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 4px;
+            font-family: monospace;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 400px;
+        }
+        
+        .history-item-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+            font-size: 11px;
+            color: #9ca3af;
+        }
+        
+        .history-floating-icon {
+            position: fixed;
+            bottom: 80px;
+            right: 24px;
+            width: 48px;
+            height: 48px;
+            background: #2563eb;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            transition: all 0.2s;
+            z-index: 150;
+        }
+        
+        .history-floating-icon:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+        
+        .history-floating-icon.active {
+            background: #dc2626;
+        }
+        
+        .history-floating-icon.active:hover {
+            background: #b91c1c;
+        }
     </style>
 </head>
 <body>
@@ -1503,6 +1748,13 @@
         <div class="sidebar-header">
             <h2>Projects & APIs</h2>
             <p>Organize and manage your API requests</p>
+            <div class="sidebar-select-controls">
+                <input type="checkbox" id="selectAllApis" onchange="toggleSelectAll()">
+                <label for="selectAllApis" style="cursor: pointer;">Select All</label>
+                <button class="btn-delete-selected" id="btnDeleteSelected" onclick="deleteSelectedRequests()" disabled>
+                    Delete Selected (<span id="selectedCount">0</span>)
+                </button>
+            </div>
         </div>
         
         <div class="sidebar-content">
@@ -1655,8 +1907,8 @@
                             <label>Request Headers</label>
                             <div class="headers-container" id="headersContainer">
                                 <div class="header-row">
-                                    <input type="text" class="header-key" placeholder="Key" value="Content-Type">
-                                    <input type="text" class="header-value" placeholder="Value" value="application/json">
+                                    <input type="text" class="header-key" placeholder="Key" value="Content-Type" oninput="updateHeadersCount()">
+                                    <input type="text" class="header-value" placeholder="Value" value="application/json" oninput="updateHeadersCount()">
                                     <button type="button" class="btn-remove-header" onclick="removeHeader(this)">Remove</button>
                                 </div>
                             </div>
@@ -1783,7 +2035,25 @@
                             <span id="responseSizeValue">0 KB</span>
                         </span>
                     </div>
-                    <div class="response-header-right">
+                    <div class="response-header-right" style="display: flex; gap: 8px; align-items: center;">
+                        <button class="btn-download" onclick="downloadResponse()" title="Download Response">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-right: 6px;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                            Download Response
+                        </button>
+                        <button class="btn-download" onclick="downloadRequestResponse()" title="Download Request & Response">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-right: 6px;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            Download All
+                        </button>
+                        <button class="btn-download" onclick="downloadCurl()" title="Download cURL Command">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-right: 6px;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                            </svg>
+                            cURL
+                        </button>
                         <button class="btn-copy-response" onclick="copyResponse()" title="Copy Response">
                             <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-right: 6px;">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
@@ -1820,7 +2090,29 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- API History Panel -->
+            <div id="historyPanel" class="history-panel" style="display: none;">
+                <div class="history-panel-header">
+                    <h3>API Request History</h3>
+                    <button onclick="toggleHistoryPanel()" class="btn-close-history">×</button>
+                </div>
+                <div class="history-panel-content" id="historyPanelContent">
+                    <div style="text-align: center; padding: 40px 20px; color: #9ca3af;">
+                        <div style="font-size: 48px; margin-bottom: 12px;">📜</div>
+                        <div style="font-size: 14px;">No history available</div>
+                        <div style="font-size: 12px; margin-top: 4px;">Send a request to see history</div>
+                    </div>
+                </div>
+            </div>
         </div>
+    </div>
+    
+    <!-- Floating History Icon -->
+    <div id="historyFloatingIcon" class="history-floating-icon" onclick="toggleHistoryPanel()" title="View API History">
+        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
     </div>
     
     <div class="status-bar">
@@ -1971,9 +2263,21 @@
             }
         }
         
-        // Update headers count
+        // Update headers count - only count headers with both key and value
         function updateHeadersCount() {
-            const count = document.querySelectorAll('#headersContainer .header-row').length;
+            let count = 0;
+            const rows = document.querySelectorAll('#headersContainer .header-row');
+            rows.forEach(row => {
+                const keyInput = row.querySelector('.header-key');
+                const valueInput = row.querySelector('.header-value');
+                if (keyInput && valueInput) {
+                    const key = keyInput.value.trim();
+                    const value = valueInput.value.trim();
+                    if (key && value) {
+                        count++;
+                    }
+                }
+            });
             const countSpan = document.getElementById('headersCount');
             if (countSpan) {
                 countSpan.textContent = '(' + count + ')';
@@ -2011,6 +2315,27 @@
         
         // Define loadSavedRequestFromSidebar early to make it available for onclick handlers
         async function loadSavedRequestFromSidebar(id) {
+            // Clear response section when switching APIs
+            const responseSection = document.getElementById('responseSection');
+            if (responseSection) {
+                responseSection.style.display = 'none';
+            }
+            const responseBody = document.getElementById('responseBody');
+            if (responseBody) {
+                responseBody.textContent = '';
+            }
+            const responseHeadersBody = document.getElementById('responseHeadersBody');
+            if (responseHeadersBody) {
+                responseHeadersBody.innerHTML = '<tr><td colspan="2" style="text-align: center; color: #9ca3af; padding: 20px;">No headers available</td></tr>';
+            }
+            // Reset response metrics
+            const statusBadge = document.getElementById('statusBadge');
+            const responseTimeValue = document.getElementById('responseTimeValue');
+            const responseSizeValue = document.getElementById('responseSizeValue');
+            if (statusBadge) statusBadge.textContent = '';
+            if (responseTimeValue) responseTimeValue.textContent = '0 ms';
+            if (responseSizeValue) responseSizeValue.textContent = '0 KB';
+            
             try {
                 const response = await fetch('/api/saved/' + id);
                 if (response.ok) {
@@ -2091,6 +2416,9 @@
                     if (typeof detectBodyTypeFromHeaders === 'function') {
                         detectBodyTypeFromHeaders();
                     }
+                    
+                    // Highlight selected API, application, and project
+                    highlightSelectedItems(savedRequest);
                 } else {
                     if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
                         await CustomDialog.showAlert('Error loading saved request', 'Error');
@@ -2146,6 +2474,34 @@
             }
         }
         
+        // Function to highlight selected API, application, and project
+        function highlightSelectedItems(savedRequest) {
+            // Remove all active classes first
+            document.querySelectorAll('.saved-request-item.active').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.application-item.active').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.collection-item.active').forEach(el => el.classList.remove('active'));
+            
+            if (!savedRequest) return;
+            
+            // Highlight the selected API
+            const apiItem = document.querySelector(`[data-request-id="${savedRequest.id}"]`);
+            if (apiItem) {
+                apiItem.classList.add('active');
+                
+                // Highlight parent application
+                const applicationItem = apiItem.closest('.application-item');
+                if (applicationItem) {
+                    applicationItem.classList.add('active');
+                    
+                    // Highlight parent project
+                    const projectItem = applicationItem.closest('.collection-item');
+                    if (projectItem) {
+                        projectItem.classList.add('active');
+                    }
+                }
+            }
+        }
+        
         // Make it globally available immediately
         window.loadSavedRequestFromSidebar = loadSavedRequestFromSidebar;
         
@@ -2154,11 +2510,12 @@
             const newRow = document.createElement('div');
             newRow.className = 'header-row';
             newRow.innerHTML = `
-                <input type="text" class="header-key" placeholder="Key">
-                <input type="text" class="header-value" placeholder="Value">
+                <input type="text" class="header-key" placeholder="Key" oninput="updateHeadersCount()">
+                <input type="text" class="header-value" placeholder="Value" oninput="updateHeadersCount()">
                 <button type="button" class="btn-remove-header" onclick="removeHeader(this)">Remove</button>
             `;
             container.appendChild(newRow);
+            updateHeadersCount();
         }
         
         function removeHeader(button) {
@@ -2170,6 +2527,7 @@
                 row.querySelector('.header-key').value = '';
                 row.querySelector('.header-value').value = '';
             }
+            updateHeadersCount();
         }
         
         function updateBodyType() {
@@ -2319,10 +2677,15 @@
             const headers = [];
             const rows = document.querySelectorAll('.header-row');
             rows.forEach(row => {
-                const key = row.querySelector('.header-key').value.trim();
-                const value = row.querySelector('.header-value').value.trim();
-                if (key && value) {
-                    headers.push(key + ': ' + value);
+                const keyInput = row.querySelector('.header-key');
+                const valueInput = row.querySelector('.header-value');
+                if (keyInput && valueInput) {
+                    const key = keyInput.value.trim();
+                    // Don't trim value - preserve full URLs and other values
+                    const value = valueInput.value;
+                    if (key && value) {
+                        headers.push(key + ': ' + value);
+                    }
                 }
             });
             return headers.join('\n');
@@ -2334,6 +2697,7 @@
             
             if (!headersString || headersString.trim() === '') {
                 addHeaderRow();
+                updateHeadersCount();
                 return;
             }
             
@@ -2342,13 +2706,19 @@
                 if (line.includes(':')) {
                     const parts = line.split(':', 2);
                     const key = parts[0].trim();
-                    const value = parts[1].trim();
+                    // Don't trim value - preserve full URLs and other values, only trim leading whitespace
+                    const value = parts[1] ? parts[1].replace(/^\s+/, '') : '';
                     if (key) {
                         const newRow = document.createElement('div');
                         newRow.className = 'header-row';
+                        
+                        // Properly escape HTML to prevent XSS and preserve special characters
+                        const keyEscaped = escapeHtml(key);
+                        const valueEscaped = escapeHtml(value);
+                        
                         newRow.innerHTML = `
-                            <input type="text" class="header-key" placeholder="Key" value="${key.replace(/"/g, '&quot;')}">
-                            <input type="text" class="header-value" placeholder="Value" value="${value.replace(/"/g, '&quot;')}">
+                            <input type="text" class="header-key" placeholder="Key" value="${keyEscaped}">
+                            <input type="text" class="header-value" placeholder="Value" value="${valueEscaped}">
                             <button type="button" class="btn-remove-header" onclick="removeHeader(this)">Remove</button>
                         `;
                         container.appendChild(newRow);
@@ -2359,6 +2729,7 @@
             if (container.children.length === 0) {
                 addHeaderRow();
             }
+            updateHeadersCount();
         }
         
         document.getElementById('requestForm').addEventListener('submit', async function(e) {
@@ -2468,6 +2839,8 @@
                 const data = await response.json();
                 if (data) {
                     displayResponse(data);
+                    // Load history after successful request
+                    await loadRequestHistory();
                 } else {
                     displayError({ message: 'Empty response received' });
                 }
@@ -3150,6 +3523,260 @@
             }
         }
         
+        function downloadResponse() {
+            const responseBody = document.getElementById('responseBody');
+            if (!responseBody) {
+                if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
+                    CustomDialog.showAlert('No response available to download', 'Error');
+                } else {
+                    alert('No response available to download');
+                }
+                return;
+            }
+            
+            const text = responseBody.textContent || responseBody.innerText;
+            if (!text || text.trim() === '') {
+                if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
+                    CustomDialog.showAlert('Response body is empty', 'Error');
+                } else {
+                    alert('Response body is empty');
+                }
+                return;
+            }
+            
+            const statusCode = document.getElementById('statusBadge')?.textContent || 'unknown';
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            
+            // Determine content type from response
+            let contentType = 'text/plain';
+            let extension = 'txt';
+            try {
+                const headersTable = document.getElementById('responseHeadersBody');
+                if (headersTable) {
+                    const rows = headersTable.querySelectorAll('tr');
+                    for (let row of rows) {
+                        const cells = row.querySelectorAll('td');
+                        if (cells.length >= 2) {
+                            const headerName = cells[0].textContent.trim().toLowerCase();
+                            if (headerName === 'content-type') {
+                                const headerValue = cells[1].textContent.trim();
+                                if (headerValue.includes('json')) {
+                                    contentType = 'application/json';
+                                    extension = 'json';
+                                } else if (headerValue.includes('xml')) {
+                                    contentType = 'application/xml';
+                                    extension = 'xml';
+                                } else if (headerValue.includes('html')) {
+                                    contentType = 'text/html';
+                                    extension = 'html';
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+            } catch (e) {
+                // Use defaults
+            }
+            
+            const blob = new Blob([text], { type: contentType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `response-${statusCode}-${timestamp}.${extension}`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            // Show success feedback
+            const btn = event?.target?.closest('.btn-download') || document.querySelector('.btn-download');
+            if (btn) {
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<span>✓ Downloaded</span>';
+                btn.style.background = '#10b981';
+                btn.style.color = 'white';
+                btn.style.borderColor = '#10b981';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = '';
+                    btn.style.color = '';
+                    btn.style.borderColor = '';
+                }, 2000);
+            }
+        }
+        
+        function downloadRequestResponse() {
+            const method = document.getElementById('method')?.value || 'GET';
+            const url = document.getElementById('url')?.value || '';
+            
+            if (!url || url.trim() === '') {
+                if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
+                    CustomDialog.showAlert('No request URL available', 'Error');
+                } else {
+                    alert('No request URL available');
+                }
+                return;
+            }
+            
+            const headers = getHeaders();
+            const body = document.getElementById('body')?.value || '';
+            const responseBody = document.getElementById('responseBody');
+            const responseText = responseBody ? (responseBody.textContent || responseBody.innerText) : '';
+            const statusCode = document.getElementById('statusBadge')?.textContent || 'unknown';
+            const responseTime = document.getElementById('responseTimeValue')?.textContent || '0 ms';
+            const responseSize = document.getElementById('responseSizeValue')?.textContent || '0 KB';
+            
+            // Get response headers from response data if available, otherwise from table
+            const responseHeaders = {};
+            try {
+                // Try to get from response data first (if available in global scope)
+                if (window.lastResponseData && window.lastResponseData.headers) {
+                    const headerLines = window.lastResponseData.headers.split('\n');
+                    headerLines.forEach(line => {
+                        if (line.includes(':')) {
+                            const parts = line.split(':', 2);
+                            const key = parts[0].trim();
+                            const value = parts[1].trim();
+                            if (key && value) {
+                                responseHeaders[key] = value;
+                            }
+                        }
+                    });
+                } else {
+                    // Fallback to reading from table
+                    const headersTable = document.getElementById('responseHeadersBody');
+                    if (headersTable) {
+                        const rows = headersTable.querySelectorAll('tr');
+                        rows.forEach(row => {
+                            const cells = row.querySelectorAll('td');
+                            if (cells.length >= 2) {
+                                const headerName = cells[0].textContent.trim();
+                                const headerValue = cells[1].textContent.trim();
+                                if (headerName && headerValue && headerValue !== '-') {
+                                    responseHeaders[headerName] = headerValue;
+                                }
+                            }
+                        });
+                    }
+                }
+            } catch (e) {
+                console.warn('Error parsing response headers:', e);
+            }
+            
+            const data = {
+                request: {
+                    method: method,
+                    url: url,
+                    headers: headers,
+                    body: body,
+                    timestamp: new Date().toISOString()
+                },
+                response: {
+                    statusCode: statusCode,
+                    headers: responseHeaders,
+                    body: responseText,
+                    responseTime: responseTime,
+                    responseSize: responseSize,
+                    timestamp: new Date().toISOString()
+                }
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const urlObj = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = urlObj;
+            a.download = `request-response-${statusCode}-${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(urlObj);
+            
+            // Show success feedback
+            const btn = event?.target?.closest('.btn-download') || Array.from(document.querySelectorAll('.btn-download'))[1];
+            if (btn) {
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<span>✓ Downloaded</span>';
+                btn.style.background = '#10b981';
+                btn.style.color = 'white';
+                btn.style.borderColor = '#10b981';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = '';
+                    btn.style.color = '';
+                    btn.style.borderColor = '';
+                }, 2000);
+            }
+        }
+        
+        function downloadCurl() {
+            const method = document.getElementById('method')?.value || 'GET';
+            const url = document.getElementById('url')?.value || '';
+            
+            if (!url || url.trim() === '') {
+                if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
+                    CustomDialog.showAlert('No request URL available', 'Error');
+                } else {
+                    alert('No request URL available');
+                }
+                return;
+            }
+            
+            const headers = getHeaders();
+            const body = document.getElementById('body')?.value || '';
+            
+            let curlCommand = `curl -X ${method}`;
+            
+            // Add headers
+            if (headers) {
+                const headerLines = headers.split('\n').filter(line => line.trim());
+                headerLines.forEach(line => {
+                    if (line.includes(':')) {
+                        const parts = line.split(':', 2);
+                        const key = parts[0].trim();
+                        const value = parts[1].trim();
+                        curlCommand += ` \\\n  -H "${key}: ${value}"`;
+                    }
+                });
+            }
+            
+            // Add body for POST, PUT, PATCH
+            if (body && ['POST', 'PUT', 'PATCH'].includes(method.toUpperCase())) {
+                // Escape quotes in body
+                const escapedBody = body.replace(/"/g, '\\"').replace(/\n/g, '\\n');
+                curlCommand += ` \\\n  -d "${escapedBody}"`;
+            }
+            
+            // Add URL
+            curlCommand += ` \\\n  "${url}"`;
+            
+            const blob = new Blob([curlCommand], { type: 'text/plain' });
+            const urlObj = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = urlObj;
+            a.download = `curl-command-${new Date().toISOString().replace(/[:.]/g, '-')}.sh`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(urlObj);
+            
+            // Show success feedback
+            const btn = event?.target?.closest('.btn-download') || Array.from(document.querySelectorAll('.btn-download'))[2];
+            if (btn) {
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<span>✓ Downloaded</span>';
+                btn.style.background = '#10b981';
+                btn.style.color = 'white';
+                btn.style.borderColor = '#10b981';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = '';
+                    btn.style.color = '';
+                    btn.style.borderColor = '';
+                }, 2000);
+            }
+        }
+        
         async function duplicateRequest(requestId) {
             if (!requestId) return;
             
@@ -3470,12 +4097,32 @@
                     let successMessage = 'Request saved successfully!';
                     if (savedRequest.application) {
                         const app = savedRequest.application;
-                        const projectName = app.project ? app.project.name : 'Unknown Project';
-                        successMessage = `Request saved successfully and assigned to ${projectName} > ${app.name}!`;
+                        // Try to get project name from response, or fetch from applications array
+                        let projectName = 'Unknown Project';
+                        let appName = app.name || 'Unknown App';
+                        
+                        if (app.project && app.project.name) {
+                            projectName = app.project.name;
+                        } else if (applicationId && applicationId !== '') {
+                            // Fallback: try to find in applications array
+                            const selectedApp = applications.find(a => a.id === parseInt(applicationId));
+                            if (selectedApp) {
+                                appName = selectedApp.name || appName;
+                                if (selectedApp.project && selectedApp.project.name) {
+                                    projectName = selectedApp.project.name;
+                                }
+                            }
+                        }
+                        
+                        successMessage = `Request saved successfully and assigned to ${projectName} > ${appName}!`;
                     } else if (applicationId && applicationId !== '') {
+                        // If no application in response but we have applicationId, try to find it
                         const selectedApp = applications.find(app => app.id === parseInt(applicationId));
-                        if (selectedApp && selectedApp.project) {
-                            successMessage = `Request saved successfully and assigned to ${selectedApp.project.name} > ${selectedApp.name}!`;
+                        if (selectedApp) {
+                            const projectName = selectedApp.project && selectedApp.project.name ? selectedApp.project.name : 'Unknown Project';
+                            successMessage = `Request saved successfully and assigned to ${projectName} > ${selectedApp.name}!`;
+                        } else {
+                            successMessage = 'Request saved successfully!';
                         }
                     }
                     
@@ -3829,8 +4476,9 @@
                                                 ` : appRequests.map(req => `
                                                     <div class="saved-request-item nested" 
                                                          data-request-id="${req.id}"
-                                                         onclick="if(!event.target.closest('button')){loadSavedRequestFromSidebar(${req.id});}">
+                                                         onclick="if(!event.target.closest('button') && !event.target.closest('input[type=checkbox]')){loadSavedRequestFromSidebar(${req.id});}">
                                                         <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                                                            <input type="checkbox" class="api-checkbox" data-request-id="${req.id}" onchange="updateSelectedCount()" onclick="event.stopPropagation();">
                                                             <span class="saved-request-method method-${req.method}">${escapeHtml(req.method)}</span>
                                                             <div class="saved-request-name" style="flex: 1; margin: 0;">${escapeHtml(req.name || 'Untitled')}</div>
                                                         </div>
@@ -3873,8 +4521,9 @@
                             unassignedDiv.innerHTML = unassignedRequests.map(req => `
                                 <div class="saved-request-item nested" 
                                      data-request-id="${req.id}"
-                                     onclick="if(!event.target.closest('button')){loadSavedRequestFromSidebar(${req.id});}">
+                                     onclick="if(!event.target.closest('button') && !event.target.closest('input[type=checkbox]')){loadSavedRequestFromSidebar(${req.id});}">
                                     <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                                        <input type="checkbox" class="api-checkbox" data-request-id="${req.id}" onchange="updateSelectedCount()" onclick="event.stopPropagation();">
                                         <span class="saved-request-method method-${req.method}">${escapeHtml(req.method)}</span>
                                         <div class="saved-request-name" style="flex: 1; margin: 0;">${escapeHtml(req.name || 'Untitled')}</div>
                                     </div>
@@ -4271,6 +4920,106 @@
         window.updateNewApiApplications = updateNewApiApplications;
         window.saveNewApi = saveNewApi;
         
+        // Multi-select functions
+        function toggleSelectAll() {
+            const selectAll = document.getElementById('selectAllApis');
+            const checkboxes = document.querySelectorAll('.api-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAll.checked;
+            });
+            updateSelectedCount();
+        }
+        
+        function updateSelectedCount() {
+            const checkboxes = document.querySelectorAll('.api-checkbox:checked');
+            const count = checkboxes.length;
+            const countSpan = document.getElementById('selectedCount');
+            const deleteBtn = document.getElementById('btnDeleteSelected');
+            const selectAll = document.getElementById('selectAllApis');
+            
+            if (countSpan) countSpan.textContent = count;
+            if (deleteBtn) {
+                deleteBtn.disabled = count === 0;
+                if (count > 0) {
+                    deleteBtn.classList.add('show');
+                } else {
+                    deleteBtn.classList.remove('show');
+                }
+            }
+            
+            // Update select all checkbox state
+            if (selectAll) {
+                const allCheckboxes = document.querySelectorAll('.api-checkbox');
+                selectAll.checked = allCheckboxes.length > 0 && count === allCheckboxes.length;
+                selectAll.indeterminate = count > 0 && count < allCheckboxes.length;
+            }
+        }
+        
+        async function deleteSelectedRequests() {
+            const checkboxes = document.querySelectorAll('.api-checkbox:checked');
+            const selectedIds = Array.from(checkboxes).map(cb => parseInt(cb.dataset.requestId));
+            
+            if (selectedIds.length === 0) return;
+            
+            let confirmed = false;
+            if (typeof CustomDialog !== 'undefined' && CustomDialog.showConfirm) {
+                confirmed = await CustomDialog.showConfirm(
+                    `Are you sure you want to delete ${selectedIds.length} API request(s)? This action cannot be undone.`,
+                    'Confirm Delete'
+                );
+            } else {
+                confirmed = confirm(`Are you sure you want to delete ${selectedIds.length} API request(s)? This action cannot be undone.`);
+            }
+            
+            if (!confirmed) return;
+            
+            try {
+                // Delete all selected requests
+                const deletePromises = selectedIds.map(id => 
+                    fetch(`/api/saved/${id}`, { method: 'DELETE' })
+                );
+                
+                const results = await Promise.allSettled(deletePromises);
+                const successful = results.filter(r => r.status === 'fulfilled' && r.value.ok).length;
+                const failed = results.length - successful;
+                
+                // Remove from local array
+                allSavedRequests = allSavedRequests.filter(req => !selectedIds.includes(req.id));
+                
+                // Reload sidebar
+                await loadProjectsAndApplications();
+                await loadAllSavedRequests();
+                
+                // Clear selection
+                document.getElementById('selectAllApis').checked = false;
+                updateSelectedCount();
+                
+                // Check if any deleted request was currently loaded
+                const currentRequestId = document.getElementById('savedRequestId')?.value;
+                if (currentRequestId && selectedIds.includes(parseInt(currentRequestId))) {
+                    clearForm();
+                }
+                
+                let message = `Successfully deleted ${successful} API request(s).`;
+                if (failed > 0) {
+                    message += ` ${failed} request(s) failed to delete.`;
+                }
+                
+                if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
+                    await CustomDialog.showAlert(message, failed > 0 ? 'Warning' : 'Success');
+                } else {
+                    alert(message);
+                }
+            } catch (error) {
+                console.error('Error deleting requests:', error);
+                if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
+                    await CustomDialog.showAlert('Error deleting requests: ' + error.message, 'Error');
+                } else {
+                    alert('Error deleting requests: ' + error.message);
+                }
+            }
+        }
+        
         // Delete saved request function
         async function deleteSavedRequest(requestId) {
             if (!requestId) return;
@@ -4380,9 +5129,254 @@
         if (typeof copyResponse === 'function') {
             window.copyResponse = copyResponse;
         }
+        if (typeof downloadResponse === 'function') {
+            window.downloadResponse = downloadResponse;
+        }
+        if (typeof downloadRequestResponse === 'function') {
+            window.downloadRequestResponse = downloadRequestResponse;
+        }
+        if (typeof downloadCurl === 'function') {
+            window.downloadCurl = downloadCurl;
+        }
         if (typeof loadSavedRequestFromSidebar === 'function') {
             window.loadSavedRequestFromSidebar = loadSavedRequestFromSidebar;
         }
+        
+        // History Panel Functions
+        let currentRequestIdForHistory = null;
+        
+        function toggleHistoryPanel() {
+            const panel = document.getElementById('historyPanel');
+            const icon = document.getElementById('historyFloatingIcon');
+            
+            if (panel && icon) {
+                const isVisible = panel.style.display !== 'none';
+                
+                if (isVisible) {
+                    // Closing - add fade out
+                    panel.style.opacity = '0';
+                    panel.style.transform = 'translateY(10px)';
+                    setTimeout(() => {
+                        panel.style.display = 'none';
+                        icon.classList.remove('active');
+                    }, 200);
+                } else {
+                    // Opening - add fade in
+                    panel.style.display = 'block';
+                    panel.style.opacity = '0';
+                    panel.style.transform = 'translateY(10px)';
+                    icon.classList.add('active');
+                    
+                    // Trigger animation
+                    setTimeout(() => {
+                        panel.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+                        panel.style.opacity = '1';
+                        panel.style.transform = 'translateY(0)';
+                    }, 10);
+                    
+                    // Load history when opening
+                    loadRequestHistory();
+                }
+            }
+        }
+        
+        async function loadRequestHistory() {
+            const savedRequestId = document.getElementById('savedRequestId')?.value;
+            const method = document.getElementById('method')?.value;
+            const url = document.getElementById('url')?.value;
+            
+            if (savedRequestId && method && url) {
+                // Load history filtered by method and URL
+                await loadHistoryByMethodAndUrl(method, url);
+            } else if (method && url) {
+                await loadHistoryByMethodAndUrl(method, url);
+            } else {
+                displayEmptyHistory();
+            }
+        }
+        
+        async function loadHistoryByMethodAndUrl(method, url) {
+            const container = document.getElementById('historyPanelContent');
+            if (!container) return;
+            
+            // Show loading state
+            container.innerHTML = `
+                <div class="history-loading">
+                    <div class="history-loading-spinner"></div>
+                    <div style="font-size: 13px;">Loading history...</div>
+                </div>
+            `;
+            
+            try {
+                const response = await fetch('/api/history');
+                if (response.ok) {
+                    const allHistory = await response.json();
+                    const filtered = allHistory.filter(h => 
+                        h.method === method && h.url === url
+                    ).slice(0, 20); // Limit to 20 most recent
+                    
+                    // Small delay for better UX
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                    renderHistory(filtered);
+                } else {
+                    displayEmptyHistory('Failed to load history. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error loading history:', error);
+                displayEmptyHistory('Error loading history: ' + (error.message || 'Network error'));
+            }
+        }
+        
+        function renderHistory(history) {
+            const container = document.getElementById('historyPanelContent');
+            if (!container) return;
+            
+            if (!history || history.length === 0) {
+                displayEmptyHistory();
+                return;
+            }
+            
+            // Sort by created date descending
+            history.sort((a, b) => {
+                const dateA = new Date(a.createdAt || a.timestamp || 0);
+                const dateB = new Date(b.createdAt || b.timestamp || 0);
+                return dateB - dateA;
+            });
+            
+            container.innerHTML = history.map(item => {
+                const method = item.method || 'GET';
+                const url = item.url || '';
+                const statusCode = item.statusCode || 0;
+                const responseTime = item.responseTime || 0;
+                const timestamp = item.createdAt || item.timestamp || new Date().toISOString();
+                const date = new Date(timestamp);
+                const now = new Date();
+                const diffMs = now - date;
+                const diffMins = Math.floor(diffMs / 60000);
+                const diffHours = Math.floor(diffMs / 3600000);
+                const diffDays = Math.floor(diffMs / 86400000);
+                
+                let timeDisplay = '';
+                if (diffMins < 1) {
+                    timeDisplay = 'Just now';
+                } else if (diffMins < 60) {
+                    timeDisplay = `${diffMins}m ago`;
+                } else if (diffHours < 24) {
+                    timeDisplay = `${diffHours}h ago`;
+                } else if (diffDays < 7) {
+                    timeDisplay = `${diffDays}d ago`;
+                } else {
+                    timeDisplay = date.toLocaleDateString();
+                }
+                
+                // Get status badge class
+                let statusClass = 'status-0';
+                if (statusCode >= 200 && statusCode < 300) {
+                    statusClass = 'status-2xx';
+                } else if (statusCode >= 400 && statusCode < 500) {
+                    statusClass = 'status-4xx';
+                } else if (statusCode >= 500) {
+                    statusClass = 'status-5xx';
+                }
+                
+                const methodClass = method.toLowerCase();
+                return `
+                    <div class="history-item" onclick="loadHistoryItem(${item.id})" title="Click to load this request">
+                        <div class="history-item-info" style="flex: 1; min-width: 0;">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                                <span class="history-item-method method-${methodClass}" style="flex-shrink: 0;">${escapeHtml(method)}</span>
+                                <span style="font-size: 12px; font-weight: 600; color: #1a1a1a; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(url)}</span>
+                            </div>
+                            <div class="history-item-url" title="${escapeHtml(url)}">${escapeHtml(url)}</div>
+                        </div>
+                        <div class="history-item-meta" style="flex-shrink: 0; margin-left: 12px;">
+                            <span class="status-badge ${statusClass}" style="font-size: 10px; padding: 2px 6px; display: inline-block; margin-bottom: 4px;">${statusCode}</span>
+                            <div style="text-align: right;">
+                                <div style="font-weight: 600; color: #1e40af; font-size: 11px;">${responseTime}ms</div>
+                                <div style="font-size: 10px; color: #9ca3af;" title="${date.toLocaleString()}">${timeDisplay}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function displayEmptyHistory(message) {
+            const container = document.getElementById('historyPanelContent');
+            if (container) {
+                const defaultMessage = message || 'No history available';
+                const subMessage = message ? '' : 'Send a request to see history';
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px 20px; color: #9ca3af;">
+                        <div style="font-size: 48px; margin-bottom: 12px;">📜</div>
+                        <div style="font-size: 14px; font-weight: 500; color: #6b7280; margin-bottom: 4px;">${escapeHtml(defaultMessage)}</div>
+                        ${subMessage ? `<div style="font-size: 12px; margin-top: 4px;">${escapeHtml(subMessage)}</div>` : ''}
+                    </div>
+                `;
+            }
+        }
+        
+        async function loadHistoryItem(historyId) {
+            // Add visual feedback
+            const historyItem = event?.target?.closest('.history-item');
+            if (historyItem) {
+                historyItem.style.opacity = '0.6';
+                historyItem.style.pointerEvents = 'none';
+            }
+            
+            try {
+                const response = await fetch(`/api/history/${historyId}`);
+                if (response.ok) {
+                    const historyItemData = await response.json();
+                    
+                    // Load the request data into the form
+                    if (historyItemData.method) document.getElementById('method').value = historyItemData.method;
+                    if (historyItemData.url) document.getElementById('url').value = historyItemData.url;
+                    if (historyItemData.headers) setHeaders(historyItemData.headers);
+                    if (historyItemData.body) document.getElementById('body').value = historyItemData.body;
+                    
+                    // Load the response
+                    if (historyItemData.response) {
+                        const responseData = {
+                            statusCode: historyItemData.statusCode || 0,
+                            response: historyItemData.response || '',
+                            responseTime: historyItemData.responseTime || 0,
+                            headers: historyItemData.responseHeaders || ''
+                        };
+                        displayResponse(responseData);
+                    }
+                    
+                    // Close history panel with smooth transition
+                    setTimeout(() => {
+                        toggleHistoryPanel();
+                    }, 200);
+                } else {
+                    if (historyItem) {
+                        historyItem.style.opacity = '';
+                        historyItem.style.pointerEvents = '';
+                    }
+                    if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
+                        await CustomDialog.showAlert('Error loading history item', 'Error');
+                    } else {
+                        alert('Error loading history item');
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading history item:', error);
+                if (historyItem) {
+                    historyItem.style.opacity = '';
+                    historyItem.style.pointerEvents = '';
+                }
+                if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
+                    await CustomDialog.showAlert('Error: ' + error.message, 'Error');
+                } else {
+                    alert('Error: ' + error.message);
+                }
+            }
+        }
+        
+        window.toggleHistoryPanel = toggleHistoryPanel;
+        window.loadHistoryItem = loadHistoryItem;
     </script>
     <script src="/dialog.js"></script>
     <script src="/json-formatter.js"></script>
