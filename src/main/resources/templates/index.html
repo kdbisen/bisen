@@ -13,18 +13,6 @@
     <link rel="stylesheet" href="/syntax-highlight.css">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'bisen-blue': '#2563eb',
-                        'bisen-dark': '#1a1a1a',
-                    }
-                }
-            }
-        }
-    </script>
     <title>BISEN</title>
     <style>
         * {
@@ -1024,65 +1012,65 @@
         
         .card {
             background: #ffffff;
-            border-radius: 16px;
+            border-radius: 8px;
             border: 1px solid #e2e8f0;
             padding: 0;
-            margin: 32px;
+            margin: 16px;
             flex: 1;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
             transition: box-shadow 0.2s ease;
         }
         
         .card:hover {
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
         }
         
         .request-header {
-            padding: 28px 32px;
+            padding: 12px 16px;
             border-bottom: 1px solid #e2e8f0;
             background: linear-gradient(to bottom, #ffffff, #f8fafc);
         }
         
         .request-title {
-            font-size: 24px;
+            font-size: 16px;
             font-weight: 700;
             color: #0f172a;
-            margin-bottom: 8px;
-            letter-spacing: -0.5px;
+            margin-bottom: 4px;
+            letter-spacing: -0.3px;
         }
         
         .request-breadcrumb {
-            font-size: 14px;
+            font-size: 11px;
             color: #64748b;
             font-weight: 500;
         }
         
         .request-builder {
-            padding: 32px;
+            padding: 16px;
             flex: 1;
             overflow-y: auto;
-            padding-bottom: 48px;
+            padding-bottom: 24px;
             background: #ffffff;
         }
         
         .method-url-bar {
             display: flex;
-            gap: 12px;
-            margin-bottom: 24px;
+            gap: 8px;
+            margin-bottom: 16px;
             align-items: center;
         }
         
         .method-select {
-            width: 140px;
-            padding: 12px 16px;
+            width: 110px;
+            padding: 8px 12px;
             background: #ffffff;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 6px;
             color: #0f172a;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 600;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
@@ -1100,17 +1088,17 @@
         }
         
         .environment-select {
-            padding: 12px 16px;
+            padding: 8px 12px;
             background: #ffffff;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 6px;
             color: #0f172a;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            min-width: 180px;
-            max-width: 220px;
+            min-width: 150px;
+            max-width: 180px;
         }
         
         .environment-select:hover {
@@ -1127,12 +1115,12 @@
         
         .url-input {
             flex: 1;
-            padding: 12px 16px;
+            padding: 8px 12px;
             background: #ffffff;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 6px;
             color: #0f172a;
-            font-size: 14px;
+            font-size: 12px;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
         }
@@ -1155,20 +1143,20 @@
         }
         
         .btn-send {
-            padding: 12px 28px;
+            padding: 8px 16px;
             background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
             color: white;
             border: none;
-            border-radius: 10px;
-            font-size: 14px;
+            border-radius: 6px;
+            font-size: 12px;
             font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3), 0 2px 4px -1px rgba(59, 130, 246, 0.2);
-            letter-spacing: 0.3px;
+            box-shadow: 0 2px 4px -1px rgba(59, 130, 246, 0.3), 0 1px 2px -1px rgba(59, 130, 246, 0.2);
+            letter-spacing: 0.2px;
         }
         
         .btn-send:hover {
@@ -1183,16 +1171,16 @@
         }
         
         .btn-save {
-            padding: 12px 24px;
+            padding: 8px 16px;
             background: #ffffff;
             color: #475569;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 14px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 12px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            letter-spacing: 0.2px;
+            letter-spacing: 0.1px;
         }
         
         .btn-save:hover {
@@ -1210,23 +1198,23 @@
         
         .request-tabs {
             display: flex;
-            gap: 4px;
-            border-bottom: 2px solid #e2e8f0;
-            margin-bottom: 28px;
+            gap: 3px;
+            border-bottom: 1.5px solid #e2e8f0;
+            margin-bottom: 16px;
             background: #f8fafc;
-            padding: 6px;
-            border-radius: 12px 12px 0 0;
+            padding: 4px;
+            border-radius: 6px 6px 0 0;
         }
         
         .request-tab {
-            padding: 12px 20px;
+            padding: 8px 14px;
             background: transparent;
             border: none;
             color: #64748b;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 500;
             cursor: pointer;
-            border-radius: 8px;
+            border-radius: 5px;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
         }
@@ -1252,30 +1240,30 @@
         }
         
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 12px;
         }
         
         label {
             display: block;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
             font-weight: 600;
             color: #374151;
-            font-size: 13px;
+            font-size: 11px;
             letter-spacing: -0.1px;
         }
         
         .method-url-row {
             display: grid;
-            grid-template-columns: 120px 1fr;
-            gap: 12px;
+            grid-template-columns: 100px 1fr;
+            gap: 8px;
         }
         
         select, input[type="text"], textarea, input[type="number"] {
             width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 14px;
+            padding: 8px 12px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 12px;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             font-family: inherit;
             background: #ffffff;
@@ -1290,33 +1278,34 @@
         select:focus, input:focus, textarea:focus {
             outline: none;
             border-color: #3b82f6;
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
             background: #ffffff;
         }
         
         select {
             cursor: pointer;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231a1a1a' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%231a1a1a' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: right 12px center;
-            padding-right: 36px;
+            background-position: right 10px center;
+            padding-right: 32px;
         }
         
         textarea {
             resize: vertical;
-            min-height: 100px;
+            min-height: 80px;
             font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
-            line-height: 1.6;
+            line-height: 1.5;
+            font-size: 12px;
         }
         
         .body-textarea {
-            min-height: 150px;
+            min-height: 120px;
         }
         
         .headers-container {
             border: 1.5px solid #e5e7eb;
-            border-radius: 8px;
-            padding: 16px;
+            border-radius: 6px;
+            padding: 12px;
             background: #fafbfc;
         }
         
@@ -1333,18 +1322,18 @@
         
         .params-table th {
             text-align: left;
-            padding: 12px 14px;
-            font-size: 11px;
+            padding: 8px 10px;
+            font-size: 10px;
             font-weight: 600;
             color: #6b7280;
             background: #f9fafb;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
             border-bottom: 1.5px solid #e5e7eb;
         }
         
         .params-table td {
-            padding: 12px 14px;
+            padding: 8px 10px;
             border-bottom: 1px solid #f3f4f6;
         }
         
@@ -1372,14 +1361,15 @@
         .header-row {
             display: grid;
             grid-template-columns: 1fr 2fr auto;
-            gap: 8px;
-            margin-bottom: 8px;
+            gap: 6px;
+            margin-bottom: 6px;
             align-items: center;
         }
         
         .header-row input {
             margin: 0;
-            padding: 8px 10px;
+            padding: 6px 8px;
+            font-size: 12px;
         }
         
         .header-row:last-child {
@@ -1387,13 +1377,13 @@
         }
         
         .btn-remove-header {
-            padding: 6px 12px;
+            padding: 4px 8px;
             background: transparent;
             color: #9ca3af;
             border: 1px solid transparent;
-            border-radius: 6px;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 500;
             transition: all 0.2s;
         }
@@ -1405,19 +1395,19 @@
         }
         
         .btn-add-header {
-            padding: 9px 14px;
+            padding: 6px 12px;
             background: #ffffff;
             color: #374151;
             border: 1.5px solid #e5e7eb;
-            border-radius: 6px;
+            border-radius: 5px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
-            margin-top: 12px;
+            margin-top: 8px;
             transition: all 0.2s;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
         }
         
         .btn-add-header:hover {
@@ -1432,19 +1422,19 @@
         
         .button-group {
             display: flex;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 8px;
+            margin-top: 12px;
         }
         
         button {
-            padding: 10px 20px;
+            padding: 8px 16px;
             border: none;
-            border-radius: 8px;
-            font-size: 14px;
+            border-radius: 6px;
+            font-size: 12px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            letter-spacing: 0.3px;
+            letter-spacing: 0.2px;
         }
         
         .btn-primary {
@@ -1453,8 +1443,8 @@
             flex: 1;
             border: none;
             border-radius: 4px;
-            padding: 10px 16px;
-            font-size: 13px;
+            padding: 8px 12px;
+            font-size: 12px;
             font-weight: 500;
             cursor: pointer;
             transition: background 0.15s;
@@ -1473,8 +1463,8 @@
             color: #1a1a1a;
             border: 1px solid #e5e5e5;
             border-radius: 4px;
-            padding: 10px 16px;
-            font-size: 13px;
+            padding: 8px 12px;
+            font-size: 12px;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.15s;
@@ -1486,13 +1476,13 @@
         }
         
         .response-section {
-            margin-top: 32px;
+            margin-top: 16px;
             animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             background: #ffffff;
-            border: 2px solid #e2e8f0;
-            border-radius: 16px;
-            padding: 32px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
         }
         
         @keyframes fadeIn {
@@ -1504,59 +1494,59 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 28px;
-            padding-bottom: 24px;
-            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1.5px solid #e2e8f0;
         }
         
         .response-header-left {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
             flex-wrap: wrap;
         }
         
         .response-header-right {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
         }
         
         .btn-copy-response, .btn-download {
-            padding: 10px 18px;
+            padding: 6px 12px;
             background: #ffffff;
             color: #475569;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 11px;
             font-weight: 600;
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            letter-spacing: 0.2px;
+            gap: 6px;
+            letter-spacing: 0.1px;
         }
         
         .btn-copy-response:hover, .btn-download:hover {
             background: #f8fafc;
             border-color: #cbd5e1;
             color: #0f172a;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.08);
         }
         
         .btn-copy-response:active, .btn-download:active {
             transform: translateY(0);
-            box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 1px 2px -1px rgba(0, 0, 0, 0.05);
         }
         
         .status-badge {
-            padding: 8px 16px;
-            border-radius: 8px;
+            padding: 4px 10px;
+            border-radius: 5px;
             font-weight: 600;
-            font-size: 13px;
-            letter-spacing: 0.4px;
+            font-size: 11px;
+            letter-spacing: 0.3px;
             display: inline-flex;
             align-items: center;
         }
@@ -1588,50 +1578,50 @@
         .response-time {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px 14px;
+            gap: 6px;
+            padding: 4px 10px;
             background: #eff6ff;
             border: 1px solid #dbeafe;
-            border-radius: 8px;
+            border-radius: 5px;
             color: #1e40af;
-            font-size: 13px;
+            font-size: 11px;
             font-weight: 600;
             font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
         }
         
         .response-time-icon {
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             color: #2563eb;
         }
         
         .response-size {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px 14px;
+            gap: 6px;
+            padding: 4px 10px;
             background: #f0fdf4;
             border: 1px solid #dcfce7;
-            border-radius: 8px;
+            border-radius: 5px;
             color: #166534;
-            font-size: 13px;
+            font-size: 11px;
             font-weight: 600;
         }
         
         .response-tabs {
             display: flex;
-            gap: 8px;
-            margin-bottom: 16px;
+            gap: 6px;
+            margin-bottom: 12px;
             border-bottom: 1px solid #e5e7eb;
         }
         
         .response-tab {
-            padding: 10px 16px;
+            padding: 6px 12px;
             background: transparent;
             border: none;
             border-bottom: 2px solid transparent;
             cursor: pointer;
-            font-size: 13px;
+            font-size: 11px;
             font-weight: 500;
             color: #6b7280;
             transition: all 0.2s;
@@ -1657,19 +1647,19 @@
         
         .response-body {
             background: #0f172a;
-            border: 2px solid #1e293b;
-            border-radius: 12px;
-            padding: 24px;
-            max-height: 600px;
+            border: 1.5px solid #1e293b;
+            border-radius: 6px;
+            padding: 12px;
+            max-height: 500px;
             overflow-y: auto;
             font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
-            font-size: 14px;
+            font-size: 12px;
             white-space: pre-wrap;
             word-wrap: break-word;
-            line-height: 1.8;
+            line-height: 1.6;
             color: #e2e8f0;
             position: relative;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
         }
         
         .response-body::-webkit-scrollbar {
@@ -1692,12 +1682,12 @@
         .response-headers-container {
             background: #f9fafb;
             border: 1px solid #e5e7eb;
-            border-radius: 6px;
-            padding: 16px;
-            max-height: 400px;
+            border-radius: 5px;
+            padding: 10px;
+            max-height: 300px;
             overflow-y: auto;
             font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
-            font-size: 12px;
+            font-size: 11px;
         }
         
         .response-headers-table {
@@ -1707,19 +1697,20 @@
         
         .response-headers-table th {
             text-align: left;
-            padding: 8px 12px;
+            padding: 6px 10px;
             background: #f3f4f6;
             font-weight: 600;
-            font-size: 11px;
+            font-size: 10px;
             text-transform: uppercase;
             color: #374151;
             border-bottom: 1px solid #e5e7eb;
         }
         
         .response-headers-table td {
-            padding: 10px 12px;
+            padding: 6px 10px;
             border-bottom: 1px solid #e5e7eb;
             color: #1a1a1a;
+            font-size: 11px;
         }
         
         .response-headers-table tr:hover {
@@ -2670,28 +2661,109 @@
         // Make function globally available immediately
         window.toggleCollection = toggleCollection;
         
+        // Global flag to track if a request is in progress
+        window.isRequestInProgress = false;
+        
+        // Helper function to disable/enable form inputs and sidebar interactions
+        function setRequestInProgress(inProgress) {
+            window.isRequestInProgress = inProgress;
+            
+            // Disable/enable form inputs
+            const formInputs = document.querySelectorAll('#requestForm input, #requestForm select, #requestForm textarea, #requestForm button');
+            formInputs.forEach(input => {
+                if (input.type !== 'submit' || !inProgress) {
+                    input.disabled = inProgress;
+                }
+            });
+            
+            // Disable/enable Send button specifically
+            const sendButton = document.querySelector('.btn-send');
+            if (sendButton) {
+                sendButton.disabled = inProgress;
+                if (inProgress) {
+                    sendButton.style.opacity = '0.6';
+                    sendButton.style.cursor = 'not-allowed';
+                } else {
+                    sendButton.style.opacity = '1';
+                    sendButton.style.cursor = 'pointer';
+                }
+            }
+            
+            // Disable/enable sidebar API items
+            const sidebarItems = document.querySelectorAll('.saved-request-item');
+            sidebarItems.forEach(item => {
+                if (inProgress) {
+                    item.style.opacity = '0.6';
+                    item.style.cursor = 'not-allowed';
+                    item.style.pointerEvents = 'none';
+                } else {
+                    item.style.opacity = '1';
+                    item.style.cursor = 'pointer';
+                    item.style.pointerEvents = 'auto';
+                }
+            });
+            
+            // Disable/enable project and application toggles
+            const toggleButtons = document.querySelectorAll('.collection-toggle, .application-toggle');
+            toggleButtons.forEach(btn => {
+                if (inProgress) {
+                    btn.style.opacity = '0.6';
+                    btn.style.cursor = 'not-allowed';
+                    btn.style.pointerEvents = 'none';
+                } else {
+                    btn.style.opacity = '1';
+                    btn.style.cursor = 'pointer';
+                    btn.style.pointerEvents = 'auto';
+                }
+            });
+        }
+        
         // Define loadSavedRequestFromSidebar early to make it available for onclick handlers
         async function loadSavedRequestFromSidebar(id) {
-            // Clear response section when switching APIs
-            const responseSection = document.getElementById('responseSection');
-            if (responseSection) {
-                responseSection.style.display = 'none';
+            // Prevent loading if a request is in progress
+            if (window.isRequestInProgress) {
+                if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
+                    await CustomDialog.showAlert('Please wait for the current request to complete before selecting another API.', 'Request In Progress');
+                } else {
+                    alert('Please wait for the current request to complete before selecting another API.');
+                }
+                return;
             }
-            const responseBody = document.getElementById('responseBody');
-            if (responseBody) {
-                responseBody.textContent = '';
+            
+            // Try to restore the last response for this API
+            let lastResponse = null;
+            try {
+                const storedResponse = localStorage.getItem(`api_response_${id}`);
+                if (storedResponse) {
+                    lastResponse = JSON.parse(storedResponse);
+                }
+            } catch (e) {
+                console.warn('Could not load stored response:', e);
             }
-            const responseHeadersBody = document.getElementById('responseHeadersBody');
-            if (responseHeadersBody) {
-                responseHeadersBody.innerHTML = '<tr><td colspan="2" style="text-align: center; color: #9ca3af; padding: 20px;">No headers available</td></tr>';
+            
+            // If we have a last response, we'll display it after loading the API
+            // Otherwise, clear the response section
+            if (!lastResponse) {
+                const responseSection = document.getElementById('responseSection');
+                if (responseSection) {
+                    responseSection.style.display = 'none';
+                }
+                const responseBody = document.getElementById('responseBody');
+                if (responseBody) {
+                    responseBody.textContent = '';
+                }
+                const responseHeadersBody = document.getElementById('responseHeadersBody');
+                if (responseHeadersBody) {
+                    responseHeadersBody.innerHTML = '<tr><td colspan="2" style="text-align: center; color: #9ca3af; padding: 20px;">No headers available</td></tr>';
+                }
+                // Reset response metrics
+                const statusBadge = document.getElementById('statusBadge');
+                const responseTimeValue = document.getElementById('responseTimeValue');
+                const responseSizeValue = document.getElementById('responseSizeValue');
+                if (statusBadge) statusBadge.textContent = '';
+                if (responseTimeValue) responseTimeValue.textContent = '0 ms';
+                if (responseSizeValue) responseSizeValue.textContent = '0 KB';
             }
-            // Reset response metrics
-            const statusBadge = document.getElementById('statusBadge');
-            const responseTimeValue = document.getElementById('responseTimeValue');
-            const responseSizeValue = document.getElementById('responseSizeValue');
-            if (statusBadge) statusBadge.textContent = '';
-            if (responseTimeValue) responseTimeValue.textContent = '0 ms';
-            if (responseSizeValue) responseSizeValue.textContent = '0 KB';
             
             try {
                 const response = await fetch('/api/saved/' + id);
@@ -2776,6 +2848,11 @@
                     
                     // Highlight selected API, application, and project
                     highlightSelectedItems(savedRequest);
+                    
+                    // Restore and display the last response for this API if available
+                    if (lastResponse) {
+                        displayResponse(lastResponse);
+                    }
                 } else {
                     if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
                         await CustomDialog.showAlert('Error loading saved request', 'Error');
@@ -3092,6 +3169,19 @@
         document.getElementById('requestForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
+            // Prevent submission if a request is already in progress
+            if (window.isRequestInProgress) {
+                if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
+                    await CustomDialog.showAlert('A request is already in progress. Please wait for it to complete.', 'Request In Progress');
+                } else {
+                    alert('A request is already in progress. Please wait for it to complete.');
+                }
+                return;
+            }
+            
+            // Set request in progress flag and disable UI
+            setRequestInProgress(true);
+            
             const method = document.getElementById('method').value;
             const url = document.getElementById('url').value;
             const headers = getHeaders();
@@ -3208,6 +3298,8 @@
                 if (loadingEl) {
                     loadingEl.style.display = 'none';
                 }
+                // Re-enable UI when request completes
+                setRequestInProgress(false);
             }
         });
         
@@ -3238,6 +3330,20 @@
             if (!data) {
                 displayError({ message: 'No response data received' });
                 return;
+            }
+            
+            // Store response in localStorage linked to the current API ID
+            const savedRequestId = document.getElementById('savedRequestId')?.value;
+            if (savedRequestId) {
+                try {
+                    const responseData = {
+                        ...data,
+                        timestamp: Date.now()
+                    };
+                    localStorage.setItem(`api_response_${savedRequestId}`, JSON.stringify(responseData));
+                } catch (e) {
+                    console.warn('Could not store response in localStorage:', e);
+                }
             }
             
             const statusCode = data.statusCode != null ? data.statusCode : 0;
@@ -5043,8 +5149,8 @@
             
             if (!select) return;
             
-            // Check if there are any options and if a valid option is selected
-            if (select.selectedIndex < 0 || select.options.length === 0) {
+            // Check if options exist and if there are any options and if a valid option is selected
+            if (!select.options || select.selectedIndex < 0 || select.options.length === 0) {
                 if (infoDiv) infoDiv.style.display = 'none';
                 const envGroup = document.getElementById('environmentGroup');
                 if (envGroup) envGroup.style.display = 'none';
@@ -5698,7 +5804,7 @@
                 
                 const methodClass = method.toLowerCase();
                 return `
-                    <div class="history-item" onclick="loadHistoryItem(${item.id})" title="Click to load this request">
+                    <div class="history-item" onclick="loadHistoryItem(${item.id}, event)" title="Click to load this request">
                         <div class="history-item-info" style="flex: 1; min-width: 0;">
                             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
                                 <span class="history-item-method method-${methodClass}" style="flex-shrink: 0;">${escapeHtml(method)}</span>
@@ -5733,9 +5839,22 @@
             }
         }
         
-        async function loadHistoryItem(historyId) {
-            // Add visual feedback
-            const historyItem = event?.target?.closest('.history-item');
+        async function loadHistoryItem(historyId, event) {
+            // Add visual feedback - get the clicked element
+            let historyItem = null;
+            if (event && event.target) {
+                historyItem = event.target.closest('.history-item');
+            } else {
+                // Fallback: find by historyId if event is not available
+                const allItems = document.querySelectorAll('.history-item');
+                for (let item of allItems) {
+                    if (item.onclick && item.onclick.toString().includes(historyId)) {
+                        historyItem = item;
+                        break;
+                    }
+                }
+            }
+            
             if (historyItem) {
                 historyItem.style.opacity = '0.6';
                 historyItem.style.pointerEvents = 'none';
@@ -5747,10 +5866,21 @@
                     const historyItemData = await response.json();
                     
                     // Load the request data into the form
-                    if (historyItemData.method) document.getElementById('method').value = historyItemData.method;
-                    if (historyItemData.url) document.getElementById('url').value = historyItemData.url;
-                    if (historyItemData.headers) setHeaders(historyItemData.headers);
-                    if (historyItemData.body) document.getElementById('body').value = historyItemData.body;
+                    if (historyItemData.method) {
+                        const methodEl = document.getElementById('method');
+                        if (methodEl) methodEl.value = historyItemData.method;
+                    }
+                    if (historyItemData.url) {
+                        const urlEl = document.getElementById('url');
+                        if (urlEl) urlEl.value = historyItemData.url;
+                    }
+                    if (historyItemData.headers && typeof setHeaders === 'function') {
+                        setHeaders(historyItemData.headers);
+                    }
+                    if (historyItemData.body) {
+                        const bodyEl = document.getElementById('body');
+                        if (bodyEl) bodyEl.value = historyItemData.body;
+                    }
                     
                     // Load the response
                     if (historyItemData.response) {
@@ -5772,10 +5902,11 @@
                         historyItem.style.opacity = '';
                         historyItem.style.pointerEvents = '';
                     }
+                    const errorText = await response.text().catch(() => 'Unknown error');
                     if (typeof CustomDialog !== 'undefined' && CustomDialog.showAlert) {
-                        await CustomDialog.showAlert('Error loading history item', 'Error');
+                        await CustomDialog.showAlert('Error loading history item: ' + errorText, 'Error');
                     } else {
-                        alert('Error loading history item');
+                        alert('Error loading history item: ' + errorText);
                     }
                 }
             } catch (error) {
