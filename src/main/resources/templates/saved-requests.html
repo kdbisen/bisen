@@ -10,6 +10,20 @@
     <link rel="icon" type="image/svg+xml" href="/icon.svg">
     <link rel="apple-touch-icon" href="/icon.svg">
     <link rel="stylesheet" href="/dialog.css">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bisen-blue': '#2563eb',
+                        'bisen-dark': '#1a1a1a',
+                    }
+                }
+            }
+        }
+    </script>
     <title>Saved Requests - BISEN</title>
     <style>
         * {
@@ -370,6 +384,8 @@
             }
         }
     </script>
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
     <script src="/dialog.js"></script>
 </body>
 </html>
