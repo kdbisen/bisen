@@ -1,0 +1,55 @@
+{
+  "name": "bisen-api-tester",
+  "version": "1.0.0",
+  "description": "BISEN API Tester - Simple API Testing Tool",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "build:mac": "electron-builder --mac",
+    "build:win": "electron-builder --win",
+    "build:linux": "electron-builder --linux"
+  },
+  "keywords": [
+    "api",
+    "tester",
+    "rest",
+    "http"
+  ],
+  "author": "Kuldeep Bisen",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "build": {
+    "appId": "com.bisen.api-tester",
+    "productName": "BISEN API Tester",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "../target/rest-api-tester-1.0.0.jar",
+      "../start-server.js"
+    ],
+    "mac": {
+      "icon": "../src/main/resources/static/icon.icns",
+      "category": "public.app-category.developer-tools"
+    },
+    "win": {
+      "icon": "../src/main/resources/static/icon.ico",
+      "target": "nsis"
+    },
+    "linux": {
+      "icon": "../src/main/resources/static/icon.png",
+      "category": "Development"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}
+
